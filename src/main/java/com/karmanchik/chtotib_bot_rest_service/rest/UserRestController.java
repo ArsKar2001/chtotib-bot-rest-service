@@ -14,11 +14,11 @@ import java.util.Map;
 
 @Log4j
 @RestController
-@RequestMapping("/api/chtotib_bot/")
-public class UserController {
+@RequestMapping("/api/")
+public class UserRestController {
     private final JpaUserRepository userRepository;
 
-    public UserController(JpaUserRepository userRepository) {
+    public UserRestController(JpaUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

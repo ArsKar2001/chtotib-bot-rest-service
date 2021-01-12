@@ -55,6 +55,20 @@ public interface JpaGroupRepository extends JpaRepository<Group, Integer> {
     Optional<List<Lesson>> getListLessonByGroupName(@Param("groupName") @NotNull String groupName);
 
     @Query(nativeQuery = true, value = "SELECT " +
+            "data.id as id, " +
+            "data.auditorium as auditorium, " +
+            "data.group_name as groupName, " +
+            "data.teacher as teacher, " +
+            "data.discipline as discipline, " +
+            "data.day_of_week as dayOfWeek, " +
+            "data.lesson_number as lessonNumber, " +
+            "data.week_type as weekType " +
+            "from get_json_fields_from_text() as data " +
+            "where data.id = :id " +
+            "order by data.day_of_week, data.lesson_number")
+    Optional<List<Lesson>> getListLessonByGroupId(@Param("id") @NotNull Integer id);
+
+    @Query(nativeQuery = true, value = "SELECT " +
             "data.auditorium as auditorium, " +
             "data.group_name as groupName, " +
             "data.teacher as teacher, " +
