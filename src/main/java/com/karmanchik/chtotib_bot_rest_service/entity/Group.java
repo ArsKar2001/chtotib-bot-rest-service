@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
-import com.karmanchik.chtotib_bot_rest_service.converter.JpaConverterJson;
+import com.karmanchik.chtotib_bot_rest_service.converter.JSONObjectConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +20,8 @@ public class Group extends AbstractBaseEntity {
     @NotNull private String groupName;
 
     @Column(name = "timetable")
-    @Convert(converter = JpaConverterJson.class)
-    @NotNull private JpaConverterJson timetable;
+    @Convert(converter = JSONObjectConverter.class)
+    @NotNull private JSONObjectConverter timetable;
 
     public Group(@NotNull String groupName) {
         this.groupName = groupName;

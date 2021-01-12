@@ -15,12 +15,6 @@ import java.util.Optional;
 @Repository
 @Transactional(readOnly = true)
 public interface JpaGroupRepository extends JpaRepository<Group, Integer> {
-    /**
-     *  Возвращает объект Schedule по его Id, если такой объект есть в БД
-     * @param id
-     * @return
-     */
-    Group getScheduleById(Integer id);
     @Query(value = "select g.id, g.groupName, g.timetable from Group g")
     Optional<List<Group>> getListGroup();
 

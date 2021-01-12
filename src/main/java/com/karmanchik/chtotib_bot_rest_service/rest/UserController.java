@@ -2,6 +2,7 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.User;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaUserRepository;
+import lombok.extern.log4j.Log4j;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Log4j
 @RestController
 @RequestMapping("/api/chtotib_bot/")
 public class UserController {
