@@ -66,7 +66,7 @@ public interface JpaGroupRepository extends JpaRepository<Group, Integer> {
             "from get_json_fields_from_text() as data " +
             "where data.id = :id " +
             "order by data.day_of_week, data.lesson_number")
-    Optional<List<Lesson>> getListLessonByGroupId(@Param("id") @NotNull Integer id);
+    List<Lesson> getListLessonByGroupId(@Param("id") @NotNull Integer id);
 
     @Query(nativeQuery = true, value = "SELECT " +
             "data.auditorium as auditorium, " +
