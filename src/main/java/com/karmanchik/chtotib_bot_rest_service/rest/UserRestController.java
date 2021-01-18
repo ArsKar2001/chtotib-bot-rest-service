@@ -39,7 +39,7 @@ public class UserRestController {
      * @return the user by id
      * @throws ResourceNotFoundException не найден пользователь по userId
      */
-    @GetMapping("/users/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<User> getUserById(@PathVariable(value = "id") Integer userId) throws ResourceNotFoundException {
         User user = userRepository
                 .findById(userId)
@@ -53,7 +53,7 @@ public class UserRestController {
      * @param user user
      * @return новый user
      */
-    @PostMapping("/users")
+    @PostMapping("/user")
     public User createUser(@Valid @RequestBody User user) {
         return userRepository.save(user);
     }
@@ -64,7 +64,7 @@ public class UserRestController {
      * @param userDetail rhe user detail
      * @return update user
      */
-    @PutMapping("/users/{id}")
+    @PutMapping("/user/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable(value = "id") Integer userId, @Valid @RequestBody User userDetail) {
         User user =

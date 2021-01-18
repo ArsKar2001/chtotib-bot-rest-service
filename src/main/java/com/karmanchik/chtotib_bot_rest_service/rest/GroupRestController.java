@@ -21,12 +21,12 @@ public class GroupRestController {
         this.groupRepository = groupRepository;
     }
 
-    @GetMapping("/groups")
+    @GetMapping("/group")
     public List<Group> getAllGroups() {
         return groupRepository.findAll();
     }
 
-    @GetMapping("/groups/{id}")
+    @GetMapping("/group/{id}")
     public ResponseEntity<Group> getGroup(@PathVariable(name = "id") @Valid Integer groupId) {
         Group group = groupRepository
                 .findById(groupId)
@@ -39,7 +39,7 @@ public class GroupRestController {
         return groupRepository.save(group);
     }
 
-    @PutMapping("/groups/{id}")
+    @PutMapping("/group/{id}")
     public ResponseEntity<Group> updateGroup(
             @PathVariable(name = "id") Integer groupId,
             @Valid @RequestBody Group groupDetails) {
@@ -53,7 +53,7 @@ public class GroupRestController {
         return ResponseEntity.ok().body(upGroup);
     }
 
-    @DeleteMapping("/groups/{id}")
+    @DeleteMapping("/group/{id}")
     public Map<String, Boolean> deleteGroup(
             @PathVariable(name = "id") Integer groupId) {
         Group group = groupRepository

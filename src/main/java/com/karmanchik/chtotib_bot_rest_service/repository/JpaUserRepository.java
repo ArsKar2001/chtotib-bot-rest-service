@@ -10,5 +10,4 @@ import java.util.Optional;
 @Repository
 @Transactional(readOnly = true)
 public interface JpaUserRepository extends JpaRepository<User, Integer> {
-    Optional<User> getByChatId(int chatId);
 }
