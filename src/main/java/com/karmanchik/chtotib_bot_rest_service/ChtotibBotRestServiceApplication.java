@@ -1,10 +1,10 @@
 package com.karmanchik.chtotib_bot_rest_service;
 
-import com.karmanchik.chtotib_bot_rest_service.rest.storage.StorageService;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
 
 @SpringBootApplication
 public class ChtotibBotRestServiceApplication {
@@ -13,11 +13,8 @@ public class ChtotibBotRestServiceApplication {
         SpringApplication.run(ChtotibBotRestServiceApplication.class, args);
     }
 
-    @Bean
-    CommandLineRunner init(StorageService service) {
-        return args -> {
-            service.deleteAll();
-            service.init();
-        };
+    @PostConstruct
+    public void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Irkutsk"));
     }
 }

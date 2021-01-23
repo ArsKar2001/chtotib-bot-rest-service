@@ -30,7 +30,7 @@ public class GroupRestController {
     public ResponseEntity<Group> getGroup(@PathVariable(name = "id") @Valid Integer groupId) {
         Group group = groupRepository
                 .findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Не найден group с id "+ groupId));
+                .orElseThrow(() -> new RuntimeException("Не найден group с id " + groupId));
         return ResponseEntity.ok().body(group);
     }
 
@@ -45,7 +45,7 @@ public class GroupRestController {
             @Valid @RequestBody Group groupDetails) {
         Group group = groupRepository
                 .findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Не найден group с id "+ groupId));
+                .orElseThrow(() -> new RuntimeException("Не найден group с id " + groupId));
         group.setTimetable(groupDetails.getTimetable());
         group.setGroupName(groupDetails.getGroupName());
 
@@ -58,7 +58,7 @@ public class GroupRestController {
             @PathVariable(name = "id") Integer groupId) {
         Group group = groupRepository
                 .findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Не найден group с id "+ groupId));
+                .orElseThrow(() -> new RuntimeException("Не найден group с id " + groupId));
         groupRepository.delete(group);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
