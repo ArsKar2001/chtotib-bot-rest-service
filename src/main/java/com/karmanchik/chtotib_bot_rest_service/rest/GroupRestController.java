@@ -21,7 +21,7 @@ public class GroupRestController {
         this.groupRepository = groupRepository;
     }
 
-    @GetMapping("/group")
+    @GetMapping("/groups")
     public List<Group> getAllGroups() {
         return groupRepository.findAll();
     }

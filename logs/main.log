@@ -658,3 +658,164 @@
 2021-01-12 23:56:05 WARN  JSONObjectConverter:37 - A JSONObject text must begin with '{' at 1 [character 2 line 1]
 2021-01-12 23:56:05 WARN  JSONObjectConverter:37 - A JSONObject text must begin with '{' at 1 [character 2 line 1]
 2021-01-12 23:56:05 WARN  JSONObjectConverter:37 - A JSONObject text must begin with '{' at 1 [character 2 line 1]
+2021-01-24 13:25:09 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@3c6e989
+2021-01-24 13:25:10 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@16dee5ca
+2021-01-24 13:25:10 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@353973eb
+2021-01-24 13:25:11 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@5edb51da
+2021-01-24 13:25:12 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@5662dc51
+2021-01-24 13:25:13 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@7735b1b0
+2021-01-24 13:25:14 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@29eff9d3
+2021-01-24 13:25:15 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@5166ab2b
+2021-01-24 13:25:16 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@22301da5
+2021-01-24 13:25:17 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@51b88a5f
+2021-01-24 13:25:18 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@60365658
+2021-01-24 13:25:19 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@252e66e4
+2021-01-24 13:25:20 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@3adbc3b6
+2021-01-24 13:25:21 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@524ae29f
+2021-01-24 13:25:22 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@7610d828
+2021-01-24 13:25:23 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@1cb32c70
+2021-01-24 13:25:24 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@535bee07
+2021-01-24 13:25:25 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@131d835b
+2021-01-24 13:25:26 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@14dac9fe
+2021-01-24 13:25:27 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@3173c9f7
+2021-01-24 13:25:28 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@2bf234f7
+2021-01-24 13:25:29 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@191c1ff1
+2021-01-24 13:25:30 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@415f4c07
+2021-01-24 13:25:31 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@2655e050
+2021-01-24 13:25:32 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@45f2a77b
+2021-01-24 13:48:56 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@12e5bee
+2021-01-24 13:48:57 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@412ba5b2
+2021-01-24 13:48:58 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@4f544cd3
+2021-01-24 13:48:59 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@2853df57
+2021-01-24 13:49:00 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@452cb663
+2021-01-24 13:49:01 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@7009054c
+2021-01-24 13:49:02 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@45354dbe
+2021-01-24 13:49:03 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@5679c76c
+2021-01-24 13:49:04 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@57add914
+2021-01-24 13:49:05 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@65fb6118
+2021-01-24 13:49:06 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@6a2dc688
+2021-01-24 13:49:07 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@7df564bb
+2021-01-24 13:49:08 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@5149f401
+2021-01-24 13:49:09 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@699a8e18
+2021-01-24 13:49:10 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@1b1dfe3b
+2021-01-24 13:49:11 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@4b402ffc
+2021-01-24 13:49:12 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@393f3160
+2021-01-24 13:49:13 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@bcca161
+2021-01-24 13:49:14 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@2c6cf1a1
+2021-01-24 13:49:15 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@5929cb66
+2021-01-24 13:49:16 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@51052b73
+2021-01-24 13:49:17 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@1993edd4
+2021-01-24 13:49:18 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@6cda0636
+2021-01-24 13:49:19 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@25921d0f
+2021-01-24 13:49:20 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@4c2b1a39
+2021-01-24 13:54:53 INFO  ImportTask:39 - Importing to database: com.karmanchik.chtotib_bot_rest_service.entity.Group@26fcd543
+2021-01-24 15:04:50 INFO  WordParserTest:24 - З А М Е Н А на четверг 17 декабря неделя нижняя.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - Дежурный администратор: Терукова Ж.В.– 104 каб.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - Группа	Пара	Предмет	Ауд.	Преподаватель
+2021-01-24 15:04:50 INFO  WordParserTest:24 - АРХ 20-1	III	Химия I и II п.		Швецова Д.О.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СЭЗС 20-1	III	Физика		Кисель С.Д., Ковалева В.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	История		Насибулин С.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СЭЗС 20-2	IV	Химия I и II п.		Швецова Д.О.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СЭЗС 20-3к	II	История		Насибулин С.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	Математика		Гильфанова Л.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V	Химия I и II п.		Швецова Д.О.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СД 20-1	I, III	Математика		Никифорова Е.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	Физ. культура		Раздобреев И.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СВК 20-1	I	История		Лапшакова И.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	Физика		Ковалева В.В., Федорова Н.Г.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V	Информатика I и II п.		Никифорова Е.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - УМД 20-1	IV	Математика		Никифорова Е.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СИС 20-1	I	Химия 		Швецова Д.О.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III, IV	Физ.культура		Никитин А.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ИСИП 20-1п	IV	Информатика		Ведерников И.К., Подойницына Н.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ИСИП 20-2п	I	Физ.культура		Никитин А.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	II	Физика		Кисель С.Д., Ковалева В.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	Математика		Цымпилова Б.Д.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ИСИП 20-3в	I	Математика		Лямина О.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	II	Химия I и IIп.		Швецова Д.О.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	Физика		Кисель С.Д.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ИКСИС 20-1	II	Нет		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III	Физика II п.		Ковалева В.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V	Физика I п.		Ковалева В.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ЗИО 20-1	II	Математика		Гильфанова Л.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ТОРА 20-1	IV	Иностр. язык		Чернецкая В.Н., Толстоногова А.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СДМ 20-1	I	Нет		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III	Физ. культура		Раздобреев И.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	История		Турчина Т.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V	Математика		Цымпилова Б.Д.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	VI	Химия I и II п.		Швецова Д.О.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СДМ 20-2к	I	Физика I п.		Ковалева В.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	II	Физ.культура		Никитин А.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III, IV	История		Лапшакова И.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V	Иностр. язык		Чернецкая В.Н., Толстоногова А.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	VI	Физика II п.		Ковалева В.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СЭЗС 19-1	IV,V	САПР II п.	57	Теплякова А.Н.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СЭЗС 19-2	I	САПР I п.	57	Теплякова А.Н.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	II	Иностр. язык	202	Чернецкая В.Н., Толстоногова А.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III, IV	Инж графика	43, 46	ЩербаковаЕ.Л., Покатилов Е.Н.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V	Инж. геол. исслед.	202	Щербакова И.П.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СЭЗС 19-3к	I-III	Нет		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	Инж. геол. исслед.	311	Щербакова И.П.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V,VI	Инж графика	43, 46	Бородина Н.Г., Покатилов Е.Н.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СД 19-1	I, IV	Нет		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	II	Математика	310	Никифорова Е.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III	Геология и грунт.	310	Щербакова И.П.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СВК 19-1	I,II	Экол. основы прир.	49	Бабикова Н.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III	Сварка и резка материал.	10	Рощупкина Г.И.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	Информатика	50, 26	Токарчук А.Е., Ведерников И.К.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - УМД 19-1	I	Нет 		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	II	Этика ПД	33	Терукова Ж.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СИС 19-1	I,II	Осн алгоритм. IIп		Смирнова Т.М.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III	Адаптивные ИКТ		Ведерников И.К.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V	Осн алгоритм. Iп		Смирнова Т.М.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ИСИП 19-2в	I	Нет		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	II	Иностр. язык		Назарова А.А., Туркова С.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ТТО 19-1	I,IV	Нет		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ЗИО 19-1к	I, II	Картограф. IIп		Щербакова И.П.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III	Экон. недвижимости	317	Смородникова Л.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ТОРА 19-1к	III,IV	Устр. и осн.теории подвижн. состава	17	Мартьянов А.Н.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СДМ 19-1	I	Электрот.и электроника Iп	212	Рыбас И.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	II	Информатика	26, 57	Ведерников И.К., Теплякова А.Н.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III	Физ. культура		Деньченко А.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	Нет 		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СДМ 19-2к	III	Физ.культура		Никитин А.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	Тех механика	300	Батуев Б.Н.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - АРХ 18-1	III	ОПП Iп	110	Баловнева О.Н. 
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV,V	Инженерные сети	32	Гулевская Е.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	VI	ОПП IIп	110	Баловнева О.Н. 
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СИС 18-1	II,III	МДК 01.01 Компьют. сети Iп.		Ленская Н.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	IV	Основы философии		Турчина Т.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V,VI	МДК 01.01 Компьют. сети IIп.		Ленская Н.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ИСИП 18-1	I	Численные методы в програм.		Ленская Н.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	II	Физ. культура		Раздобреев И.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	III -VI	Нет		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ЗИО 18-1	III,IV	Методол. оценки недвижим.	316	Артюкова Д.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V	Физ.культура		Никитин А.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	VI	Нет		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СДМ 18-1	III,IV	МДК 02.02 Устр. подьемно-трансп.	7	Аганин К.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V,VI	МДК 01.01 Тех. экспл.дорог	7	Аганин К.С.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СДМ 18-2к	III	Нет 		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V,VI	МДК 02.02 Устр. подьемно-трансп.	8	Мартьянов А.Н.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - СД 17-1	III	Нет 		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V	Строит. АД и аэродр.	10,15	Хазиахметов А.М., Перебоева Д.А.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - УМД 17-1	IV	Физ. культура		Деньченко А.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V	Иностранный язык	204	Туркова С.В.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	VI	Нет		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ТОРА 17-1	III	ПБДД	Лаб.1	Батуев Б.Н.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V,VI	Нет		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ТОРА 17-2к	IV	Нет 		
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 	V,VI	ПБДД	Лаб.2	Батуев Б.Н.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 
+2021-01-24 15:04:50 INFO  WordParserTest:24 - На практике группы: АРХ 19-1, ИСИП 19-1п, ИКСИС 19-1, СЭЗС 18-1, СД 18-1, СВК 18-1, УМД 18-1, ИКСИС 18-1, ЗИО 18-2к, ТОРА 18-1, АРХ 17-1, СЭЗС 17-1, СЭЗС 17-2, КС 17-1, ИСИП 17-1, ТТО 17-1, СДМ 17-1.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - На сессии: ТТО 18-1.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 
+2021-01-24 15:04:50 INFO  WordParserTest:24 - ВНИМАНИЕ!
+2021-01-24 15:04:50 INFO  WordParserTest:24 - Занятия 1 курса проводятся по дистанционному обучению согласно расписанию и замены.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - Занятия с 2-4 курс проводятся в очном режиме согласно расписанию и замены.
+2021-01-24 15:04:50 INFO  WordParserTest:24 - 
+2021-01-24 15:04:50 INFO  WordParserTest:24 - Группы: ИКСИС 20-1, СИС 19-1, ИСИП 19-2в, СИС 18-1, ИСИП 18-1 - 
+2021-01-24 15:04:50 INFO  WordParserTest:24 - продолжают учиться в дистанционном режиме! 
