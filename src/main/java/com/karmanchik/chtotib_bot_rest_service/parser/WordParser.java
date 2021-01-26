@@ -7,6 +7,7 @@ import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j
+@Component
 public class WordParser {
 
     public static final Map<String, Integer> DAYS_OF_WEEK = Map.of(
