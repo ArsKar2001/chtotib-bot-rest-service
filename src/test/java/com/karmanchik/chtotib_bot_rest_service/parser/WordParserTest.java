@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class WordParserTest {
@@ -79,11 +80,13 @@ class WordParserTest {
 
     @Test
     public void testRegex() {
-        Pattern pattern = Pattern.compile("Z_A_M_E_N_A_na_.++_doc\\.docx");
+        Pattern pattern = Pattern.compile("Z_A_M_E_N_A_na_.+\\.docx");
         for (File file : FOLDER.listFiles()) {
             final String fileName = file.getName();
-
-            System.out.println(fileName);
+            Matcher matcher = pattern.matcher(fileName);
+            if (matcher.find()) {
+                
+            }
         }
     }
 }

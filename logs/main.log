@@ -819,3 +819,40 @@
 2021-01-24 15:04:50 INFO  WordParserTest:24 - 
 2021-01-24 15:04:50 INFO  WordParserTest:24 - Группы: ИКСИС 20-1, СИС 19-1, ИСИП 19-2в, СИС 18-1, ИСИП 18-1 - 
 2021-01-24 15:04:50 INFO  WordParserTest:24 - продолжают учиться в дистанционном режиме! 
+2021-01-28 11:22:10 INFO  FileUploadRestController:39 - Start thread: Thread[Thread-4,5,main]
+2021-01-28 11:25:08 INFO  ImportTask:41 - Importing to database: АРХ-20-1
+2021-01-28 13:36:18 INFO  FileUploadRestController:39 - Start thread: Thread[Thread-4,5,main]
+2021-01-28 13:36:19 INFO  ImportTask:41 - Importing to database: АРХ-20-1
+2021-01-28 13:36:20 INFO  ImportTask:41 - Importing to database: СЭЗС-20-1
+2021-01-28 13:36:21 INFO  ImportTask:41 - Importing to database: СЭЗС-20-2
+2021-01-28 13:36:22 INFO  ImportTask:41 - Importing to database: СЭЗС-20-3к
+2021-01-28 13:36:23 INFO  ImportTask:41 - Importing to database: СД-20-1
+2021-01-28 13:36:25 INFO  ImportTask:41 - Importing to database: СВК-20-1
+2021-01-28 13:36:26 INFO  ImportTask:41 - Importing to database: УМД-20-1
+2021-01-28 13:36:27 INFO  ImportTask:41 - Importing to database: СиС-20-1
+2021-01-28 13:36:29 INFO  ImportTask:41 - Importing to database: ИСиП-20-1п
+2021-01-28 13:36:31 INFO  ImportTask:41 - Importing to database: ИСиП -20-2п
+2021-01-28 13:36:32 INFO  ImportTask:41 - Importing to database: ИСиП-20-3в
+2021-01-28 13:36:34 INFO  ImportTask:41 - Importing to database:  ИКСиС-20-1
+2021-01-28 13:36:35 INFO  ImportTask:41 - Importing to database: ТТО-20-1
+2021-01-28 13:36:36 INFO  ImportTask:41 - Importing to database: ЗиО-20-1
+2021-01-28 13:36:38 INFO  ImportTask:41 - Importing to database: ЗиО-20-2к
+2021-01-28 13:36:40 INFO  ImportTask:41 - Importing to database: ТОРА 20-1к
+2021-01-28 13:36:42 INFO  ImportTask:41 - Importing to database: СДМ 20-1
+2021-01-28 13:36:44 INFO  ImportTask:41 - Importing to database: СДМ 20-2к
+2021-01-28 13:36:45 INFO  ImportTask:41 - Importing to database: АРХ-19-1
+2021-01-28 13:36:47 INFO  ImportTask:41 - Importing to database: СЭЗС-19-1
+2021-01-28 13:36:48 INFO  ImportTask:41 - Importing to database: СЭЗС-19-2
+2021-01-28 13:36:49 INFO  ImportTask:41 - Importing to database: СЭЗС-19-3к
+2021-01-28 13:36:51 INFO  ImportTask:41 - Importing to database: СД-19-1
+2021-01-28 13:36:52 INFO  ImportTask:41 - Importing to database: СВК-19-1
+2021-01-28 13:36:54 INFO  ImportTask:41 - Importing to database: УМД-19-1
+2021-01-28 13:36:55 INFO  ImportTask:41 - Importing to database: СиС-19-1
+2021-01-28 13:36:56 INFO  ImportTask:41 - Importing to database: ИСИП-19-1п
+2021-01-28 13:36:58 INFO  ImportTask:41 - Importing to database: ИСИП-19-2в
+2021-01-28 13:36:59 INFO  ImportTask:41 - Importing to database: ИКСИС-19-1
+2021-01-28 13:37:00 INFO  ImportTask:41 - Importing to database: ТТО-19-1
+2021-01-28 13:37:01 INFO  ImportTask:41 - Importing to database: ЗИО-19-1к
+2021-01-28 13:37:03 INFO  ImportTask:41 - Importing to database: ТОРА-19-1к
+2021-01-28 13:37:04 INFO  ImportTask:41 - Importing to database: СДМ-19-1
+2021-01-28 13:37:05 INFO  ImportTask:41 - Importing to database: СДМ-19-2к

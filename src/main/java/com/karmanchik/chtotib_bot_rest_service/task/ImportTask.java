@@ -13,22 +13,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImportTask implements Runnable {
 
-    private JSONArray jsonArray;
     private final JpaGroupRepository groupRepository;
+    private JSONArray jsonArray;
 
     public ImportTask(JpaGroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
+
     public void setJsonArray(JSONArray jsonArray) {
         this.jsonArray = jsonArray;
     }
 
 
-
     @Override
     public void run() {
-        if (jsonArray != null) {
-            for (Object o : jsonArray) {
+        for (Object o : jsonArray) {
+            try {
                 JSONObject object = (JSONObject) o;
                 String group_name = object.getString("group_name");
                 JSONArray data = object.getJSONArray("timetable");
@@ -39,9 +39,9 @@ public class ImportTask implements Runnable {
                 group.setTimetable(timetable.toString());
                 Group upGroup = groupRepository.save(group);
                 log.info("Importing to database: " + upGroup.getGroupName());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        } else {
-            throw new RuntimeException();
         }
     }
 }

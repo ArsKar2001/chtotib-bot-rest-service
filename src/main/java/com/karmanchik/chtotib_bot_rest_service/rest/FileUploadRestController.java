@@ -11,7 +11,7 @@ import java.io.InputStream;
 
 @Log4j
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/files/")
 public class FileUploadRestController {
     private ImportTask importTask;
     private final WordParser wordParser;

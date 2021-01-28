@@ -21,6 +21,7 @@ import java.util.Map;
 @Component
 public class WordParser {
 
+    public static final char[] SPLIT_CHAR = {';', ',', '-', '|'};
     public static final Map<String, Integer> DAYS_OF_WEEK = Map.of(
             "Понедельник", 0,
             "Вторник", 1,
@@ -47,14 +48,18 @@ public class WordParser {
             List<String> page = new ArrayList<>();
             List<List<String>> pages = new ArrayList<>();
             for (String string : strings) {
-                if ("".equals(string)) {
-                    List<String> finalPage1 = page;
-                    page.removeIf(s -> finalPage1.indexOf(s) == 0 || finalPage1.indexOf(s) == 2);
-                    pages.add(page);
-                    page = new ArrayList<>();
-                } else {
-                    if (string.endsWith("\t") || string.startsWith("\t")) page.add(string);
-                    else page.add(string.trim());
+                try {
+                    if (string.isBlank()) {
+                        List<String> finalPage1 = page;
+                        page.removeIf(s -> finalPage1.indexOf(s) == 0 || finalPage1.indexOf(s) == 2);
+                        pages.add(page);
+                        page = new ArrayList<>();
+                    } else {
+                        if (string.endsWith("\t") || string.startsWith("\t")) page.add(string);
+                        else page.add(string.trim());
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e + "; в строке: " + string);
                 }
             }
             List<String> finalPage = page;
@@ -64,20 +69,20 @@ public class WordParser {
             splitPages.removeIf(pg -> pg.get(0).split("\\s").length == 1);
             return currentPages(splitPages);
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
     public JSONArray createTimetable(InputStream stream) {
         try {
             String text = wordFileAsText(stream);
-            List<String> strings = Arrays.asList(text.split("\n"));
-            List<List<String>> pages = textToPages(strings);
+            var strings = Arrays.asList(text.split("\n"));
+            var pages = textToPages(strings);
             JSONArray allGroups = new JSONArray();
             JSONObject group;
             JSONArray timetable;
             JSONObject lesson;
-            for (List<String> page : pages) {
+            for (var page : pages) {
                 group = new JSONObject();
                 timetable = new JSONArray();
 
@@ -100,7 +105,7 @@ public class WordParser {
             log.debug("Create new JSON: " + allGroups.toString());
             return allGroups;
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -113,49 +118,70 @@ public class WordParser {
         for (List<String> splitPage : splitPages) {
             currentPage = new ArrayList<>();
             for (String str : splitPage) {
-                currentStr1 = new StringBuilder();
-                currentStr2 = new StringBuilder();
-                if (str.equals(splitPage.get(0))) {
-                    currentStr1.append(str.split("\\s")[1]);
-                } else {
-                    String[] splitStr = str.split(";");
-                    if (str.contains("/")) {
-                        String[] splitStr2 = splitStr.clone();
-                        for (int i = 0; i < splitStr.length; i++) {
-                            if (splitStr[i].contains("/")) {
-                                String[] ss = splitStr[i].split("/", -5);
-                                splitStr[i] = ss[0].trim();
-                                splitStr2[i] = ss[1].trim();
-                            }
-                        }
-                        currentStr1.append(
-                                String.join(";", splitStr)
-                        ).append(";").append("UP");
-                        currentStr2.append(
-                                String.join(";", splitStr2)
-                        ).append(";").append("DOWN");
-                        currentPage.add(currentStr2.toString());
-                    } else if (splitStr[1].contains("-")) {
-                        String[] splitStr2 = splitStr.clone();
-                        String[] ss = splitStr[1].split("-");
-                        splitStr[1] = ss[0].trim();
-                        splitStr2[1] = ss[1].trim();
-                        currentStr1.append(
-                                String.join(";", splitStr)
-                        ).append(";").append("NONE");
-                        currentStr2.append(
-                                String.join(";", splitStr2)
-                        ).append(";").append("NONE");
-                        currentPage.add(currentStr2.toString());
+                try {
+                    currentStr1 = new StringBuilder();
+                    currentStr2 = new StringBuilder();
+                    if (str.equals(splitPage.get(0))) {
+                        String[] groupNameSplitStr = str.split("\\s");
+                        currentStr1.append(groupNameSplitStr.length > 2 ? groupNameSplitStr[1] + " " + groupNameSplitStr[2] : groupNameSplitStr[1]);
                     } else {
-                        currentStr1.append(str).append(";").append("NONE");
+                        String[] splitStr = str.split(";");
+                        String numberStr = splitStr[1];
+                        if (str.contains("/")) {
+                            String[] splitStr2 = splitStr.clone();
+                            for (int i = 0; i < splitStr.length; i++) {
+                                if (splitStr[i].contains("/")) {
+                                    String[] ss = splitStr[i].split("/", -5);
+                                    splitStr[i] = ss[0].trim();
+                                    splitStr2[i] = ss[1].trim();
+                                }
+                            }
+                            currentStr1.append(
+                                    String.join(";", splitStr)
+                            ).append(";").append("UP");
+                            currentStr2.append(
+                                    String.join(";", splitStr2)
+                            ).append(";").append("DOWN");
+                            currentPage.add(currentStr2.toString());
+                        } else if (isCorrectNumber(numberStr)) {
+                            String[] splitStr2 = splitStr.clone();
+                            String split = getSplit(numberStr);
+                            String[] ss = numberStr.split(split);
+                            splitStr[1] = ss[0].trim();
+                            splitStr2[1] = ss[1].trim();
+                            currentStr1.append(
+                                    String.join(";", splitStr)
+                            ).append(";").append("NONE");
+                            currentStr2.append(
+                                    String.join(";", splitStr2)
+                            ).append(";").append("NONE");
+                            currentPage.add(currentStr2.toString());
+                        } else {
+                            currentStr1.append(str).append(";").append("NONE");
+                        }
                     }
+                    currentPage.add(currentStr1.toString());
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage() + "; в строке " + str);
                 }
-                currentPage.add(currentStr1.toString());
             }
             currentPages.add(currentPage);
         }
         return currentPages;
+    }
+
+    private String getSplit(String numberStr) {
+        char[] chars = numberStr.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            for (char c : SPLIT_CHAR) {
+                if (chars[i] == c) return String.valueOf(c);
+            }
+        }
+        return null;
+    }
+
+    private boolean isCorrectNumber(String s) {
+        return (s.contains("-") || s.contains(",")) && !s.isBlank() && s.length() > 1;
     }
 
     private List<List<String>> splitPages(List<List<String>> pages) {
