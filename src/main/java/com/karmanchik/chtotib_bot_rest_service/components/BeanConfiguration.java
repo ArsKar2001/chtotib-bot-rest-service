@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service;
+package com.karmanchik.chtotib_bot_rest_service.components;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
