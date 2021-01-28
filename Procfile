@@ -1,1 +1,1 @@
-bot: java -jar target/chtotib-telegram-bot-1.01.jar
+rest: java -jar target/chtotib-bot-rest-service-1.0.jar
