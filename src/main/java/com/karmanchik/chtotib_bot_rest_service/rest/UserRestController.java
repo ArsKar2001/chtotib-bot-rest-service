@@ -60,7 +60,8 @@ public class UserRestController {
 
     /**
      * Обновление user
-     * @param userId the user id
+     *
+     * @param userId     the user id
      * @param userDetail rhe user detail
      * @return update user
      */
