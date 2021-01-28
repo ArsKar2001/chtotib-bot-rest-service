@@ -10,8 +10,6 @@ import org.springframework.util.unit.DataSize;
 import javax.servlet.MultipartConfigElement;
 
 @Configuration
-@ComponentScan
-@EnableAutoConfiguration
 public class BeanConfiguration {
     @Bean
     public MultipartConfigElement multipartConfigElement() {
