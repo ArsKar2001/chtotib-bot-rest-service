@@ -1,1 +1,1 @@
-web: java -jar target/chtotib-bot-rest-service-1.0.jar -Dserver.port=$PORT
+web: java $JAVA_OPTS -Dserver.port=$PORT -jar target/chtotib-bot-rest-service-1.0.jar
