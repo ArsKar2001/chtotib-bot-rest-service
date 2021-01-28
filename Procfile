@@ -1,1 +1,1 @@
-rest: java -jar target/chtotib-bot-rest-service-1.0.jar
+web: java -jar target/chtotib-bot-rest-service-1.0.jar
