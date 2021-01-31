@@ -114,7 +114,7 @@ public class WordParser {
                 group.put("timetable", timetable);
                 allGroups.put(group);
             } catch (Exception e) {
-                throw new RuntimeException(e + "; в "+page.toString());
+                throw new RuntimeException(e + "; в " + page.toString());
             }
         }
         log.debug("Create new JSON: " + allGroups.toString());
