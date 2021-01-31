@@ -133,10 +133,9 @@ public class WordParser {
                 try {
                     currentStr1 = new StringBuilder();
                     currentStr2 = new StringBuilder();
-                    if (str.equals(splitPage.get(0))) {
-                        String[] groupNameSplitStr = str.split("\\s");
-                        currentStr1.append(groupNameSplitStr.length > 2 ?
-                                groupNameSplitStr[1].trim() + "-" + groupNameSplitStr[2].trim() : groupNameSplitStr[1].trim());
+                    if (str.equalsIgnoreCase(splitPage.get(0))) {
+                        String groupName = getGroupName(str);
+                        currentStr1.append(groupName);
                     } else {
                         String[] splitStr = str.split(";");
                         String number = splitStr[1].trim();
@@ -177,24 +176,12 @@ public class WordParser {
                     }
                     currentPage.add(currentStr1.toString());
                 } catch (Exception e) {
-                    throw new RuntimeException(e.getMessage() + "; в строке " + str);
+                    throw new RuntimeException(String.format("%s; в строке \"%s\"", e, str));
                 }
             }
             currentPages.add(currentPage);
         }
         return currentPages;
-    }
-
-    private String getSplit(String numberStr) {
-        char[] chars = numberStr.toCharArray();
-        for (char aChar : chars)
-            for (char c : SPLIT_CHAR)
-                if (aChar == c) return String.valueOf(c);
-        return "";
-    }
-
-    private boolean isCorrectNumber(String s) {
-        return (s.contains("-") || s.contains(",")) && !s.isBlank() && s.length() > 1;
     }
 
     private List<List<String>> splitPages(List<List<String>> pages) {
@@ -231,5 +218,26 @@ public class WordParser {
             splitPages.add(pageLeft);
         }
         return splitPages;
+    }
+
+    private String getGroupName(String str) {
+        var split = str.trim().split("\\s");
+        String s = split[0].trim();
+        List<String> stringList = new LinkedList<>(Arrays.asList(split));
+        stringList.removeIf(String::isBlank);
+        stringList.remove(s);
+        return String.join("-", stringList);
+    }
+
+    private String getSplit(String numberStr) {
+        char[] chars = numberStr.toCharArray();
+        for (char aChar : chars)
+            for (char c : SPLIT_CHAR)
+                if (aChar == c) return String.valueOf(c);
+        return "";
+    }
+
+    private boolean isCorrectNumber(String s) {
+        return (s.contains("-") || s.contains(",")) && !s.isBlank() && s.length() > 1;
     }
 }
