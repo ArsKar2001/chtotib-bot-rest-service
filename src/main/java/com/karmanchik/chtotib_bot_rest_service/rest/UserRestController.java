@@ -2,8 +2,10 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.User;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaUserRepository;
+import com.karmanchik.chtotib_bot_rest_service.rest.exeption.UserNotFoundException;
 import lombok.extern.log4j.Log4j;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +45,7 @@ public class UserRestController {
     public ResponseEntity<User> getUserById(@PathVariable(value = "id") Integer userId) throws ResourceNotFoundException {
         User user = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден :: " + userId));
+                .orElseThrow(() -> new UserNotFoundException(userId));
         return ResponseEntity.ok().body(user);
     }
 
@@ -71,7 +73,7 @@ public class UserRestController {
         User user =
                 userRepository
                         .findById(userId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден :: " + userId));
+                        .orElseThrow(() -> new UserNotFoundException(userId));
         user.setBotLastMessageId(userDetail.getBotLastMessageId());
         user.setBotState(userDetail.getBotState());
         user.setChatId(userDetail.getChatId());
@@ -81,7 +83,9 @@ public class UserRestController {
         user.setUserState(userDetail.getUserState());
 
         final User updateUser = userRepository.save(user);
-        return ResponseEntity.ok().body(updateUser);
+        return updateUser != null
+                ? new ResponseEntity<>(updateUser, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/user/{id}")
@@ -90,7 +94,7 @@ public class UserRestController {
         User user =
                 userRepository
                         .findById(userId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден :: " + userId));
+                        .orElseThrow(() -> new UserNotFoundException(userId));
         userRepository.delete(user);
 
         Map<String, Boolean> response = new HashMap<>();

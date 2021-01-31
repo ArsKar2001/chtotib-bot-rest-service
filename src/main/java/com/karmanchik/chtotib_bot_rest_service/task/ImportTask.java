@@ -24,24 +24,26 @@ public class ImportTask implements Runnable {
         this.jsonArray = jsonArray;
     }
 
-
     @Override
     public void run() {
-        for (Object o : jsonArray) {
-            try {
-                JSONObject object = (JSONObject) o;
-                String group_name = object.getString("group_name");
-                JSONArray data = object.getJSONArray("timetable");
-                JSONObject timetable = new JSONObject();
-                timetable.put("data", data);
-                Group group = groupRepository.findByGroupName(group_name)
-                        .orElseGet(() -> groupRepository.save(new Group(group_name)));
-                group.setTimetable(timetable.toString());
-                Group upGroup = groupRepository.save(group);
-                log.info("Importing to database: " + upGroup.getGroupName());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        if (!jsonArray.isEmpty()) {
+            for (Object o : jsonArray) {
+                try {
+                    JSONObject object = (JSONObject) o;
+                    String group_name = object.getString("group_name");
+                    JSONArray timetable = object.getJSONArray("timetable");
+                    Group group = groupRepository.findByGroupName(group_name)
+                            .orElseGet(() -> groupRepository.save(new Group(group_name)));
+                    group.setTimetable(timetable.toString());
+                    groupRepository.save(group);
+                    log.info("Importing to database: " + group.getGroupName());
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    throw new RuntimeException(e);
+                }
             }
+        } else {
+            throw new RuntimeException("Пришел пустой объект: " + jsonArray.isEmpty());
         }
     }
 }

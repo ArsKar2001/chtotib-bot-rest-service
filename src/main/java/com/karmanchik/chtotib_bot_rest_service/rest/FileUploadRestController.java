@@ -11,14 +11,12 @@ import java.io.InputStream;
 
 @Log4j
 @RestController
-@RequestMapping("/api/files/")
+@RequestMapping("/api/")
 public class FileUploadRestController {
     private ImportTask importTask;
-    private final WordParser wordParser;
 
-    public FileUploadRestController(ImportTask importTask, WordParser wordParser) {
+    public FileUploadRestController(ImportTask importTask) {
         this.importTask = importTask;
-        this.wordParser = wordParser;
     }
 
     @GetMapping("/upload")
@@ -29,19 +27,16 @@ public class FileUploadRestController {
 
     @PostMapping("/upload")
     public @ResponseBody
-    String handleFileUpload(MultipartFile file) {
+    String handleFileUpload(MultipartFile file) throws IOException {
         final Thread thread = new Thread(importTask);
+        thread.setName("importTimetable");
         if (!file.isEmpty()) {
-            try (InputStream stream = file.getInputStream()) {
-                final var timetable = wordParser.createTimetable(stream);
-                importTask.setJsonArray(timetable);
-                thread.start();
-                log.info("Start thread: "+thread.toString());
-                return "Начали процедуру импорта "+file.getName()+"...";
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-                return "Не удалось загрузить файл: "+e.getMessage();
-            }
+            WordParser parser = new WordParser(file.getInputStream());
+            final var timetable = parser.createTimetable();
+            importTask.setJsonArray(timetable);
+            thread.start();
+            log.info("Start thread: "+thread.getName()+"; timetable - "+timetable.toString());
+            return "Начали процедуру импорта "+file.getName()+"...";
         } else
             return "Файл пустой!";
     }
