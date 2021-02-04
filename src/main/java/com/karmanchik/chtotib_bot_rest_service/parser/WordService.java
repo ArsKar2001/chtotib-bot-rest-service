@@ -8,13 +8,12 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 @Log4j
-public class WordParser {
+public class WordService {
 
     public static final String REMOVE_ROW_1 = "\u0421\u041E\u0413\u041B\u0410\u0421\u041E\u0412\u0410\u041D\u041E";
     public static final String REMOVE_ROW_2 = "\u0414\u043D\u0438 \u043D\u0435\u0434\u0435\u043B\u0438";
@@ -30,49 +29,51 @@ public class WordParser {
     );
     private final InputStream stream;
 
-    public WordParser(InputStream stream) {
+    public WordService(InputStream stream) {
         this.stream = stream;
     }
 
     public String wordFileAsText() {
-        try (FileInputStream stream = (FileInputStream) this.stream) {
+        try (InputStream stream = this.stream) {
             XWPFDocument document = new XWPFDocument(OPCPackage.open(stream));
             XWPFWordExtractor extractor = new XWPFWordExtractor(document);
             stream.close();
-            return extractor.getText();
+            String text = extractor.getText();
+            return text;
         } catch (InvalidFormatException | IOException e) {
             log.error(e.getMessage(), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
-    public List<List<String>> textToPages(List<String> strings) {
+    public List<List<String>> textToLists(List<String> strings) {
         try {
-            List<String> page = new LinkedList<>();
-            List<List<String>> pages = new LinkedList<>();
+            List<String> list = new LinkedList<>();
+            List<List<String>> lists = new LinkedList<>();
+
             for (String string : strings) {
                 try {
                     if (string.isBlank()) {
-                        pages.add(new LinkedList<>(page));
-                        page.clear();
+                        lists.add(new LinkedList<>(list));
+                        list.clear();
                     }
-                    page.add(string.trim());
+                    list.add(string.trim());
                 } catch (Exception e) {
                     throw new RuntimeException(e + "; в строке: " + string);
                 }
             }
-            pages.add(new LinkedList<>(page));
+            lists.add(new LinkedList<>(list));
 
-            pages.removeIf(page_ -> page_.isEmpty() || page_.size() < 5);
-            pages.forEach(page_ -> {
+            lists.removeIf(page_ -> page_.isEmpty() || page_.size() < 5);
+            lists.forEach(page_ -> {
                 page_.removeIf(String::isBlank);
                 page_.removeIf(s -> s.contains(REMOVE_ROW_1) || s.contains(REMOVE_ROW_2));
             });
 
-            var splitPages = splitPages(pages);
+            var splitPages = this.splitPages(lists);
             splitPages.removeIf(pg -> pg.get(0).split("\\s").length == 1);
 
-            return currentPages(splitPages);
+            return this.currentPages(splitPages);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -84,19 +85,25 @@ public class WordParser {
         JSONArray timetable;
         JSONObject lesson;
 
-        var text = wordFileAsText().replace('\t', ';');
+        var text = this.wordFileAsText().replace('\t', ';');
+        log.debug(String.format("!!!!!!!!! log 1: read file - \"%s\"", text));
         var splitStrings = text.trim().split("\n");
+        log.debug(String.format("!!!!!!!!! log 2: split text - \"%s\"", Arrays.toString(splitStrings)));
         var strings = new LinkedList<>(Arrays.asList(splitStrings));
-        var pages = textToPages(strings);
+        log.debug(String.format("!!!!!!!!! log 3: create LinkedList - \"%s\"", Arrays.toString(strings.toArray())));
+        var lists = this.textToLists(strings);
+        log.debug(String.format("!!!!!!!!! log 4: create lists - \"%s\"", Arrays.toString(lists.toArray())));
 
-        for (var page : pages) {
+        for (var list : lists) {
             try {
                 group = new JSONObject();
                 timetable = new JSONArray();
 
-                group.put("group_name", page.get(0));
-                page.remove(0);
-                for (String s : page) {
+                String group_name = list.get(0);
+                log.debug(String.format("!!!!!!!!! log 4: create lists - \"%s\"", Arrays.toString(lists.toArray())));
+                group.put("group_name", group_name);
+                list.remove(0);
+                for (String s : list) {
                     try {
                         lesson = new JSONObject();
                         String[] splitStr = s.split(";");
@@ -114,7 +121,7 @@ public class WordParser {
                 group.put("timetable", timetable);
                 allGroups.put(group);
             } catch (Exception e) {
-                throw new RuntimeException(e + "; в " + page.toString());
+                throw new RuntimeException(e + "; в " + list.toString());
             }
         }
         log.debug("Create new JSON: " + allGroups.toString());
@@ -134,7 +141,7 @@ public class WordParser {
                     currentStr1 = new StringBuilder();
                     currentStr2 = new StringBuilder();
                     if (str.equalsIgnoreCase(splitPage.get(0))) {
-                        String groupName = getGroupName(str);
+                        String groupName = this.getGroupName(str);
                         currentStr1.append(groupName);
                     } else {
                         String[] splitStr = str.split(";");
@@ -184,7 +191,7 @@ public class WordParser {
         return currentPages;
     }
 
-    private List<List<String>> splitPages(List<List<String>> pages) {
+    public List<List<String>> splitPages(List<List<String>> pages) {
         List<List<String>> splitPages = new ArrayList<>();
         List<String> pageRight;
         List<String> pageLeft;

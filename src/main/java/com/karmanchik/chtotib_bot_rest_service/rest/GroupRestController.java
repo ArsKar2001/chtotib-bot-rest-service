@@ -2,6 +2,7 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
+import com.karmanchik.chtotib_bot_rest_service.rest.exeption.ResourceNotFoundException;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class GroupRestController {
     public ResponseEntity<Group> getGroup(@PathVariable(name = "id") @Valid Integer groupId) {
         Group group = groupRepository
                 .findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Не найден group с id " + groupId));
+                .orElseThrow(() -> new ResourceNotFoundException(groupId, Group.class));
         return ResponseEntity.ok().body(group);
     }
 
@@ -45,7 +46,7 @@ public class GroupRestController {
             @Valid @RequestBody Group groupDetails) {
         Group group = groupRepository
                 .findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Не найден group с id " + groupId));
+                .orElseThrow(() -> new ResourceNotFoundException(groupId, Group.class));
         group.setTimetable(groupDetails.getTimetable());
         group.setGroupName(groupDetails.getGroupName());
 
@@ -58,7 +59,7 @@ public class GroupRestController {
             @PathVariable(name = "id") Integer groupId) {
         Group group = groupRepository
                 .findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Не найден group с id " + groupId));
+                .orElseThrow(() -> new ResourceNotFoundException(groupId, Group.class));
         groupRepository.delete(group);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
