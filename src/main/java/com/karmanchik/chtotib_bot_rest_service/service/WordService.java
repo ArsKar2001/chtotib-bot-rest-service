@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.parser;
+package com.karmanchik.chtotib_bot_rest_service.service;
 
 import lombok.extern.log4j.Log4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;

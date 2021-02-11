@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/")
 public class GroupRestController {
-    private JpaGroupRepository groupRepository;
+    private final JpaGroupRepository groupRepository;
 
     public GroupRestController(JpaGroupRepository groupRepository) {
         this.groupRepository = groupRepository;

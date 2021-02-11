@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.parser;
+package com.karmanchik.chtotib_bot_rest_service.service;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.task;
+package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 @Log4j
 @Scope("prototype")
 @Component
-public class ImportTask implements Runnable {
+public class ImportService implements Runnable {
 
     private final JpaGroupRepository groupRepository;
     private JSONArray jsonArray;
 
-    public ImportTask(JpaGroupRepository groupRepository) {
+    public ImportService(JpaGroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
 
@@ -24,6 +24,18 @@ public class ImportTask implements Runnable {
         this.jsonArray = jsonArray;
     }
 
+
+    /**
+     * When an object implementing interface <code>Runnable</code> is used
+     * to create a thread, starting the thread causes the object's
+     * <code>run</code> method to be called in that separately executing
+     * thread.
+     * <p>
+     * The general contract of the method <code>run</code> is that it may
+     * take any action whatsoever.
+     *
+     * @see Thread#run()
+     */
     @Override
     public void run() {
         if (!jsonArray.isEmpty()) {

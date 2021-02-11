@@ -10,7 +10,7 @@ import java.io.IOException;
 @Component
 public class SimpleCORSFilter implements Filter {
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
 
     }
 

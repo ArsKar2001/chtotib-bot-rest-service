@@ -76,16 +76,18 @@ public class UserRestController {
                         .orElseThrow(() -> new ResourceNotFoundException(userId, User.class));
         user.setBotLastMessageId(userDetail.getBotLastMessageId());
         user.setBotState(userDetail.getBotState());
+        user.setBotStateId(userDetail.getBotStateId());
+        user.setUserStateId(userDetail.getUserStateId());
+        user.setUserState(userDetail.getUserState());
         user.setChatId(userDetail.getChatId());
         user.setGroupId(userDetail.getGroupId());
+        user.setGroup(userDetail.getGroup());
         user.setName(userDetail.getName());
-        user.setRoleName(userDetail.getRoleName());
-        user.setUserState(userDetail.getUserState());
+        user.setRoleId(userDetail.getRoleId());
+        user.setRole(userDetail.getRole());
 
         final User updateUser = userRepository.save(user);
-        return updateUser != null
-                ? new ResponseEntity<>(updateUser, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 
     @DeleteMapping("/user/{id}")
