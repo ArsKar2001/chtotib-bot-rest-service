@@ -1,7 +1,8 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.service.WordService;
 import com.karmanchik.chtotib_bot_rest_service.service.FileUploadService;
+import com.karmanchik.chtotib_bot_rest_service.service.schedule.ScheduleService;
+import com.karmanchik.chtotib_bot_rest_service.service.word.WordService;
 import lombok.extern.log4j.Log4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,9 +14,13 @@ import java.io.IOException;
 @RequestMapping("/api/")
 public class FileUploadRestController {
     private final FileUploadService fileUploadService;
+    private final WordService wordService;
+    private final ScheduleService scheduleService;
 
-    public FileUploadRestController(FileUploadService fileUploadService) {
+    public FileUploadRestController(FileUploadService fileUploadService, WordService wordService, ScheduleService scheduleService) {
         this.fileUploadService = fileUploadService;
+        this.wordService = wordService;
+        this.scheduleService = scheduleService;
     }
 
     @GetMapping("/upload")
@@ -31,8 +36,8 @@ public class FileUploadRestController {
         thread.setName("importTimetable");
         getMesInfo("");
         if (!file.isEmpty()) {
-            WordService parser = new WordService(file.getInputStream());
-            final var timetable = parser.createTimetable();
+            final String text = wordService.getText(file.getInputStream());
+            final var timetable = scheduleService.createScheduleAsJSON(text);
             fileUploadService.setJsonArray(timetable);
             thread.start();
             log.info("Start thread: " + thread.getName() + "; timetable - " + timetable.toString());

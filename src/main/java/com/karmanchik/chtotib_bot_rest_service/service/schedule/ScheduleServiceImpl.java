@@ -1,20 +1,15 @@
-package com.karmanchik.chtotib_bot_rest_service.service;
+package com.karmanchik.chtotib_bot_rest_service.service.schedule;
 
 import lombok.extern.log4j.Log4j;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
+@Component
 @Log4j
-public class WordService {
-
+public class ScheduleServiceImpl implements ScheduleService {
     public static final String REMOVE_ROW_1 = "\u0421\u041E\u0413\u041B\u0410\u0421\u041E\u0412\u0410\u041D\u041E";
     public static final String REMOVE_ROW_2 = "\u0414\u043D\u0438 \u043D\u0435\u0434\u0435\u043B\u0438";
     public static final char[] SPLIT_CHAR = {';', ',', '-', '|'};
@@ -27,66 +22,16 @@ public class WordService {
             "Суббота", 5,
             "Воскресенье", 6
     );
-    private final InputStream stream;
 
-    public WordService(InputStream stream) {
-        this.stream = stream;
+    public ScheduleServiceImpl() {
     }
 
-    public String wordFileAsText() {
-        try (InputStream stream = this.stream) {
-            XWPFDocument document = new XWPFDocument(OPCPackage.open(stream));
-            XWPFWordExtractor extractor = new XWPFWordExtractor(document);
-            stream.close();
-            String text = extractor.getText();
-            return text;
-        } catch (InvalidFormatException | IOException e) {
-            log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<List<String>> textToLists(List<String> strings) {
-        try {
-            List<String> list = new LinkedList<>();
-            List<List<String>> lists = new LinkedList<>();
-
-            for (String string : strings) {
-                try {
-                    if (string.isBlank()) {
-                        lists.add(new LinkedList<>(list));
-                        list.clear();
-                    }
-                    list.add(string.trim());
-                } catch (Exception e) {
-                    throw new RuntimeException(e + "; в строке: " + string);
-                }
-            }
-            lists.add(new LinkedList<>(list));
-
-            lists.removeIf(page_ -> page_.isEmpty() || page_.size() < 5);
-            lists.forEach(page_ -> {
-                page_.removeIf(String::isBlank);
-                page_.removeIf(s -> s.contains(REMOVE_ROW_1) || s.contains(REMOVE_ROW_2));
-            });
-
-            var splitPages = this.splitPages(lists);
-            splitPages.removeIf(pg -> pg.get(0).split("\\s").length == 1);
-
-            return this.currentPages(splitPages);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public JSONArray createTimetable() {
+    @Override
+    public JSONArray createScheduleAsJSON(String text) {
         JSONArray allGroups = new JSONArray();
         JSONObject group;
         JSONArray timetable;
         JSONObject lesson;
-
-        var text = this.wordFileAsText().replace('\t', ';');
-        log.debug(String.format("!!!!!!!!! log 1: read file - \"%s\"", text));
         var splitStrings = text.trim().split("\n");
         log.debug(String.format("!!!!!!!!! log 2: split text - \"%s\"", Arrays.toString(splitStrings)));
         var strings = new LinkedList<>(Arrays.asList(splitStrings));
@@ -114,13 +59,13 @@ public class WordService {
                         lesson.put("teacher", splitStr[4]);
                         lesson.put("week_type", splitStr[5]);
                         timetable.put(lesson);
-                    } catch (Exception e) {
+                    } catch (RuntimeException e) {
                         throw new RuntimeException(String.format("%s; в строке \"%s\"", e, s));
                     }
                 }
                 group.put("timetable", timetable);
                 allGroups.put(group);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 throw new RuntimeException(e + "; в " + list.toString());
             }
         }
@@ -128,7 +73,45 @@ public class WordService {
         return allGroups;
     }
 
-    private List<List<String>> currentPages(List<List<String>> splitPages) {
+    @Override
+    public JSONArray createReplacementAsJSON(String text) {
+        return null;
+    }
+
+    public List<List<String>> textToLists(List<String> strings) {
+        try {
+            List<String> list = new LinkedList<>();
+            List<List<String>> lists = new LinkedList<>();
+
+            for (String string : strings) {
+                try {
+                    if (string.isBlank()) {
+                        lists.add(new LinkedList<>(list));
+                        list.clear();
+                    }
+                    list.add(string.trim());
+                } catch (RuntimeException e) {
+                    throw new RuntimeException(e + "; в строке: " + string);
+                }
+            }
+            lists.add(new LinkedList<>(list));
+
+            lists.removeIf(page_ -> page_.isEmpty() || page_.size() < 5);
+            lists.forEach(page_ -> {
+                page_.removeIf(String::isBlank);
+                page_.removeIf(s -> s.contains(REMOVE_ROW_1) || s.contains(REMOVE_ROW_2));
+            });
+
+            var splitPages = this.splitPages(lists);
+            splitPages.removeIf(pg -> pg.get(0).split("\\s").length == 1);
+
+            return this.currentPages(splitPages);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<List<String>> currentPages(List<List<String>> splitPages) {
         StringBuilder currentStr1;
         StringBuilder currentStr2;
         List<String> currentPage;
@@ -227,7 +210,7 @@ public class WordService {
         return splitPages;
     }
 
-    private String getGroupName(String str) {
+    public String getGroupName(String str) {
         var split = str.trim().split("\\s");
         String s = split[0].trim();
         List<String> stringList = new LinkedList<>(Arrays.asList(split));
