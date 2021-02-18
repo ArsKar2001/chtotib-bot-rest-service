@@ -6,17 +6,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 class WordServiceTest {
-    private static final File FILE_1 = new File("src\\main\\resources\\files\\Расписание 1-2 курс 2 семестр 2020-2021 уч год.docx");
-    private static final File FILE_2 = new File("src\\main\\resources\\files\\Расписание 3-4 курса 2 семестр 2020-2021 уч год.docx");
+    private static final File FILE_1 = new File("src\\main\\resources\\files\\Z_A_M_E_N_A_na_chetverg_17_dekabrya_nedelya_nizhnyaya_doc.docx");
+    private static final File FILE_2 = new File("src\\main\\resources\\files\\Z_A_M_E_N_A_na_pyatnitsu_18_dekabrya_nedelya_nizhnyaya_doc.docx");
+    private static final File FILE_3 = new File("src\\main\\resources\\files\\Z_A_M_E_N_A_na_sredu_16_dekabrya_nedelya_nizhnyaya.docx");
 
     @Test
     public void test_wordFiles1() {
         try (InputStream stream = new FileInputStream(FILE_1)) {
             WordService parser = new WordService(stream);
-            var timetable = parser.createTimetable();
-            System.out.println(timetable.toString());
+            var timetable = parser.wordFileAsText();
+            final List<String> stringList = new LinkedList<>(Arrays.asList(timetable.split("\n")));
+            stringList.removeIf(String::isBlank);
+            stringList.forEach(System.out::println);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -26,8 +32,23 @@ class WordServiceTest {
     public void test_wordFiles2() {
         try (InputStream stream = new FileInputStream(FILE_2)) {
             WordService parser = new WordService(stream);
-            var timetable = parser.createTimetable();
-            System.out.println(timetable.toString());
+            var timetable = parser.wordFileAsText();
+            final List<String> stringList = new LinkedList<>(Arrays.asList(timetable.split("\n")));
+            stringList.removeIf(String::isBlank);
+            stringList.forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_wordFiles3() {
+        try (InputStream stream = new FileInputStream(FILE_3)) {
+            WordService parser = new WordService(stream);
+            var timetable = parser.wordFileAsText();
+            final List<String> stringList = new LinkedList<>(Arrays.asList(timetable.split("\n")));
+            stringList.removeIf(String::isBlank);
+            stringList.forEach(System.out::println);
         } catch (IOException e) {
             e.printStackTrace();
         }

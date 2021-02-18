@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 @Log4j
 @Scope("prototype")
 @Component
-public class ImportService implements Runnable {
+public class FileUploadService implements Runnable {
 
     private final JpaGroupRepository groupRepository;
     private JSONArray jsonArray;
 
-    public ImportService(JpaGroupRepository groupRepository) {
+    public FileUploadService(JpaGroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
 
