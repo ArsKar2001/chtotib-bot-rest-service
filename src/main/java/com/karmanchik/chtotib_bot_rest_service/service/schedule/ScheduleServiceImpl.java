@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @Log4j
@@ -27,16 +29,177 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public Collection<List<String>> textToLists(String text) {
+        final String rText = text.replace('\t', ';');
+        final String[] sText = rText.split("\n");
+
+        List<String> stringList = new LinkedList<>(Arrays.asList(sText));
+        stringList.removeIf(String::isBlank);
+
+        final var ll = createListLists(stringList);
+        final var sll = splitListLists(ll);
+        return correctingListLists(sll);
+    }
+
+    private Collection<List<String>> createListLists(List<String> stringList) {
+        List<List<String>> listLists = new LinkedList<>();
+        List<String> list = new LinkedList<>();
+
+        Pattern pattern = Pattern.compile("/\\S\\.\\S\\.\\s.+?/");
+        final String removeStr = "\u0424.\u0418.\u041E.";
+        stringList.removeIf(s -> s.contains(removeStr));
+        for (String str : stringList) {
+            if (pattern.matcher(str).find()) {
+                listLists.add(new LinkedList<>(list));
+                list.clear();
+            } else {
+                list.add(str);
+            }
+        }
+        listLists.get(0).addAll(list);
+        return listLists;
+    }
+
+    private Collection<List<String>> splitListLists(Collection<List<String>> listLists) {
+        Collection<String> listRight = new LinkedList<>();
+        Collection<String> listLeft = new LinkedList<>();
+        Collection<List<String>> lls = new LinkedList<>();
+
+        for (var list : listLists) {
+            for (String str : list) {
+                List<String> ls1 = new LinkedList<>();
+                List<String> ls2 = new LinkedList<>();
+                final String[] splitStr = str.split(";", -5);
+                for (int i = 0; i < splitStr.length; i++) {
+                    if (i < splitStr.length / 2)
+                        ls1.add(splitStr[i].trim().isBlank() ? "-" : DAYS_OF_WEEK.get(splitStr[i].trim()).toString());
+                    else ls2.add(splitStr[i].trim().isBlank() ? "-" : DAYS_OF_WEEK.get(splitStr[i].trim()).toString());
+                }
+                final String s1 = String.join(";", ls1).trim();
+                final String s2 = String.join(";", ls2).trim();
+
+                Collection<? extends String> c1 = splitString(s1);
+                Collection<? extends String> c2 = splitString(s2);
+
+                listLeft.addAll(c1);
+                listLeft.addAll(c2);
+            }
+            lls.add(new LinkedList<>(listLeft));
+            lls.add(new LinkedList<>(listRight));
+            listLeft.clear();
+            listRight.clear();
+        }
+        return lls;
+    }
+
+    private Collection<? extends String> splitString(String s1) {
+        StringBuilder currentStr1 = new StringBuilder();
+        StringBuilder currentStr2 = new StringBuilder();
+        List<String> ls = new LinkedList<>();
+
+        String[] splitStr = s1.split(";");
+        String number = splitStr[2].trim();
+        if (s1.contains("/")) {
+            String[] splitStr2 = splitStr.clone();
+            for (int i = 0; i < splitStr.length; i++) {
+                if (splitStr[i].contains("/")) {
+                    String[] ss = splitStr[i].split("/", -5);
+                    splitStr[i] = ss[0].trim();
+                    splitStr2[i] = ss[1].trim();
+                }
+            }
+            currentStr1.append(
+                    String.join(";", splitStr)
+            ).append(";").append("UP");
+            currentStr2.append(
+                    String.join(";", splitStr2)
+            ).append(";").append("DOWN");
+            ls.add(currentStr2.toString());
+        } else if (isCorrectNumber(number)) {
+            String[] splitStr2 = splitStr.clone();
+            String split = getSplit(number);
+            String[] ss = number.split(split);
+
+            splitStr[1] = ss[0].trim();
+            splitStr2[1] = ss[1].trim();
+
+            currentStr1.append(
+                    String.join(";", splitStr)
+            ).append(";").append("NONE");
+            currentStr2.append(
+                    String.join(";", splitStr2)
+            ).append(";").append("NONE");
+            ls.add(currentStr2.toString());
+        } else {
+            currentStr1.append(s1).append(";").append("NONE");
+        }
+        ls.add(currentStr1.toString());
+        return ls;
+    }
+
+    private String getSplit(String number) {
+        Pattern pattern = Pattern.compile("[;,-/|]");
+        Matcher matcher = pattern.matcher(number);
+        return matcher.find() ?
+                number.substring(matcher.start(), matcher.end()) : "";
+    }
+
+    private boolean isCorrectNumber(String s) {
+        return (s.contains("-") || s.contains(",")) && !s.isBlank() && s.length() > 1;
+    }
+
+    private List<List<String>> correctingListLists(Collection<List<String>> sListLists) {
+        List<String> ls = new LinkedList<>();
+        List<List<String>> lls = new LinkedList<>();
+        Pattern pt = Pattern.compile("([А-Я]|[а-я])+(\\s+|\\s+-|-|-\\s+|\\s+-\\s+)\\d{1,2}(\\s+|\\s+-|-|-\\s+|\\s+-\\s+)\\S{1,2}");
+        String s1 = "";
+        String s2 = "";
+
+        sListLists.removeIf(list -> list.get(0).split("\\s").length < 2);
+        for (var list : sListLists) {
+            for (String str : list) {
+                Matcher matcher = pt.matcher(str);
+                if (matcher.find()) {
+                    String substring = str.substring(matcher.start(), matcher.end());
+                    s1 = this.getValidGroupName(substring);
+                } else {
+                    final String[] strings = str.split(";", -5);
+                    if (!strings[0].equals("-")) s2 = strings[0];
+                    else {
+                        str = str.substring(1);
+                        str = s2 + str;
+                    }
+                    str = s1 + ";" + str;
+                    ls.add(str);
+                }
+            }
+            lls.add(new LinkedList<>(ls));
+            ls.clear();
+        }
+        return lls;
+    }
+
+    private String getValidGroupName(String s) {
+        List<String> list = new LinkedList<>();
+        String s1 = s.replace('-', ' ');
+        Pattern pt = Pattern.compile("((\\d+([а-я]|))|([А-Я]|[а-я])+)");
+        Matcher mt = pt.matcher(s1);
+
+        while (mt.find()) {
+            String s2 = s1.substring(mt.start(), mt.end());
+            list.add(s2);
+        }
+        return String.join("-", list);
+    }
+
+    @Override
     public JSONArray createScheduleAsJSON(String text) {
         JSONArray allGroups = new JSONArray();
         JSONObject group;
         JSONArray timetable;
         JSONObject lesson;
-        var splitStrings = text.trim().split("\n");
-        log.debug(String.format("!!!!!!!!! log 2: split text - \"%s\"", Arrays.toString(splitStrings)));
-        var strings = new LinkedList<>(Arrays.asList(splitStrings));
-        log.debug(String.format("!!!!!!!!! log 3: create LinkedList - \"%s\"", Arrays.toString(strings.toArray())));
-        var lists = this.textToLists(strings);
+
+        var lists = this.textToLists(text);
         log.debug(String.format("!!!!!!!!! log 4: create lists - \"%s\"", Arrays.toString(lists.toArray())));
 
         for (var list : lists) {
@@ -78,7 +241,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return null;
     }
 
-    public List<List<String>> textToLists(List<String> strings) {
+    /*public List<List<String>> textToLists(List<String> strings) {
         try {
             List<String> list = new LinkedList<>();
             List<List<String>> lists = new LinkedList<>();
@@ -127,42 +290,42 @@ public class ScheduleServiceImpl implements ScheduleService {
                         String groupName = this.getGroupName(str);
                         currentStr1.append(groupName);
                     } else {
-                        String[] splitStr = str.split(";");
-                        String number = splitStr[1].trim();
-                        if (str.contains("/")) {
-                            String[] splitStr2 = splitStr.clone();
-                            for (int i = 0; i < splitStr.length; i++) {
-                                if (splitStr[i].contains("/")) {
-                                    String[] ss = splitStr[i].split("/", -5);
-                                    splitStr[i] = ss[0].trim();
-                                    splitStr2[i] = ss[1].trim();
+                            String[] splitStr = str.split(";");
+                            String number = splitStr[1].trim();
+                            if (str.contains("/")) {
+                                String[] splitStr2 = splitStr.clone();
+                                for (int i = 0; i < splitStr.length; i++) {
+                                    if (splitStr[i].contains("/")) {
+                                        String[] ss = splitStr[i].split("/", -5);
+                                        splitStr[i] = ss[0].trim();
+                                        splitStr2[i] = ss[1].trim();
+                                    }
                                 }
+                                currentStr1.append(
+                                        String.join(";", splitStr)
+                                ).append(";").append("UP");
+                                currentStr2.append(
+                                        String.join(";", splitStr2)
+                                ).append(";").append("DOWN");
+                                currentPage.add(currentStr2.toString());
+                            } else if (isCorrectNumber(number)) {
+                                String[] splitStr2 = splitStr.clone();
+                                String split = getSplit(number);
+                                String[] ss = number.split(split);
+
+                                splitStr[1] = ss[0].trim();
+                                splitStr2[1] = ss[1].trim();
+
+                                currentStr1.append(
+                                        String.join(";", splitStr)
+                                ).append(";").append("NONE");
+                                currentStr2.append(
+                                        String.join(";", splitStr2)
+                                ).append(";").append("NONE");
+                                currentPage.add(currentStr2.toString());
+                            } else {
+                                currentStr1.append(str).append(";").append("NONE");
                             }
-                            currentStr1.append(
-                                    String.join(";", splitStr)
-                            ).append(";").append("UP");
-                            currentStr2.append(
-                                    String.join(";", splitStr2)
-                            ).append(";").append("DOWN");
-                            currentPage.add(currentStr2.toString());
-                        } else if (isCorrectNumber(number)) {
-                            String[] splitStr2 = splitStr.clone();
-                            String split = getSplit(number);
-                            String[] ss = number.split(split);
-
-                            splitStr[1] = ss[0].trim();
-                            splitStr2[1] = ss[1].trim();
-
-                            currentStr1.append(
-                                    String.join(";", splitStr)
-                            ).append(";").append("NONE");
-                            currentStr2.append(
-                                    String.join(";", splitStr2)
-                            ).append(";").append("NONE");
-                            currentPage.add(currentStr2.toString());
-                        } else {
-                            currentStr1.append(str).append(";").append("NONE");
-                        }
                     }
                     currentPage.add(currentStr1.toString());
                 } catch (Exception e) {
@@ -229,5 +392,5 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private boolean isCorrectNumber(String s) {
         return (s.contains("-") || s.contains(",")) && !s.isBlank() && s.length() > 1;
-    }
+    }*/
 }

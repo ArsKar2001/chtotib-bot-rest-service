@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,10 +47,9 @@ class WordService1Test2 {
         List<String> stringList = new LinkedList<>(Arrays.asList(sText));
         stringList.removeIf(String::isBlank);
 
-        final var listLists = createListLists(stringList);
-        final var sListLists = splitListLists(listLists);
-        final var cListLists = correctingListLists(sListLists);
-        return cListLists;
+        final var ll = createListLists(stringList);
+        final var sll = splitListLists(ll);
+        return correctingListLists(sll);
     }
 
     private List<List<String>> createListLists(List<String> stringList) {
@@ -102,7 +102,7 @@ class WordService1Test2 {
     private List<List<String>> correctingListLists(List<List<String>> sListLists) {
         List<String> ls = new LinkedList<>();
         List<List<String>> lls = new LinkedList<>();
-        Pattern pt = Pattern.compile("[А-Я]+(\\s+|\\s+-|-|-\\s+|\\s+-\\s+)\\d{1,2}(\\s+|\\s+-|-|-\\s+|\\s+-\\s+)\\S{1,2}");
+        Pattern pt = Pattern.compile("([А-Я]|[а-я])+(\\s+|\\s+-|-|-\\s+|\\s+-\\s+)\\d{1,2}(\\s+|\\s+-|-|-\\s+|\\s+-\\s+)\\S{1,2}");
         String s1 = "";
         String s2 = "";
 
@@ -111,7 +111,8 @@ class WordService1Test2 {
             for (String str : list) {
                 Matcher matcher = pt.matcher(str);
                 if (matcher.find()) {
-                    s1 = str.substring(matcher.start(), matcher.end());
+                    String substring = str.substring(matcher.start(), matcher.end());
+                    s1 = this.getValidGroupName(substring);
                 } else {
                     final String[] strings = str.split(";", -5);
                     if (!strings[0].equals("-")) s2 = strings[0];
@@ -127,5 +128,18 @@ class WordService1Test2 {
             ls.clear();
         }
         return lls;
+    }
+
+    private String getValidGroupName(String s) {
+        List<String> list = new LinkedList<>();
+        String s1 = s.replace('-', ' ');
+        Pattern pt = Pattern.compile("((\\d+([а-я]|))|([А-Я]|[а-я])+)");
+        Matcher mt = pt.matcher(s1);
+
+        while (mt.find()) {
+            String s2 = s1.substring(mt.start(), mt.end());
+            list.add(s2);
+        }
+        return String.join("-", list);
     }
 }
