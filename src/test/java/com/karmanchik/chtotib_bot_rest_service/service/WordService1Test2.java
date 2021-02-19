@@ -1,6 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
+import com.karmanchik.chtotib_bot_rest_service.service.schedule.ScheduleServiceImpl;
 import com.karmanchik.chtotib_bot_rest_service.service.word.WordServiceImpl;
 import org.junit.jupiter.api.Test;
 
@@ -25,13 +26,14 @@ class WordService1Test2 {
     );
 
     WordServiceImpl wordService = new WordServiceImpl();
+    ScheduleServiceImpl scheduleService = new ScheduleServiceImpl();
 
     @Test
     void test_File1() {
         try (FileInputStream stream = new FileInputStream(FILE_1)) {
             final String text = wordService.getText(stream);
-            final var lists = textToLists(text);
-            lists.forEach(strings -> strings.forEach(System.out::println));
+            final var json = scheduleService.createScheduleAsJSON(text);
+            System.out.println(json.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,8 +43,8 @@ class WordService1Test2 {
     void test_File2() {
         try (FileInputStream stream = new FileInputStream(FILE_2)) {
             final String text = wordService.getText(stream);
-            final var lists = textToLists(text);
-            lists.forEach(strings -> strings.forEach(System.out::println));
+            final var json = scheduleService.createScheduleAsJSON(text);
+            System.out.println(json.toString());
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
@@ -57,7 +59,8 @@ class WordService1Test2 {
 
         final var ll = createListLists(stringList);
         final var sll = splitListLists(ll);
-        return correctingListLists(sll);
+        final var cll = correctingListLists(sll);
+        return splitUpDownNoneListLists(cll);
     }
 
     private List<List<String>> createListLists(List<String> stringList) {
@@ -134,6 +137,51 @@ class WordService1Test2 {
             }
             lls.add(new LinkedList<>(ls));
             ls.clear();
+        }
+        return lls;
+    }
+
+    private List<List<String>> splitUpDownNoneListLists(List<List<String>> cll) {
+//        Pattern pt1 = Pattern.compile("[IV]+([,/|-]|\\s+|[,/|-]\\s+|\\s+[,/|-]|\\s+[,/|-]\\s+)[IV]+");
+//        Pattern pt2 = Pattern.compile("[,/|-]+");
+
+        StringBuilder currentStr1;
+        StringBuilder currentStr2;
+        List<String> ls;
+        List<List<String>> lls = new ArrayList<>();
+
+        for (List<String> splitPage : cll) {
+            ls = new ArrayList<>();
+            for (String str : splitPage) {
+                try {
+                    currentStr1 = new StringBuilder();
+                    currentStr2 = new StringBuilder();
+                    String[] splitStr = str.split(";");
+                    if (str.contains("/")) {
+                        String[] splitStr2 = splitStr.clone();
+                        for (int i = 0; i < splitStr.length; i++) {
+                            if (splitStr[i].contains("/")) {
+                                String[] ss = splitStr[i].split("/", -5);
+                                splitStr[i] = ss[0].trim();
+                                splitStr2[i] = ss[1].trim();
+                            }
+                        }
+                        currentStr1.append(
+                                String.join(";", splitStr)
+                        ).append(";").append("UP");
+                        currentStr2.append(
+                                String.join(";", splitStr2)
+                        ).append(";").append("DOWN");
+                        ls.add(currentStr2.toString());
+                    } else {
+                        currentStr1.append(str).append(";").append("NONE");
+                    }
+                    ls.add(currentStr1.toString());
+                } catch (Exception e) {
+                    throw new RuntimeException(String.format("%s; в строке \"%s\"", e, str));
+                }
+            }
+            lls.add(ls);
         }
         return lls;
     }

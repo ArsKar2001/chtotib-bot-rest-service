@@ -37,10 +37,10 @@ public class FileUploadRestController {
         getMesInfo("");
         if (!file.isEmpty()) {
             final String text = wordService.getText(file.getInputStream());
-            final var timetable = scheduleService.createScheduleAsJSON(text);
-            fileUploadService.setJsonArray(timetable);
+            final var json = scheduleService.createScheduleAsJSON(text);
+            fileUploadService.setJsonArray(json);
             thread.start();
-            log.info("Start thread: " + thread.getName() + "; timetable - " + timetable.toString());
+            log.info("Start thread: " + thread.getName() + "; timetable - " + json.toString());
             return "Начали процедуру импорта " + file.getName() + "...";
         } else
             return "Файл пустой!";
