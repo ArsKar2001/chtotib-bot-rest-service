@@ -1,21 +1,29 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
+import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.service.word.WordServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class WordService1Test2 {
     private static final File FILE_1 = new File("src\\main\\resources\\files\\Расписание 1-2 курс 2 семестр 2020-2021 уч год.docx");
     private static final File FILE_2 = new File("src\\main\\resources\\files\\Расписание 3-4 курса 2 семестр 2020-2021 уч год.docx");
+    public static final Map<String, String> DAYS_OF_WEEK = Map.of(
+            "Понедельник", "0",
+            "Вторник", "1",
+            "Среда", "2",
+            "Четверг", "3",
+            "Пятница", "4",
+            "Суббота", "5",
+            "Воскресенье", "6"
+    );
+
     WordServiceImpl wordService = new WordServiceImpl();
 
     @Test
@@ -35,7 +43,7 @@ class WordService1Test2 {
             final String text = wordService.getText(stream);
             final var lists = textToLists(text);
             lists.forEach(strings -> strings.forEach(System.out::println));
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
     }
@@ -115,11 +123,11 @@ class WordService1Test2 {
                     s1 = this.getValidGroupName(substring);
                 } else {
                     final String[] strings = str.split(";", -5);
-                    if (!strings[0].equals("-")) s2 = strings[0];
-                    else {
-                        str = str.substring(1);
-                        str = s2 + str;
-                    }
+                    if (strings.length > 5) throw new StringReadException(str, ";", strings.length);
+                    if (!strings[0].equals("-"))
+                        s2 = DAYS_OF_WEEK.containsKey(strings[0]) ? DAYS_OF_WEEK.get(strings[0]) : strings[0];
+                    str = str.substring(str.indexOf(';'));
+                    str = s2 + str;
                     str = s1 + ";" + str;
                     ls.add(str);
                 }

@@ -12,17 +12,16 @@ import java.util.regex.Pattern;
 @Component
 @Log4j
 public class ScheduleServiceImpl implements ScheduleService {
-    public static final String REMOVE_ROW_1 = "\u0421\u041E\u0413\u041B\u0410\u0421\u041E\u0412\u0410\u041D\u041E";
-    public static final String REMOVE_ROW_2 = "\u0414\u043D\u0438 \u043D\u0435\u0434\u0435\u043B\u0438";
     public static final char[] SPLIT_CHAR = {';', ',', '-', '|'};
-    public static final Map<String, Integer> DAYS_OF_WEEK = Map.of(
-            "Понедельник", 0,
-            "Вторник", 1,
-            "Среда", 2,
-            "Четверг", 3,
-            "Пятница", 4,
-            "Суббота", 5,
-            "Воскресенье", 6
+
+    public static final Map<String, String> DAYS_OF_WEEK = Map.of(
+            "Понедельник", "0",
+            "Вторник", "1",
+            "Среда", "2",
+            "Четверг", "3",
+            "Пятница", "4",
+            "Суббота", "5",
+            "Воскресенье", "6"
     );
 
     public ScheduleServiceImpl() {
@@ -164,7 +163,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                     s1 = this.getValidGroupName(substring);
                 } else {
                     final String[] strings = str.split(";", -5);
-                    if (!strings[0].equals("-")) s2 = strings[0];
+                    if (!strings[0].equals("-")) s2 = DAYS_OF_WEEK.containsKey(strings[0]) ? DAYS_OF_WEEK.get(strings[0]) : strings[0];
                     else {
                         str = str.substring(1);
                         str = s2 + str;
