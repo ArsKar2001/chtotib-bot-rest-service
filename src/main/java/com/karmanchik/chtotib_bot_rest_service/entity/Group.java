@@ -35,18 +35,18 @@ public class Group extends AbstractBaseEntity {
     @Column(name = "timetable", columnDefinition = "json")
     @Type(type = "json")
     @NotNull
-    private String timetable;
+    private String lessons;
 
     public Group(String groupName) {
         this.groupName = groupName;
-        this.timetable = "{}";
+        this.lessons = "{}";
     }
 
     @Override
     public String toString() {
         return "Group{" +
                 "groupName='" + groupName + '\'' +
-                ", timetable='" + timetable + '\'' +
+                ", lessons='" + lessons + '\'' +
                 ", id=" + id +
                 '}';
     }

@@ -1,6 +1,5 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.service.word.WordServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -19,7 +18,7 @@ class WordService1Test {
     @Test
     public void test_wordFiles1() {
         try (InputStream stream = new FileInputStream(FILE_1)) {
-            WordServiceImpl parser = new WordServiceImpl();
+            WordService parser = new WordService();
             var timetable = parser.getText(stream);
             final List<String> stringList = new LinkedList<>(Arrays.asList(timetable.split("\n")));
             stringList.removeIf(String::isBlank);
@@ -33,8 +32,8 @@ class WordService1Test {
     public void test_wordFiles2() {
 //        try (InputStream stream = new FileInputStream(FILE_2)) {
 //            WordService1 parser = new WordService1(stream);
-//            var timetable = parser.wordFileAsText();
-//            final List<String> stringList = new LinkedList<>(Arrays.asList(timetable.split("\n")));
+//            var lessons = parser.wordFileAsText();
+//            final List<String> stringList = new LinkedList<>(Arrays.asList(lessons.split("\n")));
 //            stringList.removeIf(String::isBlank);
 //            stringList.forEach(System.out::println);
 //        } catch (IOException e) {
@@ -46,8 +45,8 @@ class WordService1Test {
     public void test_wordFiles3() {
 //        try (InputStream stream = new FileInputStream(FILE_3)) {
 //            WordService1 parser = new WordService1(stream);
-//            var timetable = parser.wordFileAsText();
-//            final List<String> stringList = new LinkedList<>(Arrays.asList(timetable.split("\n")));
+//            var lessons = parser.wordFileAsText();
+//            final List<String> stringList = new LinkedList<>(Arrays.asList(lessons.split("\n")));
 //            stringList.removeIf(String::isBlank);
 //            stringList.forEach(System.out::println);
 //        } catch (IOException e) {

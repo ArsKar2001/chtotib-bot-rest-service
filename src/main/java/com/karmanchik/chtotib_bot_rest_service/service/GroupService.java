@@ -1,19 +1,26 @@
-package com.karmanchik.chtotib_bot_rest_service.service.schedule;
+package com.karmanchik.chtotib_bot_rest_service.service;
 
+import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
-import lombok.extern.log4j.Log4j;
+import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
+import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.stereotype.Component;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Log4j
-@Component
-public class ScheduleServiceImpl implements ScheduleService {
-    public static final Map<String, String> DAYS_OF_WEEK = Map.of(
+@Log4j2
+@Service
+public class GroupService {
+    private static final Map<String, String> DAYS_OF_WEEK = Map.of(
             "Понедельник", "0",
             "Вторник", "1",
             "Среда", "2",
@@ -22,16 +29,47 @@ public class ScheduleServiceImpl implements ScheduleService {
             "Суббота", "5",
             "Воскресенье", "6"
     );
+    private final WordService wordService;
+    private final JpaGroupRepository groupRepository;
 
-    @Override
-    public JSONArray createScheduleAsJSON(String text) {
+    public GroupService(WordService wordService, JpaGroupRepository groupRepository) {
+        this.wordService = wordService;
+        this.groupRepository = groupRepository;
+    }
+
+    @Async
+    public CompletableFuture<List<Group>> save(MultipartFile file) throws RuntimeException, IOException {
+        final long start = System.currentTimeMillis();
+        final var json = this.createScheduleAsJSON(file.getInputStream());
+
+        List<Group> groups = new LinkedList<>();
+        log.info("Saving a json of schedule of size {} records", json.length());
+        for (Object o : json) {
+            JSONObject jsonObject = (JSONObject) o;
+            String groupName = jsonObject.getString("group_name");
+            JSONArray lessons = jsonObject.getJSONArray("lessons");
+
+            Group group = this.groupRepository.findByGroupName(groupName)
+                    .orElseGet(() -> this.groupRepository.save(new Group(groupName)));
+            group.setLessons(lessons.toString());
+            groups.add(group);
+            this.groupRepository.save(group);
+            log.debug("Import group {}: {}", groupName, group.toString());
+        }
+        log.info("Elapsed time: {}", (System.currentTimeMillis() - start));
+        return CompletableFuture.completedFuture(groups);
+    }
+
+    private JSONArray createScheduleAsJSON(final InputStream stream) throws RuntimeException {
         JSONArray groups = new JSONArray();
         JSONObject group;
         JSONArray lessons;
         JSONObject lesson;
 
-        var lists = this.textToLists(text);
-        log.debug(String.format("!!!!!!!!! log 4: create lists - \"%s\"", Arrays.toString(lists.toArray())));
+        final String text = this.wordService.getText(stream);
+        log.debug("!!!!!!!!! log debug: reading file: text - \"{}\"", text);
+        final var lists = this.textToLists(text);
+        log.debug("!!!!!!!!! log debug: create lists - \"{}\"", Arrays.toString(lists.toArray()));
 
         for (var list : lists) {
             group = new JSONObject();
@@ -39,17 +77,13 @@ public class ScheduleServiceImpl implements ScheduleService {
             for (String s : list) {
                 lesson = new JSONObject();
                 String[] splitStr = s.split(";");
-                try {
-                    lesson.put("day_of_week", splitStr[1]);
-                    lesson.put("number", splitStr[2]);
-                    lesson.put("discipline", splitStr[3]);
-                    lesson.put("auditorium", splitStr[4]);
-                    lesson.put("teacher", splitStr[5]);
-                    lesson.put("week_type", splitStr[6]);
-                    lessons.put(lesson);
-                } catch (RuntimeException e) {
-                    throw new StringReadException(s, ";", splitStr.length);
-                }
+                lesson.put("day_of_week", splitStr[1]);
+                lesson.put("number", splitStr[2]);
+                lesson.put("discipline", splitStr[3]);
+                lesson.put("auditorium", splitStr[4]);
+                lesson.put("teacher", splitStr[5]);
+                lesson.put("week_type", splitStr[6]);
+                lessons.put(lesson);
             }
             String groupName = list.get(0).split(";")[0];
             group.put("group_name", groupName);
@@ -58,11 +92,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
         log.debug("Create new JSON: " + groups.toString());
         return groups;
-    }
-
-    @Override
-    public JSONArray createReplacementAsJSON(String text) {
-        return null;
     }
 
     private List<List<String>> textToLists(String text) {

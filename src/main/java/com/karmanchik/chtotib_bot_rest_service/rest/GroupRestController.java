@@ -47,7 +47,7 @@ public class GroupRestController {
         Group group = groupRepository
                 .findById(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException(groupId, Group.class));
-        group.setTimetable(groupDetails.getTimetable());
+        group.setLessons(groupDetails.getLessons());
         group.setGroupName(groupDetails.getGroupName());
 
         final Group upGroup = groupRepository.save(group);

@@ -978,3 +978,16 @@
 2021-01-31 21:16:29 INFO  ImportTask:39 - Importing to database: ТОРА-19-1к
 2021-01-31 21:16:30 INFO  ImportTask:39 - Importing to database: СДМ-19-1
 2021-01-31 21:16:31 INFO  ImportTask:39 - Importing to database: СДМ-19-2к
+2021-02-20 17:07:22 DEBUG BeanConfiguration:21 - Creating Multipart Config Element!
+2021-02-20 17:07:31 DEBUG BeanConfiguration:30 - Creating Async task Executor!
+2021-02-20 17:13:06 DEBUG BeanConfiguration:21 - Creating Multipart Config Element!
+2021-02-20 17:13:15 DEBUG BeanConfiguration:30 - Creating Async task Executor!
+2021-02-21 13:18:00 DEBUG BeanConfiguration:21 - Creating Multipart Config Element!
+2021-02-21 13:20:38 DEBUG BeanConfiguration:21 - Creating Multipart Config Element!
+2021-02-21 13:49:01 INFO  BeanConfiguration:20 - Creating Multipart Config Element!
+2021-02-21 13:50:04 INFO  BeanConfiguration:20 - Creating Multipart Config Element!
+2021-02-21 13:50:14 INFO  BeanConfiguration:29 - Creating Async task Executor!
+2021-02-21 13:56:27 INFO  BeanConfiguration:18 - Creating Async task Executor!
+2021-02-21 14:00:08 INFO  BeanConfiguration:18 - Creating Async task Executor!
+2021-02-21 14:02:46 INFO  BeanConfiguration:18 - Creating Async task Executor!
+2021-02-21 14:11:43 INFO  BeanConfiguration:18 - Creating Async task Executor!

@@ -1,19 +1,27 @@
 package com.karmanchik.chtotib_bot_rest_service.components;
 
-import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import lombok.extern.log4j.Log4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.unit.DataSize;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import javax.servlet.MultipartConfigElement;
+import java.util.concurrent.Executor;
 
 @Configuration
+@EnableAsync
+@Log4j
 public class BeanConfiguration {
+
     @Bean
-    public MultipartConfigElement multipartConfigElement() {
-        MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxFileSize(DataSize.parse("100MB"));
-        factory.setMaxRequestSize(DataSize.parse("100MB"));
-        return factory.createMultipartConfig();
+    public Executor taskScheduleThreadExecutor() {
+        log.info("Creating Async task Executor!");
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("ScheduleThread-");
+        executor.initialize();
+        return executor;
     }
 }

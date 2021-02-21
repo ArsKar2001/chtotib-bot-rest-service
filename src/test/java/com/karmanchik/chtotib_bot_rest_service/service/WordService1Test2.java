@@ -1,8 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.service.schedule.ScheduleServiceImpl;
-import com.karmanchik.chtotib_bot_rest_service.service.word.WordServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -25,15 +23,15 @@ class WordService1Test2 {
             "Воскресенье", "6"
     );
 
-    WordServiceImpl wordService = new WordServiceImpl();
-    ScheduleServiceImpl scheduleService = new ScheduleServiceImpl();
+    WordService wordService = new WordService();
+//    GroupService groupService = new GroupService();
 
     @Test
     void test_File1() {
         try (FileInputStream stream = new FileInputStream(FILE_1)) {
             final String text = wordService.getText(stream);
-            final var json = scheduleService.createScheduleAsJSON(text);
-            System.out.println(json.toString());
+//            final var json = groupService.createScheduleAsJSON(text);
+//            System.out.println(json.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,9 +40,9 @@ class WordService1Test2 {
     @Test
     void test_File2() {
         try (FileInputStream stream = new FileInputStream(FILE_2)) {
-            final String text = wordService.getText(stream);
-            final var json = scheduleService.createScheduleAsJSON(text);
-            System.out.println(json.toString());
+//            final String text = wordService.getText(stream);
+//            final var json = groupService.createScheduleAsJSON(text);
+//            System.out.println(json.toString());
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
