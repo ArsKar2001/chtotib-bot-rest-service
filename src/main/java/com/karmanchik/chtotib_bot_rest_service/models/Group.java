@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.entity;
+package com.karmanchik.chtotib_bot_rest_service.models;
 
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.AllArgsConstructor;

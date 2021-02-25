@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/upload")
+@RequestMapping("/api/upload/")
 public class FilesController {
     private final GroupService groupService;
 
@@ -26,9 +26,9 @@ public class FilesController {
         return "Можете загружать файлы";
     }
 
-    @PostMapping
+    @PostMapping("/groups")
     public @ResponseBody
-    ResponseEntity<String> uploadFile(MultipartFile[] files) {
+    ResponseEntity<String> uploadGroupsFile(MultipartFile[] files) {
         try {
             log.info("Sending files: {}", Arrays.toString(files));
             for (var file : files) {

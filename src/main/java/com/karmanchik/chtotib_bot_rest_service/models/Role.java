@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.entity;
+package com.karmanchik.chtotib_bot_rest_service.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,39 +10,38 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "bot_state")
-@Setter
+@Table(name = "role", uniqueConstraints = {@UniqueConstraint(name = "role_name_role_uindex", columnNames = "name_role")})
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BotState {
-
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_bot_state", unique = true)
+    @Column(name = "id")
     @NotNull
     private Integer id;
 
-    @Column(name = "code_bot_state", unique = true, nullable = false)
+    @Column(name = "name_role")
     @NotBlank
-    private String code;
+    private String nameRole;
 
-    @Column(name = "description_bot_state")
+    @Column(name = "description")
     private String description;
 
     @Override
     public String toString() {
-        return "BotState{" +
+        return "Role{" +
                 "id=" + id +
-                ", code='" + code + '\'' +
+                ", nameRole='" + nameRole + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }
 
     public enum Instance {
-        START(100),
-        REG(101),
-        AUTHORIZED(102);
+        NONE(100),
+        TEACHER(101),
+        STUDENT(102);
 
         private final int id;
 

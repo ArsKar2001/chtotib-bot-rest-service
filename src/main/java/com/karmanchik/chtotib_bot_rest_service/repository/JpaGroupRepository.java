@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.repository;
 
-import com.karmanchik.chtotib_bot_rest_service.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.models.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

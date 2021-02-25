@@ -1,8 +1,9 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.models.Group;
 import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
+import lombok.Builder;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,7 +41,7 @@ public class GroupService {
     @Async
     public CompletableFuture<List<Group>> save(MultipartFile file) throws RuntimeException, IOException {
         final long start = System.currentTimeMillis();
-        final var json = this.createScheduleAsJSON(file.getInputStream());
+        final var json = this.fromFileToJSON(file.getInputStream());
 
         List<Group> groups = new LinkedList<>();
         log.info("Saving a json of schedule of size {} records", json.length());
@@ -60,7 +61,7 @@ public class GroupService {
         return CompletableFuture.completedFuture(groups);
     }
 
-    private JSONArray createScheduleAsJSON(final InputStream stream) throws RuntimeException {
+    private JSONArray fromFileToJSON(final InputStream stream) throws RuntimeException {
         JSONArray groups = new JSONArray();
         JSONObject group;
         JSONArray lessons;
@@ -77,6 +78,7 @@ public class GroupService {
             for (String s : list) {
                 lesson = new JSONObject();
                 String[] splitStr = s.split(";");
+                if (splitStr.length < 6) throw new StringReadException(s);
                 lesson.put("day_of_week", splitStr[1]);
                 lesson.put("number", splitStr[2]);
                 lesson.put("discipline", splitStr[3]);
@@ -102,7 +104,7 @@ public class GroupService {
         stringList.removeIf(String::isBlank);
 
         final var ll = this.createListLists(stringList);
-        final var sll = this.splitListLists(ll);
+        final var sll = this.splitRightLeftListLists(ll);
         final var cll = this.correctingListLists(sll);
         return this.splitUpDownNoneListLists(cll);
     }
@@ -126,7 +128,7 @@ public class GroupService {
         return listLists;
     }
 
-    private List<List<String>> splitListLists(List<List<String>> listLists) {
+    private List<List<String>> splitRightLeftListLists(List<List<String>> listLists) {
         List<String> listRight = new LinkedList<>();
         List<String> listLeft = new LinkedList<>();
         List<List<String>> lls = new LinkedList<>();
@@ -186,9 +188,6 @@ public class GroupService {
     }
 
     private List<List<String>> splitUpDownNoneListLists(List<List<String>> cll) {
-//        Pattern pt1 = Pattern.compile("[IV]+([,/|-]|\\s+|[,/|-]\\s+|\\s+[,/|-]|\\s+[,/|-]\\s+)[IV]+");
-//        Pattern pt2 = Pattern.compile("[,/|-]+");
-
         StringBuilder currentStr1;
         StringBuilder currentStr2;
         List<String> ls;

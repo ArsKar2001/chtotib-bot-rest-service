@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.entity;
+package com.karmanchik.chtotib_bot_rest_service.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,38 +10,43 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "role", uniqueConstraints = {@UniqueConstraint(name = "role_name_role_uindex", columnNames = "name_role")})
-@Getter
+@Table(name = "user_state")
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
+public class UserState {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "id_user_state", unique = true)
     @NotNull
     private Integer id;
 
-    @Column(name = "name_role")
+    @Column(name = "code_user_state", unique = true, nullable = false)
     @NotBlank
-    private String nameRole;
+    private String code;
 
-    @Column(name = "description")
+    @Column(name = "description_user_state")
     private String description;
 
     @Override
     public String toString() {
-        return "Role{" +
+        return "UserState{" +
                 "id=" + id +
-                ", nameRole='" + nameRole + '\'' +
+                ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }
 
     public enum Instance {
-        NONE(100),
-        TEACHER(101),
-        STUDENT(102);
+        NONE(200),
+        SELECT_COURSE(201),
+        SELECT_GROUP(202),
+        SELECT_ROLE(203),
+        SELECT_OPTION(204),
+        ENTER_NAME(205),
+        SELECT_TEACHER(206);
 
         private final int id;
 
