@@ -1,9 +1,8 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.models.Group;
 import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
+import com.karmanchik.chtotib_bot_rest_service.models.Group;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
-import lombok.Builder;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,16 +10,16 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j2
 @Service
-public class GroupService {
+public class GroupService extends BaseScheduleService {
     private static final Map<String, String> DAYS_OF_WEEK = Map.of(
             "Понедельник", "0",
             "Вторник", "1",
@@ -39,12 +38,12 @@ public class GroupService {
     }
 
     @Async
-    public CompletableFuture<List<Group>> save(MultipartFile file) throws RuntimeException, IOException {
+    public void save(@NotNull MultipartFile file) throws RuntimeException, IOException {
         final long start = System.currentTimeMillis();
         final var json = this.fromFileToJSON(file.getInputStream());
+        log.info("Saving a json of schedule of size {} records", json.length());
 
         List<Group> groups = new LinkedList<>();
-        log.info("Saving a json of schedule of size {} records", json.length());
         for (Object o : json) {
             JSONObject jsonObject = (JSONObject) o;
             String groupName = jsonObject.getString("group_name");
@@ -58,7 +57,6 @@ public class GroupService {
             log.debug("Import group {}: {}", groupName, group.toString());
         }
         log.info("Elapsed time: {}", (System.currentTimeMillis() - start));
-        return CompletableFuture.completedFuture(groups);
     }
 
     private JSONArray fromFileToJSON(final InputStream stream) throws RuntimeException {
@@ -96,7 +94,8 @@ public class GroupService {
         return groups;
     }
 
-    private List<List<String>> textToLists(String text) {
+    @Override
+    public List<List<String>> textToLists(String text) {
         final String rText = text.replace('\t', ';');
         final String[] sText = rText.split("\n");
 
@@ -227,18 +226,5 @@ public class GroupService {
             lls.add(ls);
         }
         return lls;
-    }
-
-    private String getValidGroupName(String s) {
-        List<String> list = new LinkedList<>();
-        String s1 = s.replace('-', ' ');
-        Pattern pt = Pattern.compile("((\\d+([а-я]|))|([А-Я]|[а-я])+)");
-        Matcher mt = pt.matcher(s1);
-
-        while (mt.find()) {
-            String s2 = s1.substring(mt.start(), mt.end());
-            list.add(s2);
-        }
-        return String.join("-", list);
     }
 }

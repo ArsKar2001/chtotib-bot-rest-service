@@ -29,5 +29,5 @@ public class Replacement extends AbstractBaseEntity {
 
     @Column(name = "date_value")
     @NotNull
-    private LocalDate date_value;
+    private LocalDate dateValue;
 }
