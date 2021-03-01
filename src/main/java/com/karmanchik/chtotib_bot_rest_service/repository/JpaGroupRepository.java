@@ -13,4 +13,5 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface JpaGroupRepository extends JpaRepository<Group, Integer> {
     Optional<Group> findByGroupName(@NotNull String groupName);
+
 }

@@ -18,14 +18,13 @@ public class BeanConfiguration {
     @Bean
     public Executor taskScheduleThreadExecutor() {
         log.info("Creating Async task Executor!");
-        return command -> {
-            final ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) command;
-            executor.setCorePoolSize(2);
-            executor.setMaxPoolSize(2);
-            executor.setQueueCapacity(100);
-            executor.setThreadNamePrefix("ScheduleThread-");
-            executor.initialize();
-        };
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("ScheduleThread-");
+        executor.initialize();
+        return executor;
     }
 
     @Bean

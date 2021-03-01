@@ -24,7 +24,7 @@ class WordService1Test2 {
     );
 
     WordService wordService = new WordService();
-//    GroupService groupService = new GroupService();
+//    GroupInterface groupService = new GroupInterface();
 
     @Test
     void test_File1() {
@@ -124,7 +124,7 @@ class WordService1Test2 {
                     s1 = this.getValidGroupName(substring);
                 } else {
                     final String[] strings = str.split(";", -5);
-                    if (strings.length > 5) throw new StringReadException(str, ";", strings.length);
+//                    if (strings.length > 5) throw new StringReadException(str, ";", strings.length);
                     if (!strings[0].equals("-"))
                         s2 = DAYS_OF_WEEK.containsKey(strings[0]) ? DAYS_OF_WEEK.get(strings[0]) : strings[0];
                     str = str.substring(str.indexOf(';'));
