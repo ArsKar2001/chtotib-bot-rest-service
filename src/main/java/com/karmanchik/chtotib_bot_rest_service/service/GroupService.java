@@ -14,14 +14,13 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j2
 @Service
 public class GroupService {
-    private static final Map<String, String> DAYS_OF_WEEK = Map.of(
+    private static final Map<String, String> DAYS = Map.of(
             "Понедельник", "0",
             "Вторник", "1",
             "Среда", "2",
@@ -193,7 +192,7 @@ public class GroupService {
                     try {
                         final String[] strings = str.split(";", -5);
                         if (!strings[0].equals("-"))
-                            s2 = DAYS_OF_WEEK.containsKey(strings[0]) ? DAYS_OF_WEEK.get(strings[0]) : strings[0];
+                            s2 = DAYS.containsKey(strings[0]) ? DAYS.get(strings[0]) : strings[0];
                         str = str.substring(str.indexOf(';'));
                         str = s2 + str;
                         str = s1 + ";" + str;
