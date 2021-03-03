@@ -56,7 +56,7 @@ public class StringReadException extends Exception {
      *                later retrieval by the {@link #getMessage()} method.
      */
     public StringReadException(String message) {
-        super(message);
+        super("Ошибка в строке - "+message);
     }
 
     /**

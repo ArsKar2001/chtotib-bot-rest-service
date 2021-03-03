@@ -16,16 +16,15 @@ import java.util.concurrent.Executor;
 public class BeanConfiguration {
 
     @Bean
-    public Executor taskThreadExecutor() {
+    public ThreadPoolTaskExecutor taskThreadExecutor() {
         log.info("Creating Async task Executor!");
-        return command -> {
-            final ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) command;
-            executor.setCorePoolSize(2);
-            executor.setMaxPoolSize(2);
-            executor.setQueueCapacity(100);
-            executor.setThreadNamePrefix("MyThread-");
-            executor.initialize();
-        };
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("MyThread-");
+        executor.initialize();
+        return executor;
     }
 
     @Bean

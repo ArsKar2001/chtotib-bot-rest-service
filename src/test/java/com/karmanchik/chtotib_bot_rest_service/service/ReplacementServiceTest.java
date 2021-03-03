@@ -1,6 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
+import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +24,7 @@ class ReplacementServiceTest {
     private static final File FILE_1 = new File("src\\main\\resources\\files\\Z_A_M_E_N_A_na_chetverg_17_dekabrya_nedelya_nizhnyaya_doc.docx");
     private static final File FILE_2 = new File("src\\main\\resources\\files\\Z_A_M_E_N_A_na_pyatnitsu_18_dekabrya_nedelya_nizhnyaya_doc.docx");
     private static final File FILE_3 = new File("src\\main\\resources\\files\\Z_A_M_E_N_A_na_sredu_16_dekabrya_nedelya_nizhnyaya.docx");
+    private JpaGroupRepository groupRepository;
 
     @BeforeEach
     void setUp() {
@@ -65,6 +67,10 @@ class ReplacementServiceTest {
         }
     }
 
+
+    private Integer strToInt(String s) {
+        return Integer.valueOf(s);
+    }
 
     public List<List<String>> textToCSV(String text) throws StringReadException {
         String[] sText = splitText(text);
@@ -132,16 +138,17 @@ class ReplacementServiceTest {
         String regex = "(^(([а-я]|[А-Я])+(\\s?+|\\s?+-\\s?+)\\d{1,2}(\\s?+-\\s?+)(\\d|\\d[а-я])|);|\\d{1,2}\\s+(\u0434\u0435\u043A\u0430\u0431\u0440\u044F|\u044F\u043D\u0432\u0430\u0440\u044F|\u0444\u0435\u0432\u0440\u0430\u043B\u044F|\u043C\u0430\u0440\u0442\u0430|\u0430\u043F\u0440\u0435\u043B\u044F|\u043C\u0430\u044F|\u0438\u044E\u043D\u044F|\u0438\u044E\u043B\u044F|\u0430\u0432\u0433\u0443\u0441\u0442\u0430|\u0441\u0435\u043D\u0442\u044F\u0431\u0440\u044F|\u043E\u043A\u0442\u044F\u0431\u0440\u044F|\u043D\u043E\u044F\u0431\u0440\u044F)+)";
         Pattern pt = Pattern.compile(regex);
         Matcher mt;
-        String s3 = "";
+        Integer s3 = 0;
         for (String s : ll) {
             var s2 = s.split(";");
             try {
                 mt = pt.matcher(s);
                 if (mt.find()) {
                     if (s2[0].equals("")) {
-                        nll.add(s3 + s);
+                        String s4 = s3 + s;
+                        nll.add(s4);
                     } else {
-                        s3 = s2[0];
+                        s3 = getGroupId(s2[0]);
                         nll.add(s);
                     }
                 }
@@ -152,20 +159,25 @@ class ReplacementServiceTest {
         return nll;
     }
 
+    private Integer getGroupId(String s) {
+        final String groupName = getValidGroupName(s);
+        return groupRepository.getGroupIdByGroupName(groupName);
+    }
+
     private List<List<String>> listByGroup(List<String> list) throws StringReadException {
         List<List<String>> lls = new LinkedList<>();
         List<String> nll = new LinkedList<>();
-        String group = "";
+        String group1 = "";
         for (String s : list) {
             try {
                 final String s1 = s.split(";")[0];
-                final String groupName = getValidGroupName(s1);
-                if (!group.equalsIgnoreCase(groupName)) {
-                    group = groupName;
+                final String group2 = getValidGroupName(s1);
+                if (!group1.equalsIgnoreCase(group2)) {
+                    group1 = group2;
                     lls.add(new LinkedList<>(nll));
                     nll.clear();
                 }
-                nll.add(group + s.substring(s.indexOf(';')));
+                nll.add(group1 + s.substring(s.indexOf(';')));
             } catch (Exception e) {
                 throw new StringReadException(s, e);
             }

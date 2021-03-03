@@ -1,10 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.models;
 
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -24,10 +21,12 @@ import javax.validation.constraints.NotNull;
         })
 @Getter
 @Setter
+@TypeDef(name = "json", typeClass = JsonStringType.class)
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@TypeDef(name = "json", typeClass = JsonStringType.class)
 public class Group extends AbstractBaseEntity {
+
     @Column(name = "group_name", nullable = false, unique = true)
     @NotNull
     private String groupName;
@@ -35,19 +34,9 @@ public class Group extends AbstractBaseEntity {
     @Column(name = "timetable", columnDefinition = "json")
     @Type(type = "json")
     @NotNull
-    private String lessons;
+    private String lessons = "[]";
 
     public Group(String groupName) {
         this.groupName = groupName;
-        this.lessons = "{}";
-    }
-
-    @Override
-    public String toString() {
-        return "Group{" +
-                "groupName='" + groupName + '\'' +
-                ", lessons='" + lessons + '\'' +
-                ", id=" + id +
-                '}';
     }
 }

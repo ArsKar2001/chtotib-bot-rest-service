@@ -37,7 +37,6 @@ public class GroupService {
         this.groupRepository = groupRepository;
     }
 
-    @Async
     public void saveAllFromWordFile(MultipartFile file) throws StringReadException, IOException {
         final JSONArray json = fromFileToJSON(file.getInputStream());
         log.info("Saving a json of groups of size {} records", json.length());

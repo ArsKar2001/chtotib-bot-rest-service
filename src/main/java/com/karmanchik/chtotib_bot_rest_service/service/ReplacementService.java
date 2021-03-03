@@ -1,14 +1,12 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.exeption.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.models.Group;
+import com.karmanchik.chtotib_bot_rest_service.models.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaReplacementRepository;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,11 +35,22 @@ public class ReplacementService {
         this.groupRepository = groupRepository;
     }
 
-    @Async
-    public void saveAllFromWordFile(MultipartFile file) throws StringReadException, IOException {
-        //...
-        final JSONArray json = fileToJson(file.getInputStream());
-
+    public List<Replacement> saveAllFromWordFile(MultipartFile file) throws StringReadException, IOException {
+        List<Replacement> replacements = new LinkedList<>();
+        final var json = fileToJson(file.getInputStream());
+        log.info("Got the json - {}", json);
+        json.forEach(o -> {
+            JSONObject item = (JSONObject) o;
+            Integer groupId = item.getInt("group_id");
+            String timetable = item.getJSONArray("timetable").toString();
+            LocalDate date = LocalDate.parse(item.getString("date"));
+            replacements.add(new Replacement.ReplacementBuilder()
+                    .setDate(date)
+                    .setGroupId(groupId)
+                    .setTimetable(timetable)
+                    .build());
+        });
+        return replacementRepository.saveAll(replacements);
     }
 
     public JSONArray fileToJson(InputStream stream) throws StringReadException {
@@ -51,9 +60,9 @@ public class ReplacementService {
         JSONObject lesson;
 
         final String text = this.wordService.getText(stream);
-        log.debug("!!!!!!!!! log debug: reading file: text - \"{}\"", text);
+        log.info("!!!!!!!!! reading file: text - \"{}\"", text);
         final var lists = textToCSV(text);
-        log.debug("!!!!!!!!! log debug: create lists - \"{}\"", Arrays.toString(lists.toArray()));
+        log.info("!!!!!!!!! create lists - \"{}\"", Arrays.toString(lists.toArray()));
 
         for (var list : lists) {
             replacement = new JSONObject();
@@ -76,9 +85,10 @@ public class ReplacementService {
                 }
             }
             replacement.put("group_id", groupId);
-            replacement.put("lessons", lessons);
+            replacement.put("timetable", lessons);
             replacement.put("date", date);
             replacements.put(replacement);
+            log.info("Create json item: {}", replacement.toString());
         }
         log.debug("Create new JSON: " + replacements.toString());
         return replacements;
@@ -151,22 +161,29 @@ public class ReplacementService {
 
     private List<String> correctingList(List<String> ll) throws StringReadException {
         List<String> nll = new LinkedList<>();
-        String regex = "(^(([а-я]|[А-Я])+(\\s?+|\\s?+-\\s?+)\\d{1,2}(\\s?+-\\s?+)(\\d|\\d[а-я])|);|\\d{1,2}\\s+(\u0434\u0435\u043A\u0430\u0431\u0440\u044F|\u044F\u043D\u0432\u0430\u0440\u044F|\u0444\u0435\u0432\u0440\u0430\u043B\u044F|\u043C\u0430\u0440\u0442\u0430|\u0430\u043F\u0440\u0435\u043B\u044F|\u043C\u0430\u044F|\u0438\u044E\u043D\u044F|\u0438\u044E\u043B\u044F|\u0430\u0432\u0433\u0443\u0441\u0442\u0430|\u0441\u0435\u043D\u0442\u044F\u0431\u0440\u044F|\u043E\u043A\u0442\u044F\u0431\u0440\u044F|\u043D\u043E\u044F\u0431\u0440\u044F)+)";
-        Pattern pt = Pattern.compile(regex);
-        Matcher mt;
+        String regex1 = "^(([а-я]|[А-Я])+(\\s?+|\\s?+-\\s?+)\\d{1,2}(\\s?+-\\s?+)(\\d|\\d[а-я])|);";
+        String regex2 = "\\d{1,2}\\s+(\u0434\u0435\u043A\u0430\u0431\u0440\u044F|\u044F\u043D\u0432\u0430\u0440\u044F|\u0444\u0435\u0432\u0440\u0430\u043B\u044F|\u043C\u0430\u0440\u0442\u0430|\u0430\u043F\u0440\u0435\u043B\u044F|\u043C\u0430\u044F|\u0438\u044E\u043D\u044F|\u0438\u044E\u043B\u044F|\u0430\u0432\u0433\u0443\u0441\u0442\u0430|\u0441\u0435\u043D\u0442\u044F\u0431\u0440\u044F|\u043E\u043A\u0442\u044F\u0431\u0440\u044F|\u043D\u043E\u044F\u0431\u0440\u044F)+";
+        Pattern pt1 = Pattern.compile(regex1);
+        Pattern pt2 = Pattern.compile(regex2);
+        Matcher mt1;
+        Matcher mt2;
         Integer s3 = 0;
         for (String s : ll) {
             var s2 = s.split(";");
             try {
-                mt = pt.matcher(s);
-                if (mt.find()) {
+                mt1 = pt1.matcher(s);
+                mt2 = pt2.matcher(s);
+                if (mt1.find()) {
                     if (s2[0].equals("")) {
                         String s4 = s3 + s;
                         nll.add(s4);
                     } else {
                         s3 = getGroupId(s2[0]);
-                        nll.add(s);
+                        String s1 = s3 + s.substring(s.indexOf(';'));
+                        nll.add(s1);
                     }
+                } else if (mt2.find()) {
+                    nll.add(s);
                 }
             } catch (Exception e) {
                 throw new StringReadException(s, ";", s2.length);

@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/upload/")
+@RequestMapping("/api/")
 public class FileRestController {
     private final GroupService groupService;
     private final ReplacementService replacementService;
@@ -30,25 +30,27 @@ public class FileRestController {
         return ResponseEntity.status(HttpStatus.OK).body("Можете загружать файлы");
     }
 
-    @PostMapping("/groups")
+    @PostMapping("/upload/groups")
     public @ResponseBody
     ResponseEntity<String> uploadGroupsFile(MultipartFile[] files) {
         try {
-            log.info("Sending files: {}", Arrays.toString(files));
-            for (var file : files) groupService.saveAllFromWordFile(file);
+            for (var file : files) {
+                log.info("Sending file: {}", file);
+                groupService.saveAllFromWordFile(file);
+            }
             return ResponseEntity.status(HttpStatus.OK).body("ОК");
         } catch (IOException | StringReadException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @PostMapping("/replacement")
+    @PostMapping("/upload/replacement")
     public @ResponseBody
     ResponseEntity<String> uploadReplacementFile(MultipartFile file) {
         try {
-            log.info("Sending files: {}", file.getName());
-            replacementService.saveAllFromWordFile(file);
-            return ResponseEntity.status(HttpStatus.OK).body("ОК");
+            log.info("Sending files: {}", file.getOriginalFilename());
+            var list = replacementService.saveAllFromWordFile(file);
+            return ResponseEntity.status(HttpStatus.OK).body(list.toString());
         } catch (IOException | StringReadException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

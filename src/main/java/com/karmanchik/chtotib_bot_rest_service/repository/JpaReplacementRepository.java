@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface JpaReplacementRepository extends JpaRepository<Replacement, Integer> {
-    Optional<List<Replacement>> findByGroupId(@NotNull Integer groupId);
+    Optional<Replacement> findByGroupId(@NotNull Integer groupId);
 
-    Optional<List<Replacement>> findByGroupIdAndDateValue(@NotNull Integer groupId, @NotNull LocalDate dateValue);
+    Optional<Replacement> findByGroupIdAndDate(@NotNull Integer groupId, @NotNull LocalDate date);
 }

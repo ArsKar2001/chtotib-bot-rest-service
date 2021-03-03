@@ -1,9 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@Builder
 public class User extends AbstractBaseEntity {
     private static final Integer GROUP_NONE_ID = 100;
 
@@ -70,25 +69,5 @@ public class User extends AbstractBaseEntity {
         this.botStateId = BotState.Instance.START.getId();
         this.userStateId = UserState.Instance.NONE.getId();
         this.roleId = Role.Instance.NONE.getId();
-        this.groupId = GROUP_NONE_ID;
-        this.botLastMessageId = 0;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "chatId=" + chatId +
-                ", name='" + name + '\'' +
-                ", botLastMessageId=" + botLastMessageId +
-                ", botStateId=" + botStateId +
-                ", userStateId=" + userStateId +
-                ", roleId=" + roleId +
-                ", groupId=" + groupId +
-                ", group=" + group +
-                ", userState=" + userState +
-                ", botState=" + botState +
-                ", role=" + role +
-                ", id=" + id +
-                '}';
     }
 }
