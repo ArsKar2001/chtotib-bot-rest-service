@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-class WordService1Test {
+class Word1Test {
     private static final File FILE_1 = new File("src\\main\\resources\\files\\Z_A_M_E_N_A_na_chetverg_17_dekabrya_nedelya_nizhnyaya_doc.docx");
     private static final File FILE_2 = new File("src\\main\\resources\\files\\Z_A_M_E_N_A_na_pyatnitsu_18_dekabrya_nedelya_nizhnyaya_doc.docx");
     private static final File FILE_3 = new File("src\\main\\resources\\files\\Z_A_M_E_N_A_na_sredu_16_dekabrya_nedelya_nizhnyaya.docx");
@@ -18,7 +18,7 @@ class WordService1Test {
     @Test
     public void test_wordFiles1() {
         try (InputStream stream = new FileInputStream(FILE_1)) {
-            WordService parser = new WordService();
+            Word parser = new Word();
             var timetable = parser.getText(stream);
             final List<String> stringList = new LinkedList<>(Arrays.asList(timetable.split("\n")));
             stringList.removeIf(String::isBlank);

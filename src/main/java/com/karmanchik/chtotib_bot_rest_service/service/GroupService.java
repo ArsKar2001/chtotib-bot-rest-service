@@ -1,12 +1,12 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.models.Group;
+import com.karmanchik.chtotib_bot_rest_service.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.model.DayOfWeek;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,20 +20,9 @@ import java.util.regex.Pattern;
 @Log4j2
 @Service
 public class GroupService {
-    private static final Map<String, String> DAYS = Map.of(
-            "Понедельник", "0",
-            "Вторник", "1",
-            "Среда", "2",
-            "Четверг", "3",
-            "Пятница", "4",
-            "Суббота", "5",
-            "Воскресенье", "6"
-    );
-    private final WordService wordService;
     private final JpaGroupRepository groupRepository;
 
-    public GroupService(WordService wordService, JpaGroupRepository groupRepository) {
-        this.wordService = wordService;
+    public GroupService(JpaGroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
 
@@ -60,7 +49,7 @@ public class GroupService {
         JSONArray lessons;
         JSONObject lesson;
 
-        final String text = this.wordService.getText(stream);
+        final String text = Word.getText(stream);
         log.debug("!!!!!!!!! log debug: reading file: text - \"{}\"", text);
         final var lists = textToCSV(text);
         log.debug("!!!!!!!!! log debug: create lists - \"{}\"", Arrays.toString(lists.toArray()));
@@ -191,7 +180,7 @@ public class GroupService {
                     try {
                         final String[] strings = str.split(";", -5);
                         if (!strings[0].equals("-"))
-                            s2 = DAYS.containsKey(strings[0]) ? DAYS.get(strings[0]) : strings[0];
+                            s2 = DayOfWeek.containsKey(strings[0]) ? DayOfWeek.get(strings[0]) : strings[0];
                         str = str.substring(str.indexOf(';'));
                         str = s2 + str;
                         str = s1 + ";" + str;

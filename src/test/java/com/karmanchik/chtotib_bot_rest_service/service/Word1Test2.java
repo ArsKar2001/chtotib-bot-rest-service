@@ -1,6 +1,5 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -10,7 +9,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class WordService1Test2 {
+class Word1Test2 {
     private static final File FILE_1 = new File("src\\main\\resources\\files\\Расписание 1-2 курс 2 семестр 2020-2021 уч год.docx");
     private static final File FILE_2 = new File("src\\main\\resources\\files\\Расписание 3-4 курса 2 семестр 2020-2021 уч год.docx");
     public static final Map<String, String> DAYS_OF_WEEK = Map.of(
@@ -23,13 +22,13 @@ class WordService1Test2 {
             "Воскресенье", "6"
     );
 
-    WordService wordService = new WordService();
+    Word word = new Word();
 //    GroupInterface groupService = new GroupInterface();
 
     @Test
     void test_File1() {
         try (FileInputStream stream = new FileInputStream(FILE_1)) {
-            final String text = wordService.getText(stream);
+            final String text = word.getText(stream);
 //            final var json = groupService.createScheduleAsJSON(text);
 //            System.out.println(json.toString());
         } catch (IOException e) {

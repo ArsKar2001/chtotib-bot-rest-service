@@ -10,8 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
@@ -34,7 +32,7 @@ class ReplacementServiceTest {
     @Test
     public void test_wordFiles1() {
         try (InputStream stream = new FileInputStream(FILE_1)) {
-            WordService parser = new WordService();
+            Word parser = new Word();
             var text = parser.getText(stream);
             final List<List<String>> stringList = textToCSV(text);
             stringList.forEach(strings -> strings.forEach(System.out::println));
@@ -46,7 +44,7 @@ class ReplacementServiceTest {
     @Test
     public void test_wordFiles2() {
         try (InputStream stream = new FileInputStream(FILE_2)) {
-            WordService parser = new WordService();
+            Word parser = new Word();
             var text = parser.getText(stream);
             final var stringList = textToCSV(text);
             stringList.forEach(strings -> strings.forEach(System.out::println));
@@ -58,7 +56,7 @@ class ReplacementServiceTest {
     @Test
     public void test_wordFiles3() {
         try (InputStream stream = new FileInputStream(FILE_3)) {
-            WordService parser = new WordService();
+            Word parser = new Word();
             var text = parser.getText(stream);
             final var stringList = textToCSV(text);
             stringList.forEach(strings -> strings.forEach(System.out::println));

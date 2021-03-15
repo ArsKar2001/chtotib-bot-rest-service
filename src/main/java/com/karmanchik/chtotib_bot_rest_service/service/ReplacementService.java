@@ -1,7 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.models.Replacement;
+import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.repository.JpaReplacementRepository;
 import lombok.extern.log4j.Log4j2;
@@ -25,12 +25,10 @@ import java.util.regex.Pattern;
 @Log4j2
 @Service
 public class ReplacementService {
-    private final WordService wordService;
     private final JpaReplacementRepository replacementRepository;
     private final JpaGroupRepository groupRepository;
 
-    public ReplacementService(WordService wordService, JpaReplacementRepository replacementRepository, JpaGroupRepository groupRepository) {
-        this.wordService = wordService;
+    public ReplacementService(JpaReplacementRepository replacementRepository, JpaGroupRepository groupRepository) {
         this.replacementRepository = replacementRepository;
         this.groupRepository = groupRepository;
     }
@@ -44,10 +42,10 @@ public class ReplacementService {
             Integer groupId = item.getInt("group_id");
             String timetable = item.getJSONArray("timetable").toString();
             LocalDate date = LocalDate.parse(item.getString("date"));
-            replacements.add(new Replacement.ReplacementBuilder()
-                    .setDate(date)
-                    .setGroupId(groupId)
-                    .setTimetable(timetable)
+            replacements.add(Replacement.builder()
+                    .date(date)
+                    .groupId(groupId)
+                    .timetable(timetable)
                     .build());
         });
         return replacementRepository.saveAll(replacements);
@@ -59,7 +57,7 @@ public class ReplacementService {
         JSONArray lessons;
         JSONObject lesson;
 
-        final String text = this.wordService.getText(stream);
+        final String text = Word.getText(stream);
         log.info("!!!!!!!!! reading file: text - \"{}\"", text);
         final var lists = textToCSV(text);
         log.info("!!!!!!!!! create lists - \"{}\"", Arrays.toString(lists.toArray()));

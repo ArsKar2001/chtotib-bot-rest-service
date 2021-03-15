@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.model;
 
-public interface LessonInt {
+public interface Lesson {
     String getAuditorium();
     String getTeacher();
     String getWeekType();

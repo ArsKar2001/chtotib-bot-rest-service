@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.models;
+package com.karmanchik.chtotib_bot_rest_service.entity;
 
 import lombok.Getter;
 import lombok.Setter;
