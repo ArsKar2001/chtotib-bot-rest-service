@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @TypeDef(name = "json", typeClass = JsonStringType.class)
 @ToString
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Replacement extends AbstractBaseEntity {
     @Column(name = "group_id")

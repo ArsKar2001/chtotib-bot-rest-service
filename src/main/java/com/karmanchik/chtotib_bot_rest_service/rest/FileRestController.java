@@ -35,7 +35,7 @@ public class FileRestController {
         try {
             for (var file : files) {
                 log.info("Sending file: {}", file);
-                groupService.saveAllFromWordFile(file);
+                groupService.save(file);
             }
             return ResponseEntity.status(HttpStatus.OK).body("ОК");
         } catch (IOException | StringReadException e) {
@@ -48,8 +48,8 @@ public class FileRestController {
     ResponseEntity<String> uploadReplacementFile(MultipartFile file) {
         try {
             log.info("Sending files: {}", file.getOriginalFilename());
-            var list = replacementService.saveAllFromWordFile(file);
-            return ResponseEntity.status(HttpStatus.OK).body(list.toString());
+            replacementService.save(file);
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (IOException | StringReadException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

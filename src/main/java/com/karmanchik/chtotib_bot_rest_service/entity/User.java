@@ -1,5 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
+import com.karmanchik.chtotib_bot_rest_service.model.GroupNone;
 import lombok.*;
 
 import javax.persistence.*;
@@ -49,7 +50,7 @@ public class User extends AbstractBaseEntity {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "group_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private Group group;
+    private Group group = GroupNone.getInstance();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_state_id", referencedColumnName = "id_user_state", insertable = false, updatable = false)
