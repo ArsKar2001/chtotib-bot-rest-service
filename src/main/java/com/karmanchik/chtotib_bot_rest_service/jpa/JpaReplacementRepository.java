@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.repository;
+package com.karmanchik.chtotib_bot_rest_service.jpa;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import org.springframework.data.jpa.repository.JpaRepository;

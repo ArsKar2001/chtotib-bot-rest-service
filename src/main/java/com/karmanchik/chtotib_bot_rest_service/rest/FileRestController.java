@@ -1,9 +1,10 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
+import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.service.GroupService;
 import com.karmanchik.chtotib_bot_rest_service.service.ReplacementService;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +32,14 @@ public class FileRestController {
 
     @PostMapping("/upload/groups")
     public @ResponseBody
-    ResponseEntity<String> uploadGroupsFile(MultipartFile[] files) {
+    ResponseEntity<Object> uploadGroupsFile(MultipartFile[] files) {
         try {
+            JSONArray json = new JSONArray();
             for (var file : files) {
                 log.info("Sending file: {}", file);
-                groupService.save(file);
+                json.put(groupService.save(file));
             }
-            return ResponseEntity.status(HttpStatus.OK).body("ОК");
+            return ResponseEntity.status(HttpStatus.OK).body(json);
         } catch (IOException | StringReadException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -45,11 +47,11 @@ public class FileRestController {
 
     @PostMapping("/upload/replacement")
     public @ResponseBody
-    ResponseEntity<String> uploadReplacementFile(MultipartFile file) {
+    ResponseEntity<Object> uploadReplacementFile(MultipartFile file) {
         try {
             log.info("Sending files: {}", file.getOriginalFilename());
-            replacementService.save(file);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(replacementService.save(file));
         } catch (IOException | StringReadException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Builder
 public class User extends AbstractBaseEntity {
     private static final Integer GROUP_NONE_ID = 100;
 
@@ -63,12 +62,4 @@ public class User extends AbstractBaseEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Role role;
-
-    public User(int chatId) {
-        this.chatId = chatId;
-        this.name = String.valueOf(chatId);
-        this.botStateId = BotState.Instance.START.getId();
-        this.userStateId = UserState.Instance.NONE.getId();
-        this.roleId = Role.Instance.NONE.getId();
-    }
 }

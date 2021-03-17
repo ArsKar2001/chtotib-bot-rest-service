@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
+import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
 import org.junit.jupiter.api.Test;
 

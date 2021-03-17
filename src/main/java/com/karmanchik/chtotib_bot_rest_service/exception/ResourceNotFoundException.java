@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.exeption;
+package com.karmanchik.chtotib_bot_rest_service.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(Integer resourceId, Class aClass) {

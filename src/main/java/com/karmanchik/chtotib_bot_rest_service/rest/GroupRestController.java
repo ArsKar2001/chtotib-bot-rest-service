@@ -1,8 +1,8 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
-import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
-import com.karmanchik.chtotib_bot_rest_service.exeption.ResourceNotFoundException;
+import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

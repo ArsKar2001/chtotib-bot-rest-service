@@ -1,18 +1,18 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
+import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.parser.GroupParser;
-import com.karmanchik.chtotib_bot_rest_service.repository.JpaGroupRepository;
+import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @Log4j2
 @Service
@@ -24,10 +24,11 @@ public class IGroupService implements GroupService {
     }
 
     @Override
-    public void save(MultipartFile file) throws StringReadException {
+    public Object save(MultipartFile file) throws StringReadException {
+        JSONArray json = null;
         try (InputStream stream = file.getInputStream()) {
             GroupParser parser = new GroupParser(stream);
-            JSONArray json = new JSONArray(parser.parse());
+            json = new JSONArray(parser.parse());
             log.info("Saving a json of groups of size {} records", json.length());
             for (Object o : json) {
                 JSONObject jsonObject = (JSONObject) o;
@@ -43,6 +44,7 @@ public class IGroupService implements GroupService {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+        return json;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.User;
-import com.karmanchik.chtotib_bot_rest_service.repository.JpaUserRepository;
-import com.karmanchik.chtotib_bot_rest_service.exeption.ResourceNotFoundException;
+import com.karmanchik.chtotib_bot_rest_service.jpa.JpaUserRepository;
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,10 +38,10 @@ public class UserRestController {
      *
      * @param userId user id
      * @return the user by id
-     * @throws org.apache.velocity.exception.ResourceNotFoundException не найден пользователь по userId
+     * @throws ResourceNotFoundException не найден пользователь по userId
      */
     @GetMapping("/user/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable(value = "id") Integer userId) throws org.apache.velocity.exception.ResourceNotFoundException {
+    public ResponseEntity<User> getUserById(@PathVariable(value = "id") Integer userId) throws ResourceNotFoundException {
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(userId, User.class));

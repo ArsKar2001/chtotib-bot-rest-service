@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.parser;
 
-import com.karmanchik.chtotib_bot_rest_service.exeption.StringReadException;
+import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.model.GroupName;
 import com.karmanchik.chtotib_bot_rest_service.service.Word;
 import lombok.extern.log4j.Log4j2;
@@ -35,7 +35,6 @@ public class ReplacementParser {
 
         final String text = Word.getText(stream);
         final var lists = textToCSV(text);
-        log.info("!!!!!!!!! create lists - \"{}\"", Arrays.toString(lists.toArray()));
 
         for (var list : lists) {
             replacement = new JSONObject();
