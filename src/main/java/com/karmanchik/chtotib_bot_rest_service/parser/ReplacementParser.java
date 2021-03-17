@@ -34,7 +34,6 @@ public class ReplacementParser {
         String groupName = "";
 
         final String text = Word.getText(stream);
-        log.info("!!!!!!!!! reading file: text - \"{}\"", text);
         final var lists = textToCSV(text);
         log.info("!!!!!!!!! create lists - \"{}\"", Arrays.toString(lists.toArray()));
 
@@ -61,7 +60,6 @@ public class ReplacementParser {
             replacement.put("timetable", lessons);
             replacement.put("date", date);
             replacements.put(replacement);
-            log.info("Create json item: {}", replacement.toString());
         }
         log.debug("Create new JSON: " + replacements.toString());
         return replacements.toString();

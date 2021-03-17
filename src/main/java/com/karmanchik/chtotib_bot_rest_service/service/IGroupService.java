@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @Log4j2
 @Service
@@ -23,21 +24,24 @@ public class IGroupService implements GroupService {
     }
 
     @Override
-    public void save(MultipartFile file) throws StringReadException, IOException {
-        final GroupParser groupParser = new GroupParser(file.getInputStream());
-        JSONArray json = new JSONArray(groupParser.parse());
-        log.info("Saving a json of groups of size {} records", json.length());
+    public void save(MultipartFile file) throws StringReadException {
+        try (InputStream stream = file.getInputStream()) {
+            GroupParser parser = new GroupParser(stream);
+            JSONArray json = new JSONArray(parser.parse());
+            log.info("Saving a json of groups of size {} records", json.length());
+            for (Object o : json) {
+                JSONObject jsonObject = (JSONObject) o;
+                String groupName = jsonObject.getString("group_name");
+                JSONArray lessons = jsonObject.getJSONArray("lessons");
 
-        for (Object o : json) {
-            JSONObject jsonObject = (JSONObject) o;
-            String groupName = jsonObject.getString("group_name");
-            JSONArray lessons = jsonObject.getJSONArray("lessons");
-
-            Group group = this.groupRepository.findByGroupName(groupName)
-                    .orElseGet(() -> this.groupRepository.save(new Group(groupName)));
-            group.setLessons(lessons.toString());
-            this.groupRepository.save(group);
-            log.debug("Import group: {}", groupName);
+                Group group = this.groupRepository.findByGroupName(groupName)
+                        .orElseGet(() -> this.groupRepository.save(new Group(groupName)));
+                group.setLessons(lessons.toString());
+                this.groupRepository.save(group);
+                log.debug("Import group: {}", groupName);
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
         }
     }
 
