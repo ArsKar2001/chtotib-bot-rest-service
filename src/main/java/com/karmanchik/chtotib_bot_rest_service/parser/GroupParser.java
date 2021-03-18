@@ -38,6 +38,8 @@ public class GroupParser {
         for (var list : lists) {
             group = new JSONObject();
             lessons = new JSONArray();
+            String groupName = list.get(0).split(";")[0];
+
             for (String s : list) {
                 try {
                     lesson = new JSONObject();
@@ -53,7 +55,6 @@ public class GroupParser {
                     throw new StringReadException(s);
                 }
             }
-            String groupName = list.get(0).split(";")[0];
             group.put("group_name", groupName);
             group.put("lessons", lessons);
             groups.put(group);
