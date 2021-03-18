@@ -103,8 +103,9 @@ public class ReplacementParser {
         String[] strings = s2.split("\\s");
 
         for (int i = 0; i < months.length; i++) {
-            if (Objects.equals(strings[1], months[i]))
-                strings[1] = String.valueOf(i);
+            if (Objects.equals(strings[1], months[i])) {
+                strings[1] = String.valueOf(i + 1);
+            }
         }
 
         String s3 = String.join(" ", strings);
