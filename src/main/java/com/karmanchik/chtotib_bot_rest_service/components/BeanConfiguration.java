@@ -1,13 +1,15 @@
 package com.karmanchik.chtotib_bot_rest_service.components;
 
 import lombok.extern.log4j.Log4j;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
-import javax.servlet.Filter;
-import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.Executor;
 
 @Configuration
@@ -16,8 +18,8 @@ import java.util.concurrent.Executor;
 public class BeanConfiguration {
 
     @Bean
-    public ThreadPoolTaskExecutor taskThreadExecutor() {
-        log.info("Creating Async task Executor!");
+    public Executor taskThreadExecutor() {
+        log.debug("Creating Async task Executor!");
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(2);
@@ -28,15 +30,16 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public Filter filter() {
-        log.info("Creating CORS Filter!");
-        return (servletRequest, servletResponse, filterChain) -> {
-            HttpServletResponse response = (HttpServletResponse) servletResponse;
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-            response.setHeader("Access-Control-Max-Age", "3600");
-            response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
-            filterChain.doFilter(servletRequest, servletResponse);
-        };
+    public FilterRegistrationBean<CorsFilter> corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        config.addAllowedOriginPattern("(http://localhost:8080|https://chtotib-bot-rest-service.herokuapp.com)");
+        source.registerCorsConfiguration("/api/**", config);
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
+        bean.setOrder(0);
+        return bean;
     }
 }

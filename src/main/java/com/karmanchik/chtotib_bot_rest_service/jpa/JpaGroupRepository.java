@@ -16,5 +16,5 @@ import java.util.Optional;
 public interface JpaGroupRepository extends JpaRepository<Group, Integer> {
     Optional<Group> findByGroupName(@NotNull String groupName);
     @Query("SELECT g.id FROM Group g WHERE g.groupName = :groupName")
-    Integer getGroupIdByGroupName(@Param("groupName") @NotNull String groupName);
+    Optional<Integer> getIdByGroupName(@Param("groupName") @NotNull String groupName);
 }

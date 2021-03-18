@@ -4,7 +4,9 @@ import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.service.GroupService;
 import com.karmanchik.chtotib_bot_rest_service.service.ReplacementService;
 import lombok.extern.log4j.Log4j2;
+import netscape.javascript.JSObject;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +32,9 @@ public class FileRestController {
         return ResponseEntity.status(HttpStatus.OK).body("Можете загружать файлы");
     }
 
-    @PostMapping("/upload/groups")
+    @PostMapping("/insert/group")
     public @ResponseBody
-    ResponseEntity<Object> uploadGroupsFile(MultipartFile[] files) {
+    ResponseEntity<Object> uploadGroupFile(MultipartFile[] files) {
         try {
             JSONArray json = new JSONArray();
             for (var file : files) {
@@ -45,7 +47,7 @@ public class FileRestController {
         }
     }
 
-    @PostMapping("/upload/replacement")
+    @PostMapping("/insert/replacement")
     public @ResponseBody
     ResponseEntity<Object> uploadReplacementFile(MultipartFile file) {
         try {

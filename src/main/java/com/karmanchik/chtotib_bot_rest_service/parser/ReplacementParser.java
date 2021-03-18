@@ -137,6 +137,7 @@ public class ReplacementParser {
                     nll.add(s);
                 }
             } catch (Exception e) {
+                log.error(e.getMessage(), e);
                 throw new StringReadException(s, ";", s2.length);
             }
         }
@@ -157,6 +158,7 @@ public class ReplacementParser {
                 }
                 nll.add(group1 + s.substring(s.indexOf(';')));
             } catch (Exception e) {
+                log.error(e.getMessage(), e);
                 throw new StringReadException(s, e);
             }
         }

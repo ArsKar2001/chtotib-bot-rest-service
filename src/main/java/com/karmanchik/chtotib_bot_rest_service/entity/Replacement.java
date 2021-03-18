@@ -26,9 +26,9 @@ public class Replacement extends AbstractBaseEntity {
     @Column(name = "timetable", columnDefinition = "json")
     @Type(type = "json")
     @NotNull
-    private String timetable;
+    private String timetable = "[]";
 
-    @Column(name = "date")
+    @Column(name = "date_value")
     @NotNull
     private LocalDate date;
 }
