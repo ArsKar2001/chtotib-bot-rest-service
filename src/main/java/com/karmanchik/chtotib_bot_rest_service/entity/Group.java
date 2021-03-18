@@ -1,9 +1,12 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
+import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.json.JSONArray;
+import org.json.JSONString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,15 +29,13 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Group extends AbstractBaseEntity {
-    public static final Integer NONE = 100;
-
-    @Column(name = "group_name", nullable = false, unique = true)
+    @Column(name = "group_name", unique = true)
     @NotNull
     private String groupName;
 
     @Column(name = "timetable", columnDefinition = "json", nullable = false)
     @Type(type = "json")
-    private String lessons = "{}";
+    private String lessons;
 
     public Group(String groupName) {
         this.groupName = groupName;
