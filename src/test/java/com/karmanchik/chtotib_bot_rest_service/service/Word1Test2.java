@@ -28,8 +28,7 @@ class Word1Test2 {
         try {
             final FileInputStream stream = new FileInputStream(FILE_1);
             GroupParser parser = new GroupParser(stream);
-            final String text = Word.getText(stream);
-            parser.textToCSV(text).forEach(strings -> strings.forEach(System.out::println));
+            System.out.println(parser.parse());
         } catch (FileNotFoundException | StringReadException e) {
             e.printStackTrace();
         }

@@ -10,8 +10,10 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
 
 @Log4j2
@@ -24,13 +26,13 @@ public class IGroupService implements GroupService {
     }
 
     @Override
-    public Object save(MultipartFile file) throws StringReadException {
-        JSONArray json = null;
+    public List<Group> save(MultipartFile file) throws StringReadException {
+        List<Group> groups = new LinkedList<>();
         try (InputStream stream = file.getInputStream()) {
             GroupParser parser = new GroupParser(stream);
-            json = new JSONArray(parser.parse());
-            log.info("Saving a json of groups of size {} records", json.length());
-            for (Object o : json) {
+            JSONArray array = new JSONArray(parser.parse());
+            log.info("Saving a json of groups of size {} records", array.length());
+            for (Object o : array) {
                 JSONObject jsonObject = (JSONObject) o;
                 String groupName = jsonObject.getString("group_name");
                 JSONArray lessons = jsonObject.getJSONArray("lessons");
@@ -38,13 +40,15 @@ public class IGroupService implements GroupService {
                 Group group = this.groupRepository.findByGroupName(groupName)
                         .orElseGet(() -> this.groupRepository.save(new Group(groupName)));
                 group.setLessons(lessons.toString());
-                this.groupRepository.save(group);
+                groupRepository.save(group);
+                groups.add(group);
                 log.debug("Import group: {}", groupName);
             }
+            return groups;
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        return json;
+        return groups;
     }
 
     @Override

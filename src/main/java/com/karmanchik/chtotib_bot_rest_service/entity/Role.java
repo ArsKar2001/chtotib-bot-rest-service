@@ -1,6 +1,9 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,8 +15,11 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Role {
+    public static final Integer NONE = 100;
+    public static final Integer TEACHER = 101;
+    public static final Integer STUDENT = 102;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -27,19 +33,17 @@ public class Role {
     @Column(name = "description")
     private String description;
 
-    public enum Instance {
-        NONE(100),
-        TEACHER(101),
-        STUDENT(102);
-
-        private final int id;
-
-        Instance(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
+    public Role(Integer id) {
+        this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", nameRole='" + nameRole + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
 }

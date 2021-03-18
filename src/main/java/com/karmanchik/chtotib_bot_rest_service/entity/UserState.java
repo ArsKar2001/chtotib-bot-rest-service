@@ -1,6 +1,5 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,9 +12,17 @@ import javax.validation.constraints.NotNull;
 @Table(name = "user_state")
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserState {
+    public static final Integer NONE = 200;
+    public static final Integer SELECT_COURSE = 201;
+    public static final Integer SELECT_GROUP = 202;
+    public static final Integer SELECT_ROLE = 203;
+    public static final Integer SELECT_OPTION = 204;
+    public static final Integer ENTER_NAME = 205;
+    public static final Integer SELECT_TEACHER = 206;
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +37,10 @@ public class UserState {
     @Column(name = "description_user_state")
     private String description;
 
+    public UserState(@NotNull Integer id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "UserState{" +
@@ -37,25 +48,5 @@ public class UserState {
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
                 '}';
-    }
-
-    public enum Instance {
-        NONE(200),
-        SELECT_COURSE(201),
-        SELECT_GROUP(202),
-        SELECT_ROLE(203),
-        SELECT_OPTION(204),
-        ENTER_NAME(205),
-        SELECT_TEACHER(206);
-
-        private final int id;
-
-        Instance(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
     }
 }

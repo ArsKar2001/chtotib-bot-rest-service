@@ -134,7 +134,7 @@ public class GroupParser {
         List<String> ls = new LinkedList<>();
         List<List<String>> lls = new LinkedList<>();
         String s1 = "";
-        String s2 = "";
+        Integer i = 0;
 
         sListLists.removeIf(list -> list.get(0).split("\\s").length < 2);
         for (var list : sListLists) {
@@ -147,9 +147,9 @@ public class GroupParser {
                     try {
                         final String[] strings = str.split(";", -5);
                         if (!strings[0].equals("-"))
-                            s2 = DayOfWeek.containsKey(strings[0]) ? DayOfWeek.get(strings[0]): DayOfWeek.get("0");
+                            i = DayOfWeek.containsKey(strings[0]) ? DayOfWeek.get(strings[0]): DayOfWeek.getValues().get(0);
                         str = str.substring(str.indexOf(';'));
-                        str = s2 + str;
+                        str = i + str;
                         str = s1 + ";" + str;
                         ls.add(str);
                     } catch (Exception e) {

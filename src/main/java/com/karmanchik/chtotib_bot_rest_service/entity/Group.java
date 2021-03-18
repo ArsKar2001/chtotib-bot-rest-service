@@ -22,21 +22,32 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @TypeDef(name = "json", typeClass = JsonStringType.class)
-@ToString
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Group extends AbstractBaseEntity {
+    public static final Integer NONE = 100;
 
     @Column(name = "group_name", nullable = false, unique = true)
     @NotNull
     private String groupName;
 
-    @Column(name = "timetable", columnDefinition = "json")
+    @Column(name = "timetable", columnDefinition = "json", nullable = false)
     @Type(type = "json")
-    @NotNull
-    private String lessons = "[]";
+    private String lessons;
+
+
 
     public Group(String groupName) {
         this.groupName = groupName;
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "groupName='" + groupName + '\'' +
+                ", lessons='" + lessons + '\'' +
+                ", id=" + id +
+                '}';
     }
 }

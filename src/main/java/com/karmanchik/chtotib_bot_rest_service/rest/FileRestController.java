@@ -39,7 +39,7 @@ public class FileRestController {
             JSONArray json = new JSONArray();
             for (var file : files) {
                 log.info("Sending file: {}", file);
-                json.put(groupService.save(file));
+                groupService.save(file);
             }
             return ResponseEntity.status(HttpStatus.OK).body(json);
         } catch (IOException | StringReadException e) {

@@ -16,6 +16,10 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BotState {
+    public static final Integer START = 100;
+    public static final Integer REG = 101;
+    public static final Integer AUTHORIZED = 102;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +34,10 @@ public class BotState {
     @Column(name = "description_bot_state")
     private String description;
 
+    public BotState(@NotNull Integer id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "BotState{" +
@@ -37,21 +45,5 @@ public class BotState {
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
                 '}';
-    }
-
-    public enum Instance {
-        START(100),
-        REG(101),
-        AUTHORIZED(102);
-
-        private final int id;
-
-        Instance(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
     }
 }

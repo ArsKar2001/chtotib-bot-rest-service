@@ -1,65 +1,94 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
-import com.karmanchik.chtotib_bot_rest_service.model.GroupNone;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "chat_id", name = "users_unique_chatid_idx")})
-@Getter
-@Setter
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-@ToString
+@NoArgsConstructor
 public class User extends AbstractBaseEntity {
-    private static final Integer GROUP_NONE_ID = 100;
-
-    @Column(name = "chat_id", unique = true, nullable = false)
+    @Getter
+    @Column(name = "chat_id", unique = true)
     @NotNull
     private Integer chatId;
 
-    @Column(name = "name")
-    @NotBlank
+    @Getter
+    @Column(name = "user_name", unique = true)
+    @NotNull
     private String name;
 
-    @Column(name = "bot_lat_message_id", nullable = false)
-    @NotBlank
+    @Setter
+    @Getter
+    @Column(name = "teacher")
+    private String teacher;
+
+    @Setter
+    @Getter
+    @Column(name = "bot_lat_message_id")
+    @NotNull
     private Integer botLastMessageId;
 
-    @Column(name = "bot_state_id", nullable = false)
-    @NotBlank
-    private Integer botStateId;
-
-    @Column(name = "user_state_id", nullable = false)
-    @NotBlank
-    private Integer userStateId;
-
-    @Column(name = "role_id", nullable = false)
-    @NotBlank
-    private Integer roleId;
-
-    @Column(name = "group_id", nullable = false)
-    @NotBlank
+    @Setter
+    @Getter
+    @Column(name = "group_id")
+    @NotNull
     private Integer groupId;
 
+    @Setter
+    @Getter
+    @Column(name = "user_state_id")
+    @NotNull
+    private Integer userStateId;
 
+    @Setter
+    @Getter
+    @Column(name = "bot_state_id")
+    @NotNull
+    private Integer botStateId;
+
+    @Setter
+    @Getter
+    @Column(name = "role_id")
+    @NotNull
+    private Integer roleId;
+
+    @Getter
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "group_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private Group group = GroupNone.getInstance();
+    private Group group;
 
+    @Getter
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_state_id", referencedColumnName = "id_user_state", insertable = false, updatable = false)
     private UserState userState;
 
+    @Getter
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "bot_state_id", referencedColumnName = "id_bot_state", insertable = false, updatable = false)
     private BotState botState;
 
+    @Getter
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Role role;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "chatId=" + chatId +
+                ", name='" + name + '\'' +
+                ", teacher='" + teacher + '\'' +
+                ", botLastMessageId=" + botLastMessageId +
+                ", group=" + group +
+                ", userState=" + userState +
+                ", botState=" + botState +
+                ", role=" + role +
+                ", id=" + id +
+                '}';
+    }
 }

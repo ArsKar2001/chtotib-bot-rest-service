@@ -76,9 +76,8 @@ public class UserRestController {
         user.setBotLastMessageId(userDetail.getBotLastMessageId());
         user.setBotStateId(userDetail.getBotStateId());
         user.setUserStateId(userDetail.getUserStateId());
-        user.setChatId(userDetail.getChatId());
         user.setGroupId(userDetail.getGroupId());
-        user.setName(userDetail.getName());
+        user.setTeacher(userDetail.getTeacher());
         user.setRoleId(userDetail.getRoleId());
 
         final User updateUser = userRepository.save(user);
