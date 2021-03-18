@@ -5,33 +5,33 @@ import java.util.List;
 import java.util.Map;
 
 public class DayOfWeek {
-    private static final Map<Integer, String> DAYS_OF_WEEK = Map.of(
-            0, "Понедельник",
-            1, "Вторник",
-            2, "Среда",
-            3, "Четверг",
-            4, "Пятница",
-            5, "Суббота",
-            6, "Воскресенье"
+    private static final Map<String, String> DAYS_OF_WEEK = Map.of(
+             "Понедельник","0",
+            "Вторник", "1",
+            "Среда", "2",
+            "Четверг", "3",
+            "Пятница", "4",
+            "Суббота", "5",
+            "Воскресенье", "6"
     );
 
-    public static Map<Integer, String> getAll() {
-        return DAYS_OF_WEEK;
+    public static List<String> getAll() {
+        return (List<String>) DAYS_OF_WEEK.values();
     }
 
-    public static boolean containsKey(Object o) {
-        return DAYS_OF_WEEK.containsKey(o);
+    public static boolean containsKey(String s) {
+        return DAYS_OF_WEEK.containsKey(s);
     }
 
-    public static boolean containsValue(Object o) {
-        return DAYS_OF_WEEK.containsValue(o);
+    public static boolean containsValue(String s) {
+        return DAYS_OF_WEEK.containsValue(s);
     }
 
-    public static String get(Object o) {
-        return DAYS_OF_WEEK.get(o);
+    public static String get(String s) {
+        return DAYS_OF_WEEK.get(s);
     }
 
-    public static List<Integer> getKeys() {
+    public static List<String> getKeys() {
         return new ArrayList<>(DAYS_OF_WEEK.keySet());
     }
 

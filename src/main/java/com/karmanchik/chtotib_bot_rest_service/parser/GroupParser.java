@@ -147,7 +147,7 @@ public class GroupParser {
                     try {
                         final String[] strings = str.split(";", -5);
                         if (!strings[0].equals("-"))
-                            s2 = DayOfWeek.containsKey(strings[0]) ? DayOfWeek.get(strings[0]) : strings[0];
+                            s2 = DayOfWeek.containsKey(strings[0]) ? DayOfWeek.get(strings[0]): DayOfWeek.get("0");
                         str = str.substring(str.indexOf(';'));
                         str = s2 + str;
                         str = s1 + ";" + str;
