@@ -1,5 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "replacement")
-@TypeDef(name = "json", typeClass = JsonStringType.class)
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class Replacement extends AbstractBaseEntity {
     private Integer groupId;
 
     @Column(name = "timetable", columnDefinition = "json", nullable = false)
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private String timetable;
 
     @Column(name = "date_value")

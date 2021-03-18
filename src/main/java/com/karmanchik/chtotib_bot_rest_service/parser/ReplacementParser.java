@@ -102,11 +102,8 @@ public class ReplacementParser {
         String s2 = s1 + " " + Year.now().getValue();
         String[] strings = s2.split("\\s");
 
-        for (int i = 0; i < months.length; i++) {
-            if (Objects.equals(strings[1], months[i])) {
-                strings[1] = String.valueOf(i + 1);
-            }
-        }
+        for (int i = 0; i < months.length; i++)
+            if (Objects.equals(strings[1], months[i])) strings[1] = String.valueOf(i + 1);
 
         String s3 = String.join(" ", strings);
         return LocalDate.parse(s3, DateTimeFormatter.ofPattern("dd M yyyy"));

@@ -1,5 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.*;
@@ -24,7 +25,7 @@ import javax.validation.constraints.NotNull;
         })
 @Getter
 @Setter
-@TypeDef(name = "json", typeClass = JsonStringType.class)
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +35,7 @@ public class Group extends AbstractBaseEntity {
     private String groupName;
 
     @Column(name = "timetable", columnDefinition = "json", nullable = false)
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private String lessons;
 
     public Group(String groupName) {
