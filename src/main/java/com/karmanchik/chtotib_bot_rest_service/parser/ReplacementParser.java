@@ -8,14 +8,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.text.DateFormatSymbols;
+import java.text.MessageFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -99,8 +97,18 @@ public class ReplacementParser {
     }
 
     private LocalDate textToDate(String s1) {
+        String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
+                "июля", "августа", "сентября", "октября", "ноября", "декабря"};
         String s2 = s1 + " " + Year.now().getValue();
-        return LocalDate.parse(s2, DateTimeFormatter.ofPattern("dd MMMM yyyy"));
+        String[] strings = s2.split("\\s");
+
+        for (int i = 0; i < months.length; i++) {
+            if (Objects.equals(strings[1], months[i]))
+                strings[1] = String.valueOf(i);
+        }
+
+        String s3 = String.join(" ", strings);
+        return LocalDate.parse(s3, DateTimeFormatter.ofPattern("dd M yyyy"));
     }
 
     private String[] splitText(String text) {
