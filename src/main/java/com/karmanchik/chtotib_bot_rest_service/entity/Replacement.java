@@ -26,7 +26,7 @@ public class Replacement extends AbstractBaseEntity {
     @NotNull
     private Integer groupId;
 
-    @Column(name = "timetable", columnDefinition = "json", nullable = false)
+    @Column(name = "timetable", columnDefinition = "jsonb", nullable = false)
     @Type(type = "jsonb")
     private String timetable;
 

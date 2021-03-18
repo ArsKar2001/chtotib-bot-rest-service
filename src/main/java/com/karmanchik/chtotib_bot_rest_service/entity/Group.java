@@ -34,7 +34,7 @@ public class Group extends AbstractBaseEntity {
     @NotNull
     private String groupName;
 
-    @Column(name = "timetable", columnDefinition = "json", nullable = false)
+    @Column(name = "timetable", columnDefinition = "jsonb", nullable = false)
     @Type(type = "jsonb")
     private String lessons;
 
