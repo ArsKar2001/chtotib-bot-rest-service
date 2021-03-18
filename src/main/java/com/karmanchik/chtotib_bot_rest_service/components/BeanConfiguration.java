@@ -10,7 +10,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
+import java.util.Locale;
 import java.util.concurrent.Executor;
 
 @Configuration
@@ -28,6 +31,13 @@ public class BeanConfiguration {
         executor.setThreadNamePrefix("MyThread-");
         executor.initialize();
         return executor;
+    }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        CookieLocaleResolver resolver = new CookieLocaleResolver();
+        resolver.setDefaultLocale(new Locale("ru"));
+        return resolver;
     }
 
     @Bean
