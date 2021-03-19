@@ -33,7 +33,7 @@ public class Replacement extends AbstractBaseEntity {
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id", nullable = false, updatable = false)
     private Group group;
 
     @Override
