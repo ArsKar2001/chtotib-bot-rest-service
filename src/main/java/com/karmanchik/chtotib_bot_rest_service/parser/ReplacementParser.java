@@ -2,6 +2,7 @@ package com.karmanchik.chtotib_bot_rest_service.parser;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.model.GroupName;
+import com.karmanchik.chtotib_bot_rest_service.model.Month;
 import com.karmanchik.chtotib_bot_rest_service.service.Word;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
@@ -97,14 +98,10 @@ public class ReplacementParser {
     }
 
     private LocalDate textToDate(String s1) {
-        String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня",
-                "июля", "августа", "сентября", "октября", "ноября", "декабря"};
         String s2 = s1 + " " + Year.now().getValue();
         String[] strings = s2.split("\\s");
-
-        for (int i = 0; i < months.length; i++)
-            if (Objects.equals(strings[1], months[i])) strings[1] = String.valueOf(i + 1);
-
+        strings[1] = Month.isMonth(strings[1]) ?
+                String.valueOf(Month.getNumberMonth(strings[1])) : "0";
         String s3 = String.join(" ", strings);
         return LocalDate.parse(s3, DateTimeFormatter.ofPattern("dd M yyyy"));
     }
