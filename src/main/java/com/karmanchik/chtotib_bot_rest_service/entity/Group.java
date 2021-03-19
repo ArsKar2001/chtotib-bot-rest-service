@@ -12,6 +12,7 @@ import org.json.JSONString;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(
@@ -37,9 +38,8 @@ public class Group extends AbstractBaseEntity {
     private String lessons;
 
     @Getter
-    @OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(referencedColumnName = "id", columnDefinition = "group_id", updatable = false, nullable = false)
-    private List<Replacement> replacements;
+    @OneToMany(mappedBy = "group")
+    private Set<Replacement> replacements;
 
     public Group(String groupName) {
         this.groupName = groupName;
