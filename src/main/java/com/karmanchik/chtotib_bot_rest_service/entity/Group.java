@@ -9,11 +9,9 @@ import org.hibernate.annotations.TypeDef;
 import org.json.JSONArray;
 import org.json.JSONString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(
@@ -38,6 +36,11 @@ public class Group extends AbstractBaseEntity {
     @Type(type = "jsonb")
     private String lessons;
 
+    @Getter
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(referencedColumnName = "id", columnDefinition = "group_id", updatable = false, nullable = false)
+    private List<Replacement> replacements;
+
     public Group(String groupName) {
         this.groupName = groupName;
     }
@@ -47,6 +50,7 @@ public class Group extends AbstractBaseEntity {
         return "Group{" +
                 "groupName='" + groupName + '\'' +
                 ", lessons='" + lessons + '\'' +
+                ", replacements=" + replacements +
                 ", id=" + id +
                 '}';
     }
