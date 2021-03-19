@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Replacement extends AbstractBaseEntity {
 
-    @Column(name = "group_id")
+    @Column(name = "group_id", insertable = false, updatable = false)
     @NotNull
     private Integer groupId;
 
@@ -33,7 +33,7 @@ public class Replacement extends AbstractBaseEntity {
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false, updatable = false)
+    @JoinColumn(name = "group_id")
     private Group group;
 
     @Override
