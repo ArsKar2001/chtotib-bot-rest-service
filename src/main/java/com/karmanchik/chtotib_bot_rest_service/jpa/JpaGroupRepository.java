@@ -12,7 +12,7 @@ import java.util.Optional;
 
 
 @Repository
-@Transactional(readOnly = true)
+@Transactional
 public interface JpaGroupRepository extends JpaRepository<Group, Integer> {
     Optional<Group> findByGroupName(@NotNull String groupName);
     @Query("SELECT g.id FROM Group g WHERE g.groupName = :groupName")

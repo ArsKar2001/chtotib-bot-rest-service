@@ -57,7 +57,7 @@ public class ReplacementParser {
                 }
             }
             replacement.put("group_name", groupName);
-            replacement.put("timetable", lessons);
+            replacement.put("lessons", lessons);
             replacement.put("date", date);
             replacements.put(replacement);
         }

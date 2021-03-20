@@ -3,7 +3,9 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
-import lombok.extern.log4j.Log4j;
+import com.karmanchik.chtotib_bot_rest_service.service.GroupService;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,57 +14,68 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Log4j
+@Log4j2
 @RestController
 @RequestMapping("/api/")
 public class GroupRestController {
-    private final JpaGroupRepository groupRepository;
+    private final GroupService groupService;
 
-    public GroupRestController(JpaGroupRepository groupRepository) {
-        this.groupRepository = groupRepository;
+    public GroupRestController(GroupService groupService) {
+        this.groupService = groupService;
     }
 
     @GetMapping("/groups")
     public List<Group> getAllGroups() {
-        return groupRepository.findAll();
+        return groupService.findAll();
     }
 
     @GetMapping("/group/{id}")
-    public ResponseEntity<Group> getGroup(@PathVariable(name = "id") @Valid Integer groupId) {
-        Group group = groupRepository
-                .findById(groupId)
-                .orElseThrow(() -> new ResourceNotFoundException(groupId, Group.class));
-        return ResponseEntity.ok().body(group);
+    public ResponseEntity<Object> getGroup(@PathVariable(name = "id") @Valid Integer groupId) {
+        try {
+            Group group = groupService
+                    .findById(groupId);
+            return ResponseEntity.ok().body(group);
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PostMapping("/groups")
     public Group createGroup(@Valid @RequestBody Group group) {
-        return groupRepository.save(group);
+        return groupService.save(group);
     }
 
     @PutMapping("/group/{id}")
-    public ResponseEntity<Group> updateGroup(
+    public ResponseEntity<Object> updateGroup(
             @PathVariable(name = "id") Integer groupId,
             @Valid @RequestBody Group groupDetails) {
-        Group group = groupRepository
-                .findById(groupId)
-                .orElseThrow(() -> new ResourceNotFoundException(groupId, Group.class));
-        group.setLessons(groupDetails.getLessons());
-        group.setGroupName(groupDetails.getGroupName());
+        try {
+            Group group = groupService.findById(groupId);
+            group.setLessons(groupDetails.getLessons());
+            group.setGroupName(groupDetails.getGroupName());
 
-        final Group upGroup = groupRepository.save(group);
-        return ResponseEntity.ok().body(upGroup);
+            final Group upGroup = groupService.save(group);
+            log.debug("Put group: {}", group);
+            return ResponseEntity.ok().body(upGroup);
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/group/{id}")
-    public Map<String, Boolean> deleteGroup(
+    @ResponseBody
+    public ResponseEntity<Object> deleteGroup(
             @PathVariable(name = "id") Integer groupId) {
-        Group group = groupRepository
-                .findById(groupId)
-                .orElseThrow(() -> new ResourceNotFoundException(groupId, Group.class));
-        groupRepository.delete(group);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        return response;
+        try {
+            Group group = groupService.findById(groupId);
+            groupService.delete(group);
+            log.debug("Группа {} удалена", group.getGroupName());
+            return ResponseEntity.ok().body("Группа " + group.getGroupName() + " удалена");
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

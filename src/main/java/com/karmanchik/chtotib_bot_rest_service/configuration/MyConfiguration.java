@@ -1,7 +1,6 @@
-package com.karmanchik.chtotib_bot_rest_service.components;
+package com.karmanchik.chtotib_bot_rest_service.configuration;
 
 import lombok.extern.log4j.Log4j;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +10,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
 import java.util.Locale;
@@ -19,11 +19,11 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 @Log4j
-public class BeanConfiguration {
+public class MyConfiguration {
 
     @Bean
     public Executor taskThreadExecutor() {
-        log.debug("Creating Async task Executor!");
+        log.info("Creating Async task Executor!");
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(2);

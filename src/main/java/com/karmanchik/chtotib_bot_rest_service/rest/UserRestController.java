@@ -3,6 +3,7 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 import com.karmanchik.chtotib_bot_rest_service.entity.User;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaUserRepository;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
+import com.karmanchik.chtotib_bot_rest_service.service.UserService;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/")
 public class UserRestController {
-    private final JpaUserRepository userRepository;
+    private final UserService userRepository;
 
-    public UserRestController(JpaUserRepository userRepository) {
+    public UserRestController(UserService userRepository) {
         this.userRepository = userRepository;
     }
 

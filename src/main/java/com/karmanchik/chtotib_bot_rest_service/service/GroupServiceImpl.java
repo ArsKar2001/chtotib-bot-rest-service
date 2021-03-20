@@ -1,27 +1,27 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
-import com.karmanchik.chtotib_bot_rest_service.parser.GroupParser;
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
+import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
+import com.karmanchik.chtotib_bot_rest_service.parser.GroupParser;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 @Log4j2
-@Service
-public class IGroupService implements GroupService {
+@Service("groupServiceImpl")
+public class GroupServiceImpl implements GroupService {
     private final JpaGroupRepository groupRepository;
 
-    public IGroupService(JpaGroupRepository groupRepository) {
+    public GroupServiceImpl(JpaGroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
 
@@ -49,6 +49,22 @@ public class IGroupService implements GroupService {
             log.error(e.getMessage(), e);
         }
         return groups;
+    }
+
+    @Override
+    public List<Group> findAll() {
+        return groupRepository.findAll();
+    }
+
+    @Override
+    public Group findById(Integer groupId) throws ResourceNotFoundException {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new ResourceNotFoundException(groupId, Group.class));
+    }
+
+    @Override
+    public void delete(Group group) {
+        groupRepository.delete(group);
     }
 
     @Override

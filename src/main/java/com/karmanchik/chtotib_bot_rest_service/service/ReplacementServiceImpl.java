@@ -19,9 +19,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Log4j2
-@Service
+@Service("replacementServiceImpl")
 @RequiredArgsConstructor
-public class IReplacementService implements ReplacementService {
+public class ReplacementServiceImpl implements ReplacementService {
     private final JpaReplacementRepository replacementRepository;
     private final JpaGroupRepository groupRepository;
 
@@ -45,16 +45,15 @@ public class IReplacementService implements ReplacementService {
             String groupName = item.getString("group_name");
 
             LocalDate date = LocalDate.parse(item.getString("date"));
-            String timetable = item.getJSONArray("timetable").toString();
+            String lessons = item.getJSONArray("lessons").toString();
 
             groups.forEach(group -> {
                 if (group.getGroupName().equalsIgnoreCase(groupName)) {
-                    Integer groupId = group.getId();
-                    replacementRepository.findByGroupIdAndDate(groupId, date)
+                    replacementRepository.findByGroupAndDate(group, date)
                             .orElseGet(() -> replacementRepository.save(
                                     Replacement.builder()
-                                            .groupId(groupId)
-                                            .timetable(timetable)
+                                            .group(group)
+                                            .lessons(lessons)
                                             .date(date)
                                             .build()
                             ));

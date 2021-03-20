@@ -1,5 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
+import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.service.GroupService;
 import com.karmanchik.chtotib_bot_rest_service.service.ReplacementService;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 @RestController
@@ -36,12 +39,12 @@ public class FileRestController {
     public @ResponseBody
     ResponseEntity<Object> uploadGroupFile(MultipartFile[] files) {
         try {
-            JSONArray json = new JSONArray();
+            List<Group> groups = new ArrayList<>();
             for (var file : files) {
                 log.info("Sending file: {}", file);
-                groupService.save(file);
+                groups.addAll(groupService.save(file));
             }
-            return ResponseEntity.status(HttpStatus.OK).body(json);
+            return ResponseEntity.status(HttpStatus.OK).body(groups);
         } catch (IOException | StringReadException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

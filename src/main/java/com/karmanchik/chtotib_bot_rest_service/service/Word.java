@@ -11,6 +11,9 @@ import java.io.InputStream;
 
 @Log4j2
 public class Word {
+    private Word() {
+    }
+
     public static String getText(InputStream stream) {
         try (InputStream inputStream = stream) {
             XWPFDocument document = new XWPFDocument(OPCPackage.open(inputStream));

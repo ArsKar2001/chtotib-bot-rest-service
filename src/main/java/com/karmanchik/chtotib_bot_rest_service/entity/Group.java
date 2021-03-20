@@ -1,18 +1,15 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.json.JSONArray;
-import org.json.JSONString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(
@@ -33,13 +30,14 @@ public class Group extends AbstractBaseEntity {
     @NotNull
     private String groupName;
 
-    @Column(name = "timetable", columnDefinition = "jsonb", nullable = false)
+    @Column(name = "lessons", columnDefinition = "jsonb", nullable = false)
     @Type(type = "jsonb")
     private String lessons;
 
     @Getter
-    @OneToMany(mappedBy = "group")
-    private Set<Replacement> replacements;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Replacement> replacements;
 
     public Group(String groupName) {
         this.groupName = groupName;
