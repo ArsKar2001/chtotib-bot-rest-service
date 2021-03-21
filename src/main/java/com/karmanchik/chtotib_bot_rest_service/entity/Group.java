@@ -3,6 +3,7 @@ package com.karmanchik.chtotib_bot_rest_service.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
+import org.hibernate.annotations.SortComparator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -37,6 +38,7 @@ public class Group extends AbstractBaseEntity {
     @Getter
     @JsonManagedReference
     @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy(value = "date ASC")
     private List<Replacement> replacements;
 
     public Group(String groupName) {
