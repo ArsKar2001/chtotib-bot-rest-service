@@ -36,6 +36,7 @@ public class Group extends AbstractBaseEntity {
     private String lessons;
 
     @Getter
+    @JsonManagedReference
     @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy(value = "date ASC")
     private List<Replacement> replacements;

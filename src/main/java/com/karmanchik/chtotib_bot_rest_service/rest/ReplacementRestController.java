@@ -51,7 +51,6 @@ public class ReplacementRestController {
             Replacement replacement = replacementService.findById(id);
             replacement.setDate(replacementDetails.getDate());
             replacement.setLessons(replacementDetails.getLessons());
-            replacement.setGroup(replacementDetails.getGroup());
             return ResponseEntity.ok(replacement);
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);

@@ -33,6 +33,7 @@ public class Replacement extends AbstractBaseEntity {
     private LocalDate date;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "group_id")
     private Group group;
 

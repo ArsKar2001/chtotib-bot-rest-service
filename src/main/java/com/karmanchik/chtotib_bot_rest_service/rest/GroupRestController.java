@@ -58,10 +58,9 @@ public class GroupRestController {
     @ResponseBody
     public ResponseEntity<?> getLessons(@PathVariable(name = "id") @Valid Integer groupId) {
         try {
-            Group group = groupService
-                    .findById(groupId);
-            JSONArray lessonsArray = new JSONArray(group.getLessons());
-            return ResponseEntity.ok().body(lessonsArray);
+            Group group = groupService.findById(groupId);
+            List<Object> list = new JSONArray(group.getLessons()).toList();
+            return ResponseEntity.ok().body(list);
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

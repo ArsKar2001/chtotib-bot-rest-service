@@ -105,7 +105,7 @@ public class UserRestController {
         try {
             User user = userService.findById(id);
             JSONArray jsonArray = new JSONArray(user.getGroup().getLessons());
-            return ResponseEntity.ok(jsonArray);
+            return ResponseEntity.ok(jsonArray.toList());
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
