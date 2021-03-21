@@ -1100,3 +1100,4 @@
 [main] INFO  com.karmanchik.chtotib_bot_rest_service.configuration.MyConfiguration  - Creating Async task Executor!
 2021-03-20 19:14:40 INFO  MyConfiguration:26 - Creating Async task Executor!
 2021-03-20 19:50:18 INFO  MyConfiguration:26 - Creating Async task Executor!
+2021-03-21 11:48:26 INFO  MyConfiguration:26 - Creating Async task Executor!

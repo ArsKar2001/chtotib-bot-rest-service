@@ -38,7 +38,7 @@ public class ReplacementRestController {
         }
     }
 
-    @PostMapping("/insert/replacement")
+    @PostMapping("/replacements")
     public ResponseEntity<?> createReplacement(@Valid @RequestBody Replacement replacement) {
         Replacement save = replacementService.save(replacement);
         return ResponseEntity.ok(save);
