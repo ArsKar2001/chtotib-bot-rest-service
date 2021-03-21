@@ -20,6 +20,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Replacement extends AbstractBaseEntity {
 
+    @Column(name = "group_id", insertable = false, updatable = false)
+    @NotNull
+    private Integer groupId;
+
     @Column(name = "lessons", columnDefinition = "jsonb", nullable = false)
     @Type(type = "jsonb")
     private String lessons;
@@ -29,7 +33,7 @@ public class Replacement extends AbstractBaseEntity {
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "group_id", referencedColumnName = "id")
+    @JoinColumn(name = "group_id")
     private Group group;
 
     @Override
