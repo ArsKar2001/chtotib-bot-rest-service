@@ -10,9 +10,9 @@ Rest API для панели администратора, с использов
 | ----- | --- | ---------- | --------------------------- |
 | GET   | /api/v1/users | Вернет массив всех пользователей | |
 | GET   | /api/v1/user/{`user_id`} | Вернет пользователя по `user_id` | [JSON](#get_user_by_id) |
-| GET   | /user/{`user_id`}/user_state | Вернет статус пользователя | [JSON](#get_user_by_id) |
+| GET   | /user/{`user_id`}/user_state | Вернет статус пользователя | [JSON](#get_user_state_by_id) |
 | GET   | /user/{`user_id`}/bot_state | Вернет статус чат-бота для этого пользователя | [JSON](#get_bot_state_by_id) |
-| GET   | /user/{`user_id`}/role | Вернет роль пользователя | [JSON](#get_bot_state_by_id) |
+| GET   | /user/{`user_id`}/role | Вернет роль пользователя | [JSON](#get_role_by_id) |
 | GET   | /user/{`user_id`}/group | Вернет группу пользователя |  |
 | GET   | /user/{`user_id`}/group/lessons | Вернет расписание группы пользователя |  |
 | GET   | /user/{`user_id`}/group/replacement | Вернет замену для группы пользователя |  |
@@ -25,7 +25,7 @@ Rest API для панели администратора, с использов
 | GET | /api/v1/groups | Вернет массив всех групп | |
 | GET | /api/v1/group/{`id`} | Вернет групп по `group_id` | [JSON](#get_group_by_id) |
 | GET | /api/v1/group/{`id`}/replacement | Вернет замену для группы | [JSON](#get_group_replacement_by_id) |
-| GET | /api/v1/group/{`id`}/lessons | Вернет расписание группы | [JSON](#get_group_replacement_by_id) |
+| GET | /api/v1/group/{`id`}/lessons | Вернет расписание группы | [JSON](#get_group_lessons_by_id) |
 | POST | /api/v1/groups | Создание новой группы | [JSON](#create_group_by_id) |
 | PUT | /api/v1/group/{`id`} | Обновление группы | [JSON](#put_group_by_id) |
 | DELETE | /api/v1/group/{`id`} | Удаление группы |  |
@@ -222,6 +222,236 @@ Rest API для панели администратора, с использов
         "id": 100219,
         "lessons": "[{\"number\": \"II\", \"teacher\": \"Гильфанова Л.А.\", \"auditorium\": \"\", \"discipline\": \"Математика\"}, {\"number\": \"IV\", \"teacher\": \"Насибулин С.А.\", \"auditorium\": \"\", \"discipline\": \"История\"}]",
         "date": "2021-12-18"
+    }
+]
+```
+
+#### <a id="get_group_lessons_by_id">Get Group Lessons by group_id -> /api/v1/group/{`group_id`}/lessons</a>
+```json
+[
+    {
+        "number": "I",
+        "auditorium": "312",
+        "teacher": "Насибулин С.А.",
+        "week_type": "NONE",
+        "discipline": "История",
+        "day_of_week": "0"
+    },
+    {
+        "number": "II",
+        "auditorium": "312",
+        "teacher": "Журавлева Л.Б.",
+        "week_type": "NONE",
+        "discipline": "Русский язык",
+        "day_of_week": "0"
+    },
+    {
+        "number": "III",
+        "auditorium": "312",
+        "teacher": "Назарова А.А., Туркова С.В.",
+        "week_type": "NONE",
+        "discipline": "Иностр. язык",
+        "day_of_week": "0"
+    },
+    {
+        "number": "IV",
+        "auditorium": "-",
+        "teacher": "Селин А.И.",
+        "week_type": "NONE",
+        "discipline": "Физ.культура",
+        "day_of_week": "0"
+    },
+    {
+        "number": "I",
+        "auditorium": "312",
+        "teacher": "Насибулин С.А.",
+        "week_type": "NONE",
+        "discipline": "Обществознание",
+        "day_of_week": "1"
+    },
+    {
+        "number": "II",
+        "auditorium": "312",
+        "teacher": "Кисель С.Д.",
+        "week_type": "NONE",
+        "discipline": "Физика",
+        "day_of_week": "1"
+    },
+    {
+        "number": "III",
+        "auditorium": "312",
+        "teacher": "Гильфанова Л.А.",
+        "week_type": "NONE",
+        "discipline": "Математика",
+        "day_of_week": "1"
+    },
+    {
+        "number": "IV",
+        "auditorium": "26,29",
+        "teacher": "Ведерников И.К., Самойлова Н.Г.",
+        "week_type": "NONE",
+        "discipline": "Информатика",
+        "day_of_week": "1"
+    },
+    {
+        "number": "V",
+        "auditorium": "-",
+        "teacher": "-",
+        "week_type": "NONE",
+        "discipline": "-",
+        "day_of_week": "1"
+    },
+    {
+        "number": "I",
+        "auditorium": "-",
+        "teacher": "-",
+        "week_type": "DOWN",
+        "discipline": "-",
+        "day_of_week": "2"
+    },
+    {
+        "number": "I",
+        "auditorium": "",
+        "teacher": "Селин А.И.",
+        "week_type": "UP",
+        "discipline": "Физ.культура",
+        "day_of_week": "2"
+    },
+    {
+        "number": "II",
+        "auditorium": "312",
+        "teacher": "Журавлева Л.Б.",
+        "week_type": "NONE",
+        "discipline": "Литература",
+        "day_of_week": "2"
+    },
+    {
+        "number": "III",
+        "auditorium": "312",
+        "teacher": "Воронецкая А.И.",
+        "week_type": "NONE",
+        "discipline": "Биология",
+        "day_of_week": "2"
+    },
+    {
+        "number": "IV",
+        "auditorium": "312",
+        "teacher": "Кисель С.Д, Ковалева В.В.",
+        "week_type": "DOWN",
+        "discipline": "Физика",
+        "day_of_week": "2"
+    },
+    {
+        "number": "IV",
+        "auditorium": "-",
+        "teacher": "-",
+        "week_type": "UP",
+        "discipline": "-",
+        "day_of_week": "2"
+    },
+    {
+        "number": "I",
+        "auditorium": "312",
+        "teacher": "Гильфанова Л.А.",
+        "week_type": "NONE",
+        "discipline": "Математика",
+        "day_of_week": "3"
+    },
+    {
+        "number": "II",
+        "auditorium": "306",
+        "teacher": "Швецова Д.О.",
+        "week_type": "NONE",
+        "discipline": "Химия",
+        "day_of_week": "3"
+    },
+    {
+        "number": "III",
+        "auditorium": "312",
+        "teacher": "Насибулин С.А.",
+        "week_type": "DOWN",
+        "discipline": "Обществознание",
+        "day_of_week": "3"
+    },
+    {
+        "number": "III",
+        "auditorium": "312",
+        "teacher": "Насибулин С.А.",
+        "week_type": "UP",
+        "discipline": "История",
+        "day_of_week": "3"
+    },
+    {
+        "number": "IV",
+        "auditorium": "312",
+        "teacher": "Лебедева Т.Ю.",
+        "week_type": "NONE",
+        "discipline": "Классный час",
+        "day_of_week": "3"
+    },
+    {
+        "number": "I",
+        "auditorium": "312",
+        "teacher": "Назарова А.А., Туркова С.В.",
+        "week_type": "DOWN",
+        "discipline": "Иностр. язык",
+        "day_of_week": "4"
+    },
+    {
+        "number": "I",
+        "auditorium": "-",
+        "teacher": "-",
+        "week_type": "UP",
+        "discipline": "-",
+        "day_of_week": "4"
+    },
+    {
+        "number": "II",
+        "auditorium": "312",
+        "teacher": "Бабикова Н.А.",
+        "week_type": "NONE",
+        "discipline": "ОБЖ",
+        "day_of_week": "4"
+    },
+    {
+        "number": "III",
+        "auditorium": "312",
+        "teacher": "Журавлева Л.Б.",
+        "week_type": "NONE",
+        "discipline": "Родная литература",
+        "day_of_week": "4"
+    },
+    {
+        "number": "IV",
+        "auditorium": "312",
+        "teacher": "Кисель С.Д.",
+        "week_type": "DOWN",
+        "discipline": "Физика",
+        "day_of_week": "4"
+    },
+    {
+        "number": "IV",
+        "auditorium": "312",
+        "teacher": "Гильфанова Л.А.",
+        "week_type": "UP",
+        "discipline": "Математика",
+        "day_of_week": "4"
+    },
+    {
+        "number": "V",
+        "auditorium": "-",
+        "teacher": "-",
+        "week_type": "DOWN",
+        "discipline": "-",
+        "day_of_week": "4"
+    },
+    {
+        "number": "V",
+        "auditorium": "26",
+        "teacher": "Ведерников И.К.",
+        "week_type": "UP",
+        "discipline": "Информатика",
+        "day_of_week": "4"
     }
 ]
 ```
