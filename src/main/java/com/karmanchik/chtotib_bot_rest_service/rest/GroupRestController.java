@@ -22,11 +22,13 @@ public class GroupRestController {
     }
 
     @GetMapping("/groups")
+    @ResponseBody
     public List<Group> getAllGroups() {
         return groupService.findAll();
     }
 
     @GetMapping("/group/{id}")
+    @ResponseBody
     public ResponseEntity<Object> getGroup(@PathVariable(name = "id") @Valid Integer groupId) {
         try {
             Group group = groupService
@@ -39,11 +41,13 @@ public class GroupRestController {
     }
 
     @PostMapping("/groups")
+    @ResponseBody
     public Group createGroup(@Valid @RequestBody Group group) {
         return groupService.save(group);
     }
 
     @PutMapping("/group/{id}")
+    @ResponseBody
     public ResponseEntity<Object> updateGroup(
             @PathVariable(name = "id") Integer groupId,
             @Valid @RequestBody Group groupDetails) {

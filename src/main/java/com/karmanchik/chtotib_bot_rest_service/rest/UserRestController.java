@@ -27,6 +27,7 @@ public class UserRestController {
      * @return list
      */
     @GetMapping("/users")
+    @ResponseBody
     public List<User> getAllUsers() {
         return userService.findAll();
     }
@@ -38,6 +39,7 @@ public class UserRestController {
      * @return the user by id
      */
     @GetMapping("/user/{id}")
+    @ResponseBody
     public ResponseEntity<?> getUserById(@PathVariable(value = "id") Integer userId) {
         try {
             User user = userService.findById(userId);
