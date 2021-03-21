@@ -10,12 +10,12 @@ Rest API для панели администратора, с использов
 | ----- | --- | ---------- | --------------------------- |
 | GET   | /api/v1/users | Вернет массив всех пользователей | |
 | GET   | /api/v1/user/{`user_id`} | Вернет пользователя по `user_id` | [JSON](#get_user_by_id) |
-| GET   | /user/{`user_id`}/user_state | Вернет статус пользователя | [JSON](#get_user_state_by_id) |
-| GET   | /user/{`user_id`}/bot_state | Вернет статус чат-бота для этого пользователя | [JSON](#get_bot_state_by_id) |
-| GET   | /user/{`user_id`}/role | Вернет роль пользователя | [JSON](#get_role_by_id) |
-| GET   | /user/{`user_id`}/group | Вернет группу пользователя |  |
-| GET   | /user/{`user_id`}/group/lessons | Вернет расписание группы пользователя |  |
-| GET   | /user/{`user_id`}/group/replacement | Вернет замену для группы пользователя |  |
+| GET   | /api/v1/user/{`user_id`}/user_state | Вернет статус пользователя | [JSON](#get_user_state_by_id) |
+| GET   | /api/v1/user/{`user_id`}/bot_state | Вернет статус чат-бота для этого пользователя | [JSON](#get_bot_state_by_id) |
+| GET   | /api/v1/user/{`user_id`}/role | Вернет роль пользователя | [JSON](#get_role_by_id) |
+| GET   | /api/v1/user/{`user_id`}/group | Вернет группу пользователя |  |
+| GET   | /api/v1/user/{`user_id`}/group/lessons | Вернет расписание группы пользователя |  |
+| GET   | /api/v1/user/{`user_id`}/group/replacement | Вернет замену для группы пользователя |  |
 | PUT   | /api/v1/user/{`user_id`} | Обновление пользователя по `user_id` | [JSON](#put_user_by_id) |
 | DELETE    | /api/v1/user/{`user_id`} | Удаление пользователя по `user_id` | |
 
