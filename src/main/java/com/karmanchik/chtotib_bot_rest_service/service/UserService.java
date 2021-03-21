@@ -1,14 +1,14 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.User;
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     List<User> findAll();
 
-    Optional<User> findById(Integer userId);
+    User findById(Integer userId) throws ResourceNotFoundException;
 
     User save(User user);
 

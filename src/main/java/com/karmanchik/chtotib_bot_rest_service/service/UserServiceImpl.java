@@ -1,15 +1,15 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.User;
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaUserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Log4j2
-@Service
+@Service("userServiceImpl")
 public class UserServiceImpl implements UserService {
     private final JpaUserRepository userRepository;
 
@@ -23,8 +23,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Integer userId) {
-        return userRepository.findById(userId);
+    public User findById(Integer userId) throws ResourceNotFoundException {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId, User.class));
     }
 
     @Override

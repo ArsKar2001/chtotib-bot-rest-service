@@ -13,18 +13,17 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "replacement")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Replacement extends AbstractBaseEntity {
-    @Setter
-    @Getter
+
     @Column(name = "lessons", columnDefinition = "jsonb", nullable = false)
     @Type(type = "jsonb")
     private String lessons;
 
-    @Getter
-    @Setter
     @Column(name = "date_value")
     @NotNull
     private LocalDate date;

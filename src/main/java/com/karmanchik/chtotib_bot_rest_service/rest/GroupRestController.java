@@ -1,7 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
-import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.GroupService;
 import lombok.extern.log4j.Log4j2;
@@ -10,13 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/v1/")
 public class GroupRestController {
     private final GroupService groupService;
 

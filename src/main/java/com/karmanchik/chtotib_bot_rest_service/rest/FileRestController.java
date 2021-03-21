@@ -19,7 +19,7 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/v1/")
 public class FileRestController {
     private final GroupService groupService;
     private final ReplacementService replacementService;

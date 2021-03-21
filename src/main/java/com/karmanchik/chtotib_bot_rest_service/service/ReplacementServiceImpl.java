@@ -1,6 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +31,27 @@ public class ReplacementServiceImpl implements ReplacementService {
     @Override
     public Replacement save(Replacement replacement) {
         return replacementRepository.save(replacement);
+    }
+
+    @Override
+    public Replacement findById(Integer id) throws ResourceNotFoundException {
+        return replacementRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id, Replacement.class));
+    }
+
+    @Override
+    public List<Replacement> findAll() {
+        return replacementRepository.findAll(Sort.by(Sort.Direction.ASC, "date"));
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        replacementRepository.deleteById(id);
+    }
+
+    @Override
+    public void delete(Replacement replacement) {
+        replacementRepository.delete(replacement);
     }
 
     @Override

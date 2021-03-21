@@ -1,8 +1,8 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ public interface GroupService {
 
     List<Group> findAll();
 
-    Group findById(Integer groupId);
+    Group findById(Integer groupId) throws ResourceNotFoundException;
 
     void delete(Group group);
 }

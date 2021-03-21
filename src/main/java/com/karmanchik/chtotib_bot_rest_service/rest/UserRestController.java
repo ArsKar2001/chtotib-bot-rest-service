@@ -1,7 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.User;
-import com.karmanchik.chtotib_bot_rest_service.jpa.JpaUserRepository;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.UserService;
 import lombok.extern.log4j.Log4j;
@@ -10,18 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Log4j
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/v1/")
 public class UserRestController {
-    private final UserService userRepository;
+    private final UserService userService;
 
-    public UserRestController(UserService userRepository) {
-        this.userRepository = userRepository;
+    public UserRestController(UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -31,7 +28,7 @@ public class UserRestController {
      */
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userService.findAll();
     }
 
     /**
@@ -39,25 +36,15 @@ public class UserRestController {
      *
      * @param userId user id
      * @return the user by id
-     * @throws ResourceNotFoundException не найден пользователь по userId
      */
     @GetMapping("/user/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable(value = "id") Integer userId) throws ResourceNotFoundException {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(userId, User.class));
-        return ResponseEntity.ok().body(user);
-    }
-
-    /**
-     * Создает нового user в таблице users
-     *
-     * @param user user
-     * @return новый user
-     */
-    @PostMapping("/user")
-    public User createUser(@Valid @RequestBody User user) {
-        return userRepository.save(user);
+    public ResponseEntity<?> getUserById(@PathVariable(value = "id") Integer userId) {
+        try {
+            User user = userService.findById(userId);
+            return ResponseEntity.ok().body(user);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     /**
@@ -68,35 +55,43 @@ public class UserRestController {
      * @return update user
      */
     @PutMapping("/user/{id}")
-    public ResponseEntity<User> updateUser(
+    @ResponseBody
+    public ResponseEntity<?> updateUser(
             @PathVariable(value = "id") Integer userId, @Valid @RequestBody User userDetail) {
-        User user =
-                userRepository
-                        .findById(userId)
-                        .orElseThrow(() -> new ResourceNotFoundException(userId, User.class));
-        user.setBotLastMessageId(userDetail.getBotLastMessageId());
-        user.setBotStateId(userDetail.getBotStateId());
-        user.setUserStateId(userDetail.getUserStateId());
-        user.setGroupId(userDetail.getGroupId());
-        user.setTeacher(userDetail.getTeacher());
-        user.setRoleId(userDetail.getRoleId());
+        try {
+            User user = userService.findById(userId);
+            user.setBotLastMessageId(userDetail.getBotLastMessageId());
+            user.setBotStateId(userDetail.getBotStateId());
+            user.setUserStateId(userDetail.getUserStateId());
+            user.setGroupId(userDetail.getGroupId());
+            user.setTeacher(userDetail.getTeacher());
+            user.setRoleId(userDetail.getRoleId());
 
-        final User updateUser = userRepository.save(user);
-        return new ResponseEntity<>(updateUser, HttpStatus.OK);
+            final User updateUser = userService.save(user);
+            return ResponseEntity.ok(updateUser);
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
+    /**
+     * @param userId идентификатор объекта User
+     * @return Id удаленного User
+     *
+     * Уделение User
+     */
     @DeleteMapping("/user/{id}")
-    public Map<String, Boolean> deleteUser(
+    @ResponseBody
+    public ResponseEntity<?> deleteUser(
             @PathVariable(value = "id") Integer userId) {
-        User user =
-                userRepository
-                        .findById(userId)
-                        .orElseThrow(() -> new ResourceNotFoundException(userId, User.class));
-        userRepository.delete(user);
-
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-
-        return response;
+        try {
+            User user = userService.findById(userId);
+            userService.delete(user);
+            return ResponseEntity.ok(userId);
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }
