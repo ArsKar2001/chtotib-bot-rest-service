@@ -4,6 +4,7 @@ import com.karmanchik.chtotib_bot_rest_service.entity.User;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.UserService;
 import lombok.extern.log4j.Log4j;
+import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +46,80 @@ public class UserRestController {
             User user = userService.findById(userId);
             return ResponseEntity.ok().body(user);
         } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/{id}/user_state")
+    @ResponseBody
+    public ResponseEntity<?> getUserState(@Valid @PathVariable("id") Integer id) {
+        try {
+            User user = userService.findById(id);
+            return ResponseEntity.ok(user.getUserState());
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/{id}/bot_state")
+    @ResponseBody
+    public ResponseEntity<?> getBotState(@Valid @PathVariable("id") Integer id) {
+        try {
+            User user = userService.findById(id);
+            return ResponseEntity.ok(user.getBotState());
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/{id}/role")
+    @ResponseBody
+    public ResponseEntity<?> getRole(@Valid @PathVariable("id") Integer id) {
+        try {
+            User user = userService.findById(id);
+            return ResponseEntity.ok(user.getRole());
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/{id}/group")
+    @ResponseBody
+    public ResponseEntity<?> getGroup(@Valid @PathVariable("id") Integer id) {
+        try {
+            User user = userService.findById(id);
+            return ResponseEntity.ok(user.getGroup());
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/{id}/group/lessons")
+    @ResponseBody
+    public ResponseEntity<?> getGroupLessons(@Valid @PathVariable("id") Integer id) {
+        try {
+            User user = userService.findById(id);
+            JSONArray jsonArray = new JSONArray(user.getGroup().getLessons());
+            return ResponseEntity.ok(jsonArray);
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/{id}/group/replacement")
+    @ResponseBody
+    public ResponseEntity<?> getGroupReplacement(@Valid @PathVariable("id") Integer id) {
+        try {
+            User user = userService.findById(id);
+            return ResponseEntity.ok(user.getGroup().getReplacements());
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }

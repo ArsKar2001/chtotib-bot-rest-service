@@ -4,6 +4,7 @@ import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.GroupService;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,11 +30,38 @@ public class GroupRestController {
 
     @GetMapping("/group/{id}")
     @ResponseBody
-    public ResponseEntity<Object> getGroup(@PathVariable(name = "id") @Valid Integer groupId) {
+    public ResponseEntity<?> getGroup(@PathVariable(name = "id") @Valid Integer groupId) {
         try {
             Group group = groupService
                     .findById(groupId);
             return ResponseEntity.ok().body(group);
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/group/{id}/replacement")
+    @ResponseBody
+    public ResponseEntity<?> getReplacement(@PathVariable(name = "id") @Valid Integer groupId) {
+        try {
+            Group group = groupService
+                    .findById(groupId);
+            return ResponseEntity.ok().body(group.getReplacements());
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/group/{id}/lessons")
+    @ResponseBody
+    public ResponseEntity<?> getLessons(@PathVariable(name = "id") @Valid Integer groupId) {
+        try {
+            Group group = groupService
+                    .findById(groupId);
+            JSONArray lessonsArray = new JSONArray(group.getLessons());
+            return ResponseEntity.ok().body(lessonsArray);
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
