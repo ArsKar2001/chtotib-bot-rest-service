@@ -4,7 +4,7 @@ import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
-import com.karmanchik.chtotib_bot_rest_service.parser.GroupParser;
+import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,8 +29,8 @@ public class GroupServiceImpl implements GroupService {
     public List<Group> save(MultipartFile file) throws StringReadException {
         List<Group> groups = new LinkedList<>();
         try (InputStream stream = file.getInputStream()) {
-            GroupParser parser = new GroupParser(stream);
-            JSONArray array = new JSONArray(parser.parse());
+            TimetableParser parser = new TimetableParser(stream);
+            JSONArray array = new JSONArray(parser);
             log.info("Saving a json of groups of size {} records", array.length());
             for (Object o : array) {
                 JSONObject jsonObject = (JSONObject) o;

@@ -1,7 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.parser;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.model.GroupName;
+import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.model.Month;
 import com.karmanchik.chtotib_bot_rest_service.service.Word;
 import lombok.extern.log4j.Log4j2;
@@ -9,8 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.InputStream;
-import java.text.DateFormatSymbols;
-import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
@@ -134,7 +132,7 @@ public class ReplacementParser {
                         String s4 = s3 + s;
                         nll.add(s4);
                     } else {
-                        s3 = GroupName.getValidGroupName(s2[0]);
+                        s3 = ValidGroupName.getValidGroupName(s2[0]);
                         String s1 = s3 + s.substring(s.indexOf(';'));
                         nll.add(s1);
                     }

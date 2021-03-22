@@ -4,15 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Courses {
-    private static final Map<String, String> COURSES = Map.of(
-            "I", "1",
-            "II", "2",
-            "III", "3",
-            "IV", "4"
+public class NumberLesson {
+    private static final Map<String, Integer> COURSES = Map.of(
+            "I", 0,
+            "II", 1,
+            "III", 2,
+            "IV", 3,
+            "V", 4,
+            "VI", 5,
+            "VII", 6,
+            "VIII", 7
+
     );
 
-    public static Map<String, String> getAll() {
+    private NumberLesson() {
+    }
+
+    public static Map<String, Integer> getAll() {
         return COURSES;
     }
 
@@ -24,7 +32,7 @@ public class Courses {
         return COURSES.containsValue(o);
     }
 
-    public static String get(Object o) {
+    public static Integer get(Object o) {
         return COURSES.get(o);
     }
 
@@ -32,7 +40,7 @@ public class Courses {
         return new ArrayList<>(COURSES.keySet());
     }
 
-    public static List<String> getValues() {
+    public static List<Integer> getValues() {
         return new ArrayList<>(COURSES.values());
     }
 }

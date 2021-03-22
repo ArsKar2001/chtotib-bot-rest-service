@@ -4,6 +4,7 @@ import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.ReplacementService;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,18 @@ public class ReplacementRestController {
         try {
             Replacement replacement = replacementService.findById(id);
             return ResponseEntity.ok(replacement);
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/replacements/{id}/lessons")
+    public ResponseEntity<?> getReplacementLessons(@Valid @PathVariable("id") Integer id) {
+        try {
+            Replacement replacement = replacementService.findById(id);
+            var list = new JSONArray(replacement.getLessons()).toList();
+            return ResponseEntity.ok(list);
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

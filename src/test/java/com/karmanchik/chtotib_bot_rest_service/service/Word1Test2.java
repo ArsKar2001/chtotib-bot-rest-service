@@ -1,7 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.parser.GroupParser;
+import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -15,9 +15,9 @@ class Word1Test2 {
     @Test
     void testFile_1() {
         try {
-            final FileInputStream stream = new FileInputStream(FILE_2);
-            GroupParser parser = new GroupParser(stream);
-            System.out.println(parser.parse());
+            final FileInputStream stream = new FileInputStream(FILE_1);
+            TimetableParser parser = new TimetableParser(stream);
+            parser.createTimetableForGroup();
         } catch (FileNotFoundException | StringReadException e) {
             e.printStackTrace();
         }
@@ -26,9 +26,9 @@ class Word1Test2 {
     @Test
     void testFile_2() {
         try {
-            final FileInputStream stream = new FileInputStream(FILE_1);
-            GroupParser parser = new GroupParser(stream);
-            System.out.println(parser.parse());
+            final FileInputStream stream = new FileInputStream(FILE_2);
+            TimetableParser parser = new TimetableParser(stream);
+            parser.createTimetableForGroup();
         } catch (FileNotFoundException | StringReadException e) {
             e.printStackTrace();
         }

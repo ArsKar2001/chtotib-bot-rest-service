@@ -16,6 +16,10 @@ public class StringReadException extends Exception {
         this.setCode(code);
     }
 
+    public StringReadException(String str, String strItem, String example) {
+        super(String.format("Ошибка в строке: \"%s\"; \"%s\" - не соответствует шаблону: \"%s\"", str, strItem, example));
+    }
+
     /**
      * Constructs a new exception with the specified detail message and
      * cause.  <p>Note that the detail message associated with

@@ -15,6 +15,9 @@ public class DayOfWeek {
             "Воскресенье", 6
     );
 
+    private DayOfWeek() {
+    }
+
     public static boolean containsKey(String s) {
         return DAYS_OF_WEEK.containsKey(s);
     }

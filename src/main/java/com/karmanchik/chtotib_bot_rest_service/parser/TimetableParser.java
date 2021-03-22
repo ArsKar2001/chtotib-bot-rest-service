@@ -1,30 +1,24 @@
 package com.karmanchik.chtotib_bot_rest_service.parser;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.model.DayOfWeek;
-import com.karmanchik.chtotib_bot_rest_service.model.GroupName;
+import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.service.Word;
 import lombok.extern.log4j.Log4j2;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j2
-public class GroupParser {
+public class TimetableParser {
     private final InputStream stream;
 
-    public GroupParser(InputStream stream) {
+    public TimetableParser(InputStream stream) {
         this.stream = stream;
     }
 
-    public String parse() throws StringReadException {
+/*    public String parse() throws StringReadException {
         JSONArray groups = new JSONArray();
         JSONObject group;
         JSONArray lessons;
@@ -44,12 +38,16 @@ public class GroupParser {
                 try {
                     lesson = new JSONObject();
                     String[] splitStr = s.split(";");
-                    lesson.put("day_of_week", splitStr[1]);
+                    int dayOfWeek = Integer.parseInt(splitStr[1]);
+                    String validTeacherName = validTeacherName(splitStr[5]);
+
+                    lesson.put("day_of_week", dayOfWeek);
                     lesson.put("number", splitStr[2]);
                     lesson.put("discipline", splitStr[3]);
                     lesson.put("auditorium", splitStr[4]);
-                    lesson.put("teacher", splitStr[5]);
+                    lesson.put("teacher", validTeacherName);
                     lesson.put("week_type", splitStr[6]);
+
                     lessons.put(lesson);
                 } catch (Exception e) {
                     throw new StringReadException(s);
@@ -61,9 +59,16 @@ public class GroupParser {
         }
         log.debug("Create new JSON: " + groups.toString());
         return groups.toString();
+    }*/
+
+    public List<?> createTimetableForGroup() throws StringReadException {
+        String text = Word.getText(stream);
+        var list = textToCSV(text);
+        list.forEach(strings -> strings.forEach(System.out::println));
+        return null;
     }
 
-    public List<List<String>> textToCSV(String text) throws StringReadException {
+    public List<? extends List<? extends String>> textToCSV(String text) throws StringReadException {
         final String rText = text.replace('\t', ';');
         final String[] sText = rText.split("\n");
 
@@ -76,7 +81,7 @@ public class GroupParser {
         return splitUpDownNoneListLists(cll);
     }
 
-    private List<List<String>> createListLists(List<String> stringList) throws StringReadException {
+    private List<? extends List<? extends String>> createListLists(List<? extends String> stringList) throws StringReadException {
         List<List<String>> listLists = new LinkedList<>();
         List<String> list = new LinkedList<>();
 
@@ -99,7 +104,7 @@ public class GroupParser {
         return listLists;
     }
 
-    private List<List<String>> splitRightLeftListLists(List<List<String>> listLists) throws StringReadException {
+    private List<? extends List<? extends String>> splitRightLeftListLists(List<? extends List<? extends String>> listLists) throws StringReadException {
         List<String> listRight = new LinkedList<>();
         List<String> listLeft = new LinkedList<>();
         List<List<String>> lls = new LinkedList<>();
@@ -131,31 +136,32 @@ public class GroupParser {
         return lls;
     }
 
-    private List<List<String>> correctingListLists(List<List<String>> sListLists) throws StringReadException {
+    private List<? extends List<? extends String>> correctingListLists(List<? extends List<? extends String>> sListLists) throws StringReadException {
         List<String> ls = new LinkedList<>();
         List<List<String>> lls = new LinkedList<>();
         String s1 = "";
-        Integer i = 0;
+        String s2 = "";
+        Pattern ptGroupName = ValidGroupName.getPtGroupName();
 
         sListLists.removeIf(list -> list.get(0).split("\\s").length < 2);
         for (var list : sListLists) {
             for (String str : list) {
-                Matcher matcher = GroupName.matcher(str);
-                if (matcher.find()) {
-                    String s = str.substring(matcher.start(), matcher.end());
-                    s1 = GroupName.getValidGroupName(s);
-                } else {
-                    try {
-                        final String[] strings = str.split(";", -5);
-                        if (!strings[0].equals("-"))
-                            i = DayOfWeek.containsKey(strings[0]) ? DayOfWeek.get(strings[0]): DayOfWeek.getValues().get(0);
-                        str = str.substring(str.indexOf(';'));
-                        str = i + str;
-                        str = s1 + ";" + str;
+                try {
+                    Matcher matcher = ptGroupName.matcher(str);
+                    String[] strings = str.split(";");
+                    if (matcher.find()) {
+                        String s = str.substring(matcher.start(), matcher.end());
+                        s1 = ValidGroupName.getValidGroupName(s);
+                    } else {
+                        String dayName = strings[0];
+                        if (!Objects.equals(dayName, "-")) s2 = dayName;
+                        else strings[0] = s2;
+                        String s = String.join(";", strings);
+                        str = s1 + ";" + s;
                         ls.add(str);
-                    } catch (Exception e) {
-                        throw new StringReadException(str, e);
                     }
+                } catch (Exception e) {
+                    throw new StringReadException(str, e);
                 }
             }
             lls.add(new LinkedList<>(ls));
@@ -164,36 +170,36 @@ public class GroupParser {
         return lls;
     }
 
-    private List<List<String>> splitUpDownNoneListLists(List<List<String>> cll) throws StringReadException {
+    private List<? extends List<? extends String>> splitUpDownNoneListLists(List<? extends List<? extends String>> cll) throws StringReadException {
         StringBuilder currentStr1;
         StringBuilder currentStr2;
         List<String> ls;
         List<List<String>> lls = new ArrayList<>();
 
-        for (List<String> splitPage : cll) {
+        for (var splitPage : cll) {
             ls = new ArrayList<>();
             for (String str : splitPage) {
                 try {
                     currentStr1 = new StringBuilder();
                     currentStr2 = new StringBuilder();
-                    String[] splitStr = str.split(";");
+                    String[] arrStr = str.split(";");
                     if (str.contains("/")) {
-                        String[] splitStr2 = splitStr.clone();
-                        for (int i = 0; i < splitStr.length; i++) {
-                            if (splitStr[i].contains("/")) {
-                                String[] ss = splitStr[i].split("/", -5);
-                                splitStr[i] = ss[0].trim();
-                                splitStr2[i] = ss[1].trim();
+                        String[] arrStrClone = arrStr.clone();
+                        for (int i = 0; i < arrStr.length; i++) {
+                            if (arrStr[i].contains("/")) {
+                                String[] ss = arrStr[i].split("/", -5);
+                                arrStr[i] = ss[0].trim();
+                                arrStrClone[i] = ss[1].trim();
                             }
                         }
                         currentStr1.append(
-                                String.join(";", splitStr)
+                                String.join(";", arrStr)
                         ).append(";").append("UP");
                         currentStr2.append(
-                                String.join(";", splitStr2)
+                                String.join(";", arrStrClone)
                         ).append(";").append("DOWN");
                         ls.add(currentStr2.toString());
-                    } else {
+                    } else if (str.contains(",")){
                         currentStr1.append(str).append(";").append("NONE");
                     }
                     ls.add(currentStr1.toString());
@@ -205,4 +211,5 @@ public class GroupParser {
         }
         return lls;
     }
+
 }
