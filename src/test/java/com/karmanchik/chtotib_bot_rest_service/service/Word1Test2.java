@@ -20,7 +20,7 @@ class Word1Test2 {
             final String text = Word.getText(stream);
             TimetableParser parser = new TimetableParser();
             parser.textToCSV(text)
-                    .forEach(strings -> strings.forEach(System.out::println));
+                    .forEach(System.out::println);
         } catch (StringReadException | IOException e) {
             e.printStackTrace();
         }
@@ -32,7 +32,7 @@ class Word1Test2 {
             final String text = Word.getText(stream);
             TimetableParser parser = new TimetableParser();
             parser.textToCSV(text)
-                    .forEach(strings -> strings.forEach(System.out::println));
+                    .forEach(System.out::println);
         } catch (StringReadException | IOException e) {
             e.printStackTrace();
         }

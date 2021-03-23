@@ -7,15 +7,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ValidGroupName {
-    private static final Pattern PT_GROUP_NAME =
-            Pattern.compile("([А-Я]|[а-я])+(\\s+|\\s+-|-|-\\s+|\\s+-\\s+)\\d{1,2}(\\s+|\\s+-|-|-\\s+|\\s+-\\s+)\\S{1,2}");
+    private static final Pattern GROUP_NAME =
+            Pattern.compile("[А-Яа-я]+(\\s?+-\\s?+|\\s?+)\\d{2}(\\s?+-\\s?+)\\d(\\S?|)");
     private static final Pattern ITEM_GROUP_NAME = Pattern.compile("((\\d+([а-я]|))|([А-Я]|[а-я])+)");
 
     private ValidGroupName() {
     }
 
-    public static Pattern getPtGroupName() {
-        return PT_GROUP_NAME;
+    public static Pattern getGroupName() {
+        return GROUP_NAME;
     }
 
     public static Pattern getItemGroupName() {

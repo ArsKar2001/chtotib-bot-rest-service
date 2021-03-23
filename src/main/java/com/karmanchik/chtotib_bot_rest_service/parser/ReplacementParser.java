@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j2
-public class ReplacementParser {
+public class ReplacementParser extends AbstractBaseParser {
 
     private final InputStream stream;
 
@@ -35,39 +35,46 @@ public class ReplacementParser {
         final String text = Word.getText(stream);
         final var lists = textToCSV(text);
 
-        for (var list : lists) {
-            replacement = new JSONObject();
-            lessons = new JSONArray();
-            LocalDate date = LocalDate.now();
-            for (String s : list) {
-                try {
-                    lesson = new JSONObject();
-                    String[] splitStr = s.split(";");
-                    groupName = splitStr[0];
-                    date = LocalDate.parse(splitStr[5]);
-                    lesson.put("number", splitStr[1]);
-                    lesson.put("discipline", splitStr[2]);
-                    lesson.put("auditorium", splitStr[3]);
-                    lesson.put("teacher", splitStr[4]);
-                    lessons.put(lesson);
-                } catch (Exception e) {
-                    throw new StringReadException(s);
-                }
-            }
-            replacement.put("group_name", groupName);
-            replacement.put("lessons", lessons);
-            replacement.put("date", date);
-            replacements.put(replacement);
-        }
+//        for (var list : lists) {
+//            replacement = new JSONObject();
+//            lessons = new JSONArray();
+//            LocalDate date = LocalDate.now();
+//            for (String s : list) {
+//                try {
+//                    lesson = new JSONObject();
+//                    String[] splitStr = s.split(";");
+//                    groupName = splitStr[0];
+//                    date = LocalDate.parse(splitStr[5]);
+//                    lesson.put("number", splitStr[1]);
+//                    lesson.put("discipline", splitStr[2]);
+//                    lesson.put("auditorium", splitStr[3]);
+//                    lesson.put("teacher", splitStr[4]);
+//                    lessons.put(lesson);
+//                } catch (Exception e) {
+//                    throw new StringReadException(s);
+//                }
+//            }
+//            replacement.put("group_name", groupName);
+//            replacement.put("lessons", lessons);
+//            replacement.put("date", date);
+//            replacements.put(replacement);
+//        }
         log.debug("Create new JSON: " + replacements.toString());
         return replacements.toString();
     }
 
-
-    public List<List<String>> textToCSV(String text) throws StringReadException {
+    /**
+     * Формирует данные в csv из исходного текста
+     *
+     * @param text Исходный текст из файла Расписания
+     * @return данные для импорта в csv-формате
+     * @throws StringReadException Неверное чтение строки
+     */
+    @Override
+    public List<? extends String> textToCSV(String text) throws StringReadException {
         String[] sText = splitText(text);
         var list = createList(sText);
-        return splitList(list);
+        return null;
     }
 
     private List<List<String>> splitList(List<String> list) throws StringReadException {

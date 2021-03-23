@@ -1,6 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.configuration;
 
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +19,11 @@ import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
-@Log4j
+@Log4j2
 public class MyConfiguration {
 
     @Bean
     public Executor taskThreadExecutor() {
-        log.info("Creating Async task Executor!");
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(2);
