@@ -43,8 +43,8 @@ public class ReplacementRestController {
     public ResponseEntity<?> getReplacementLessons(@Valid @PathVariable("id") Integer id) {
         try {
             Replacement replacement = replacementService.findById(id);
-            var list = new JSONArray(replacement.getLessons()).toList();
-            return ResponseEntity.ok(list);
+//            var list = new JSONArray(replacement.getLessons()).toList();
+            return ResponseEntity.ok("");
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -63,7 +63,7 @@ public class ReplacementRestController {
         try {
             Replacement replacement = replacementService.findById(id);
             replacement.setDate(replacementDetails.getDate());
-            replacement.setLessons(replacementDetails.getLessons());
+//            replacement.setLessons(replacementDetails.getLessons());
             return ResponseEntity.ok(replacement);
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);

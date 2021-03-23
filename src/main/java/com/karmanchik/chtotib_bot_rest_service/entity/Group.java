@@ -3,13 +3,11 @@ package com.karmanchik.chtotib_bot_rest_service.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
-import org.hibernate.annotations.SortComparator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +15,7 @@ import java.util.List;
         name = "groups",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        columnNames = "group_name",
+                        columnNames = "name",
                         name = "schedule_group_name_uindex")
         })
 @Getter
@@ -27,13 +25,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Group extends AbstractBaseEntity {
-    @Column(name = "group_name", unique = true)
+    @Column(name = "name", unique = true)
     @NotNull
-    private String groupName;
+    private String name;
 
-    @Column(name = "lessons", columnDefinition = "jsonb", nullable = false)
-    @Type(type = "jsonb")
-    private String lessons;
+    @Getter
+    @JsonManagedReference
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OrderBy("day, pairNumber ASC")
+    private List<Lesson> lessons;
 
     @Getter
     @JsonManagedReference
@@ -41,17 +41,8 @@ public class Group extends AbstractBaseEntity {
     @OrderBy(value = "date ASC")
     private List<Replacement> replacements;
 
-    public Group(String groupName) {
-        this.groupName = groupName;
+    public Group(String name) {
+        this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "Group{" +
-                "groupName='" + groupName + '\'' +
-                ", lessons='" + lessons + '\'' +
-                ", replacements=" + replacements +
-                ", id=" + id +
-                '}';
-    }
 }

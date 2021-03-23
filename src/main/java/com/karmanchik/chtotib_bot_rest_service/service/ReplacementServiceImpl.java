@@ -71,12 +71,12 @@ public class ReplacementServiceImpl implements ReplacementService {
             String lessons = item.getJSONArray("lessons").toString();
 
             groups.forEach(group -> {
-                if (group.getGroupName().equalsIgnoreCase(groupName)) {
+                if (group.getName().equalsIgnoreCase(groupName)) {
                     replacementRepository.findByGroupAndDate(group, date)
                             .orElseGet(() -> replacementRepository.save(
                                     Replacement.builder()
                                             .group(group)
-                                            .lessons(lessons)
+//                                            .lessons(lessons)
                                             .date(date)
                                             .build()
                             ));

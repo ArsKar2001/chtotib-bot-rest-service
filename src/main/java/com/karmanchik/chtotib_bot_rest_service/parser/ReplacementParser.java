@@ -141,7 +141,7 @@ public class ReplacementParser {
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                throw new StringReadException(s, ";", s2.length);
+                throw new StringReadException(s, s2.length);
             }
         }
         return nll;

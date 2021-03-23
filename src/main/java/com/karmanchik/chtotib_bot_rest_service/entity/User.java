@@ -24,19 +24,18 @@ public class User extends AbstractBaseEntity {
 
     @Setter
     @Getter
-    @Column(name = "teacher")
-    private String teacher;
-
-    @Setter
-    @Getter
     @Column(name = "bot_lat_message_id")
     @NotNull
     private Integer botLastMessageId;
 
     @Setter
     @Getter
+    @Column(name = "teacher_id")
+    private Integer teacherId;
+
+    @Setter
+    @Getter
     @Column(name = "group_id")
-    @NotNull
     private Integer groupId;
 
     @Setter
@@ -56,6 +55,11 @@ public class User extends AbstractBaseEntity {
     @Column(name = "role_id")
     @NotNull
     private Integer roleId;
+
+    @Getter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "teacher_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Teacher teacher;
 
     @Getter
     @OneToOne(cascade = CascadeType.ALL)
@@ -82,8 +86,13 @@ public class User extends AbstractBaseEntity {
         return "User{" +
                 "chatId=" + chatId +
                 ", name='" + name + '\'' +
-                ", teacher='" + teacher + '\'' +
                 ", botLastMessageId=" + botLastMessageId +
+                ", teacherId=" + teacherId +
+                ", groupId=" + groupId +
+                ", userStateId=" + userStateId +
+                ", botStateId=" + botStateId +
+                ", roleId=" + roleId +
+                ", teacher=" + teacher +
                 ", group=" + group +
                 ", userState=" + userState +
                 ", botState=" + botState +

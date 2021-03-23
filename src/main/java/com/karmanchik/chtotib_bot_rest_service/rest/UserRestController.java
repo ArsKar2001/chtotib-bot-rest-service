@@ -141,7 +141,7 @@ public class UserRestController {
             user.setBotStateId(userDetail.getBotStateId());
             user.setUserStateId(userDetail.getUserStateId());
             user.setGroupId(userDetail.getGroupId());
-            user.setTeacher(userDetail.getTeacher());
+//            user.setTeacher(userDetail.getTeacher());
             user.setRoleId(userDetail.getRoleId());
 
             final User updateUser = userService.save(user);

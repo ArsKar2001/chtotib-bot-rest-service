@@ -13,21 +13,31 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "replacement")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-@Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Replacement extends AbstractBaseEntity {
 
-    @Column(name = "group_id", insertable = false, updatable = false)
+    @Getter
+    @Setter
+    @Column(name = "pair_number")
     @NotNull
-    private Integer groupId;
+    private Integer pairNumber;
 
-    @Column(name = "lessons", columnDefinition = "jsonb", nullable = false)
-    @Type(type = "jsonb")
-    private String lessons;
+    @Getter
+    @Setter
+    @Column(name = "discipline")
+    @NotNull
+    private String discipline;
 
+    @Getter
+    @Setter
+    @Column(name = "auditorium")
+    @NotNull
+    private String auditorium;
+
+    @Getter
+    @Setter
     @Column(name = "date_value")
     @NotNull
     private LocalDate date;
@@ -37,13 +47,9 @@ public class Replacement extends AbstractBaseEntity {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @Override
-    public String toString() {
-        return "Replacement{" +
-                "timetable='" + lessons + '\'' +
-                ", date=" + date +
-                ", group=" + group +
-                ", id=" + id +
-                '}';
-    }
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
+
 }

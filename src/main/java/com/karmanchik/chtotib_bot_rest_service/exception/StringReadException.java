@@ -47,8 +47,8 @@ public class StringReadException extends Exception {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public StringReadException(String message, String split, Integer size) {
-        super(String.format("Ошибка в строке - \"%s\"; split - [%s]; size - %s; Превышенно кол-во столбцов", message, split, size));
+    public StringReadException(String message, Integer size) {
+        super(String.format("Ошибка в строке - \"%s\"; столбцов - %s; Превышенно кол-во столбцов.", message, size));
     }
 
     /**

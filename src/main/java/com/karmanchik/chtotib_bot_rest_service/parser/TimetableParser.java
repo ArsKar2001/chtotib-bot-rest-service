@@ -1,215 +1,134 @@
 package com.karmanchik.chtotib_bot_rest_service.parser;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
-import com.karmanchik.chtotib_bot_rest_service.service.Word;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.InputStream;
-import java.util.*;
-import java.util.regex.Matcher;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Log4j2
 public class TimetableParser {
-    private final InputStream stream;
 
-    public TimetableParser(InputStream stream) {
-        this.stream = stream;
+    /**
+     * Максимальное кол-личество столбцов сдвоенное таблицы на странице Расписания Word-Документа
+     */
+    public static final int MAX_COLUMN_SIZE = 5;
+    public static final int MIN_COLUMN_SIZE = 2;
+    public static final int SPLIT_LIMIT = -10;
+    public static final String DEFAULT_VALUE = "-";
+    public static final String CSV_SPLIT = ";";
+
+    /**
+     * @param text Исходный текст из файла Расписания
+     * @return данные для импорта в csv-формате
+     * @throws StringReadException Неверное чтение строки
+     * Формирует данные в csv из исходного текста
+     */
+    public List<List<String>> textToCSV(String text) throws StringReadException {
+        String rText = text.replace('\t', ';');
+        String[] sText = rText.split("\n");
+
+        List<String> list = new LinkedList<>(Arrays.asList(sText));
+        list.removeIf(String::isBlank);
+        list.remove(0);
+
+        // Разделяет лист строк на листы по левой/правой группам
+        final List<List<String>> listLists = listToListLists(list);
+        // Разделяет листы на правую и левую группы
+        final List<List<String>> splitLists = splitListsOfLists(listLists);
+        // Корректирует строки в листах
+        final List<List<String>> listsCorrection = listsCorrection(splitLists);
+
+        return listsCorrection;
     }
 
-/*    public String parse() throws StringReadException {
-        JSONArray groups = new JSONArray();
-        JSONObject group;
-        JSONArray lessons;
-        JSONObject lesson;
-
-        final String text = Word.getText(stream);
-        log.debug("!!!!!!!!! log debug: reading file.");
-        final var lists = textToCSV(text);
-        log.debug("!!!!!!!!! log debug: create lists - \"{}\"", Arrays.toString(lists.toArray()));
-
-        for (var list : lists) {
-            group = new JSONObject();
-            lessons = new JSONArray();
-            String groupName = list.get(0).split(";")[0];
-
-            for (String s : list) {
-                try {
-                    lesson = new JSONObject();
-                    String[] splitStr = s.split(";");
-                    int dayOfWeek = Integer.parseInt(splitStr[1]);
-                    String validTeacherName = validTeacherName(splitStr[5]);
-
-                    lesson.put("day_of_week", dayOfWeek);
-                    lesson.put("number", splitStr[2]);
-                    lesson.put("discipline", splitStr[3]);
-                    lesson.put("auditorium", splitStr[4]);
-                    lesson.put("teacher", validTeacherName);
-                    lesson.put("week_type", splitStr[6]);
-
-                    lessons.put(lesson);
-                } catch (Exception e) {
-                    throw new StringReadException(s);
-                }
-            }
-            group.put("group_name", groupName);
-            group.put("lessons", lessons);
-            groups.put(group);
-        }
-        log.debug("Create new JSON: " + groups.toString());
-        return groups.toString();
-    }*/
-
-    public List<?> createTimetableForGroup() throws StringReadException {
-        String text = Word.getText(stream);
-        var list = textToCSV(text);
-        list.forEach(strings -> strings.forEach(System.out::println));
-        return null;
-    }
-
-    public List<? extends List<? extends String>> textToCSV(String text) throws StringReadException {
-        final String rText = text.replace('\t', ';');
-        final String[] sText = rText.split("\n");
-
-        List<String> stringList = new LinkedList<>(Arrays.asList(sText));
-        stringList.removeIf(String::isBlank);
-
-        final var ll = createListLists(stringList);
-        final var sll = splitRightLeftListLists(ll);
-        final var cll = correctingListLists(sll);
-        return splitUpDownNoneListLists(cll);
-    }
-
-    private List<? extends List<? extends String>> createListLists(List<? extends String> stringList) throws StringReadException {
-        List<List<String>> listLists = new LinkedList<>();
+    private List<List<String>> listToListLists(List<String> stringList) throws StringReadException {
+        List<List<String>> lists = new LinkedList<>();
         List<String> list = new LinkedList<>();
+        Pattern pattern = Pattern.compile("^\\D+/$");
 
-        Pattern pattern = Pattern.compile("/\\S\\.\\S\\.\\s.+?/");
-        final String removeStr = "\u0424.\u0418.\u041E.";
-        stringList.removeIf(s -> s.contains(removeStr));
-        for (String str : stringList) {
-            try {
-                if (pattern.matcher(str).find()) {
-                    listLists.add(new LinkedList<>(list));
-                    list.clear();
-                } else {
-                    list.add(str);
-                }
-            } catch (Exception e) {
-                throw new StringReadException(str);
+        stringList.forEach(s -> {
+            if (pattern.matcher(s).find()) {
+                list.remove(1);
+                lists.add(new LinkedList<>(list));
+                list.clear();
+            } else {
+                list.add(s);
             }
-        }
-        listLists.get(0).addAll(list);
-        return listLists;
+        });
+        list.remove(1);
+        lists.add(new LinkedList<>(list));
+
+        return lists;
     }
 
-    private List<? extends List<? extends String>> splitRightLeftListLists(List<? extends List<? extends String>> listLists) throws StringReadException {
-        List<String> listRight = new LinkedList<>();
-        List<String> listLeft = new LinkedList<>();
-        List<List<String>> lls = new LinkedList<>();
+    private List<List<String>> splitListsOfLists(List<List<String>> lists) throws StringReadException {
+        List<List<String>> newLists = new LinkedList<>();
+        List<String> rightList = new LinkedList<>();
+        List<String> leftList = new LinkedList<>();
+        List<String> leftListStr = new LinkedList<>();
+        List<String> rightListStr = new LinkedList<>();
 
-        for (var list : listLists) {
-            for (String str : list) {
-                try {
-                    List<String> ls1 = new LinkedList<>();
-                    List<String> ls2 = new LinkedList<>();
-                    final String[] splitStr = str.split(";", -5);
-                    for (int i = 0; i < splitStr.length; i++) {
-                        if (i < splitStr.length / 2) ls1.add(splitStr[i].trim().isBlank() ? "-" : splitStr[i].trim());
-                        else ls2.add(splitStr[i].trim().isBlank() ? "-" : splitStr[i].trim());
-                    }
-                    final String s1 = String.join(";", ls1).trim();
-                    final String s2 = String.join(";", ls2).trim();
-
-                    listLeft.add(s1);
-                    listRight.add(s2);
-                } catch (Exception e) {
-                    throw new StringReadException(str, e);
-                }
-            }
-            lls.add(new LinkedList<>(listLeft));
-            lls.add(new LinkedList<>(listRight));
-            listLeft.clear();
-            listRight.clear();
-        }
-        return lls;
-    }
-
-    private List<? extends List<? extends String>> correctingListLists(List<? extends List<? extends String>> sListLists) throws StringReadException {
-        List<String> ls = new LinkedList<>();
-        List<List<String>> lls = new LinkedList<>();
-        String s1 = "";
-        String s2 = "";
-        Pattern ptGroupName = ValidGroupName.getPtGroupName();
-
-        sListLists.removeIf(list -> list.get(0).split("\\s").length < 2);
-        for (var list : sListLists) {
-            for (String str : list) {
-                try {
-                    Matcher matcher = ptGroupName.matcher(str);
-                    String[] strings = str.split(";");
-                    if (matcher.find()) {
-                        String s = str.substring(matcher.start(), matcher.end());
-                        s1 = ValidGroupName.getValidGroupName(s);
-                    } else {
-                        String dayName = strings[0];
-                        if (!Objects.equals(dayName, "-")) s2 = dayName;
-                        else strings[0] = s2;
-                        String s = String.join(";", strings);
-                        str = s1 + ";" + s;
-                        ls.add(str);
-                    }
-                } catch (Exception e) {
-                    throw new StringReadException(str, e);
-                }
-            }
-            lls.add(new LinkedList<>(ls));
-            ls.clear();
-        }
-        return lls;
-    }
-
-    private List<? extends List<? extends String>> splitUpDownNoneListLists(List<? extends List<? extends String>> cll) throws StringReadException {
-        StringBuilder currentStr1;
-        StringBuilder currentStr2;
-        List<String> ls;
-        List<List<String>> lls = new ArrayList<>();
-
-        for (var splitPage : cll) {
-            ls = new ArrayList<>();
-            for (String str : splitPage) {
-                try {
-                    currentStr1 = new StringBuilder();
-                    currentStr2 = new StringBuilder();
-                    String[] arrStr = str.split(";");
-                    if (str.contains("/")) {
-                        String[] arrStrClone = arrStr.clone();
-                        for (int i = 0; i < arrStr.length; i++) {
-                            if (arrStr[i].contains("/")) {
-                                String[] ss = arrStr[i].split("/", -5);
-                                arrStr[i] = ss[0].trim();
-                                arrStrClone[i] = ss[1].trim();
-                            }
+        for (List<String> list : lists) {
+            leftList.clear();
+            rightList.clear();
+            for (String s : list) {
+                leftListStr.clear();
+                rightListStr.clear();
+                final String[] arrStr = s.trim().split(CSV_SPLIT, SPLIT_LIMIT);
+                if (arrStr.length <= MAX_COLUMN_SIZE * 2 && arrStr.length >= MIN_COLUMN_SIZE) {
+                    for (int i = 0; i < arrStr.length; i++) {
+                        arrStr[i] = arrStr[i].trim().isBlank() ? DEFAULT_VALUE : arrStr[i];
+                        if (i < arrStr.length / 2) {
+                            leftListStr.add(arrStr[i].trim());
+                        } else {
+                            rightListStr.add(arrStr[i].trim());
                         }
-                        currentStr1.append(
-                                String.join(";", arrStr)
-                        ).append(";").append("UP");
-                        currentStr2.append(
-                                String.join(";", arrStrClone)
-                        ).append(";").append("DOWN");
-                        ls.add(currentStr2.toString());
-                    } else if (str.contains(",")){
-                        currentStr1.append(str).append(";").append("NONE");
                     }
-                    ls.add(currentStr1.toString());
-                } catch (Exception e) {
-                    throw new StringReadException(str, e);
+                    rightList.add(
+                            String.join(CSV_SPLIT, rightListStr)
+                    );
+                    leftList.add(
+                            String.join(CSV_SPLIT, leftListStr)
+                    );
+                } else {
+                    throw new StringReadException(s, arrStr.length);
                 }
             }
-            lls.add(ls);
+            newLists.add(new LinkedList<>(rightList));
+            newLists.add(new LinkedList<>(leftList));
         }
-        return lls;
+        return newLists;
     }
 
+    private List<List<String>> listsCorrection(List<List<String>> splitListsOfLists) {
+        List<List<String>> lists = new LinkedList<>();
+        List<String> list = new LinkedList<>();
+        String s2 = "";
+        String s3;
+
+        for (List<String> ll : splitListsOfLists) {
+            list.clear();
+            for (String s : ll) {
+                final String[] arrStr = s.split(CSV_SPLIT);
+                if (arrStr.length > MIN_COLUMN_SIZE) {
+                    final String s1 = arrStr[0];
+                    if (!Objects.equals(s1, DEFAULT_VALUE)) {
+                        s2 = s1;
+                        list.add(s);
+                    } else {
+                        s3 = s2 + s.substring(s.indexOf(CSV_SPLIT));
+                        list.add(s3);
+                    }
+                } else {
+                    list.add(s);
+                }
+            }
+            lists.add(new LinkedList<>(list));
+        }
+        return lists;
+    }
 }

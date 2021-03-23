@@ -29,21 +29,21 @@ public class GroupServiceImpl implements GroupService {
     public List<Group> save(MultipartFile file) throws StringReadException {
         List<Group> groups = new LinkedList<>();
         try (InputStream stream = file.getInputStream()) {
-            TimetableParser parser = new TimetableParser(stream);
-            JSONArray array = new JSONArray(parser);
-            log.info("Saving a json of groups of size {} records", array.length());
-            for (Object o : array) {
-                JSONObject jsonObject = (JSONObject) o;
-                String groupName = jsonObject.getString("group_name");
-                JSONArray lessons = jsonObject.getJSONArray("lessons");
-
-                Group group = this.groupRepository.findByGroupName(groupName)
-                        .orElseGet(() -> this.groupRepository.save(new Group(groupName)));
-                group.setLessons(lessons.toString());
-                groupRepository.save(group);
-                groups.add(group);
-                log.debug("Import group: {}", groupName);
-            }
+//            TimetableParser parser = new TimetableParser(stream);
+//            JSONArray array = new JSONArray(parser);
+//            log.info("Saving a json of groups of size {} records", array.length());
+//            for (Object o : array) {
+//                JSONObject jsonObject = (JSONObject) o;
+//                String groupName = jsonObject.getString("group_name");
+//                JSONArray lessons = jsonObject.getJSONArray("lessons");
+//
+//                Group group = this.groupRepository.findByGroupName(groupName)
+//                        .orElseGet(() -> this.groupRepository.save(new Group(groupName)));
+////                group.setLessons(lessons.toString());
+//                groupRepository.save(group);
+//                groups.add(group);
+//                log.debug("Import group: {}", groupName);
+//            }
             return groups;
         } catch (IOException e) {
             log.error(e.getMessage(), e);

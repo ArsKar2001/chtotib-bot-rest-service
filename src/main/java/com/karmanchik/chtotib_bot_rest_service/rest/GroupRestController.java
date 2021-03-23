@@ -81,7 +81,7 @@ public class GroupRestController {
         try {
             Group group = groupService.findById(groupId);
             group.setLessons(groupDetails.getLessons());
-            group.setGroupName(groupDetails.getGroupName());
+            group.setName(groupDetails.getName());
 
             final Group upGroup = groupService.save(group);
             log.debug("Put group: {}", group);
@@ -99,8 +99,8 @@ public class GroupRestController {
         try {
             Group group = groupService.findById(groupId);
             groupService.delete(group);
-            log.debug("Группа {} удалена", group.getGroupName());
-            return ResponseEntity.ok().body("Группа " + group.getGroupName() + " удалена");
+            log.debug("Группа {} удалена", group.getName());
+            return ResponseEntity.ok().body("Группа " + group.getName() + " удалена");
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
