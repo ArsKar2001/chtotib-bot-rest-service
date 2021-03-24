@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.entity.User;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.User;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.UserService;
 import lombok.extern.log4j.Log4j;
@@ -92,7 +92,7 @@ public class UserRestController {
     public ResponseEntity<?> getGroup(@Valid @PathVariable("id") Integer id) {
         try {
             User user = userService.findById(id);
-            return ResponseEntity.ok(user.getGroup());
+            return ResponseEntity.ok(user.getData());
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -104,7 +104,7 @@ public class UserRestController {
     public ResponseEntity<?> getGroupLessons(@Valid @PathVariable("id") Integer id) {
         try {
             User user = userService.findById(id);
-            JSONArray jsonArray = new JSONArray(user.getGroup().getLessons());
+            JSONArray jsonArray = new JSONArray(user.getData());
             return ResponseEntity.ok(jsonArray.toList());
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
@@ -117,7 +117,7 @@ public class UserRestController {
     public ResponseEntity<?> getGroupReplacement(@Valid @PathVariable("id") Integer id) {
         try {
             User user = userService.findById(id);
-            return ResponseEntity.ok(user.getGroup().getReplacements());
+            return ResponseEntity.ok(user.getData());
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -137,10 +137,9 @@ public class UserRestController {
             @PathVariable(value = "id") Integer userId, @Valid @RequestBody User userDetail) {
         try {
             User user = userService.findById(userId);
-            user.setBotLastMessageId(userDetail.getBotLastMessageId());
             user.setBotStateId(userDetail.getBotStateId());
             user.setUserStateId(userDetail.getUserStateId());
-            user.setGroupId(userDetail.getGroupId());
+            user.setData(userDetail.getData());
 //            user.setTeacher(userDetail.getTeacher());
             user.setRoleId(userDetail.getRoleId());
 

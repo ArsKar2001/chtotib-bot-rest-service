@@ -6,9 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 
 class Word1Test2 {
     private static final File FILE_1 = new File("src\\main\\resources\\files\\Расписание 1-2 курс 2 семестр 2020-2021 уч год.docx");
@@ -20,7 +18,7 @@ class Word1Test2 {
             final String text = Word.getText(stream);
             TimetableParser parser = new TimetableParser();
             parser.textToCSV(text)
-                    .forEach(System.out::println);
+                    .forEach(strings -> strings.forEach(System.out::println));
         } catch (StringReadException | IOException e) {
             e.printStackTrace();
         }
@@ -32,7 +30,7 @@ class Word1Test2 {
             final String text = Word.getText(stream);
             TimetableParser parser = new TimetableParser();
             parser.textToCSV(text)
-                    .forEach(System.out::println);
+                    .forEach(strings -> strings.forEach(System.out::println));
         } catch (StringReadException | IOException e) {
             e.printStackTrace();
         }

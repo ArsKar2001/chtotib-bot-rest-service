@@ -1,6 +1,7 @@
-package com.karmanchik.chtotib_bot_rest_service.entity;
+package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.karmanchik.chtotib_bot_rest_service.jpa.enums.WeekType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,19 +13,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Lesson extends AbstractBaseEntity {
-
-    @Setter
-    @Getter
-    @Column(name = "group_id")
-    @NotNull
-    private Integer groupId;
-
-    @Setter
-    @Getter
-    @Column(name = "teacher_id")
-    @NotNull
-    private Integer teacherId;
-
     @Setter
     @Getter
     @Column(name = "pair_number")
@@ -45,8 +33,13 @@ public class Lesson extends AbstractBaseEntity {
     @Setter
     @Getter
     @Column(name = "auditorium", nullable = false)
-    @NotNull
     private String auditorium;
+
+    @Setter
+    @Getter
+    @Column(name = "week_type")
+    @NotNull
+    private WeekType weekType;
 
     @ManyToOne
     @JsonBackReference
@@ -57,4 +50,18 @@ public class Lesson extends AbstractBaseEntity {
     @JsonBackReference
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @Override
+    public String toString() {
+        return "Lesson{" +
+                "pairNumber=" + pairNumber +
+                ", day=" + day +
+                ", discipline='" + discipline + '\'' +
+                ", auditorium='" + auditorium + '\'' +
+                ", weekType=" + weekType +
+                ", group=" + group +
+                ", teacher=" + teacher +
+                ", id=" + id +
+                '}';
+    }
 }

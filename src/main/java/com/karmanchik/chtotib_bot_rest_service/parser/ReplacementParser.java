@@ -71,7 +71,7 @@ public class ReplacementParser extends AbstractBaseParser {
      * @throws StringReadException Неверное чтение строки
      */
     @Override
-    public List<? extends String> textToCSV(String text) throws StringReadException {
+    public List<List<String>> textToCSV(String text) throws StringReadException {
         String[] sText = splitText(text);
         var list = createList(sText);
         return null;

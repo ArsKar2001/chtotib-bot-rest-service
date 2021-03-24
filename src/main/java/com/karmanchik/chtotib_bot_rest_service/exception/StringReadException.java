@@ -48,7 +48,7 @@ public class StringReadException extends Exception {
      *                later retrieval by the {@link #getMessage()} method.
      */
     public StringReadException(String message, Integer size) {
-        super(String.format("Ошибка в строке - \"%s\"; столбцов - %s; Превышенно кол-во столбцов.", message, size));
+        super(String.format("Ошибка в строке - \"%s\"; столбцов - %s; Неверное кол-во столбцов.", message, size));
     }
 
     /**

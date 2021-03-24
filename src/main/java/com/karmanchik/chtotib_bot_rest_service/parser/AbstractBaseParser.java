@@ -13,6 +13,7 @@ public abstract class AbstractBaseParser {
     public static final int MIN_COLUMN_SIZE = 2;
     public static final int SPLIT_LIMIT = -10;
     public static final String DEFAULT_VALUE = "-";
+    public static final String UP_DOWN_SPLIT = "/";
     public static final String CSV_SPLIT = ";";
 
     /**
@@ -21,6 +22,6 @@ public abstract class AbstractBaseParser {
      * @return данные для импорта в csv-формате
      * @throws StringReadException Неверное чтение строки
      */
-    public abstract List<? extends String> textToCSV(String text) throws StringReadException;
+    public abstract List<? extends List<? extends String>> textToCSV(String text) throws StringReadException;
 
 }

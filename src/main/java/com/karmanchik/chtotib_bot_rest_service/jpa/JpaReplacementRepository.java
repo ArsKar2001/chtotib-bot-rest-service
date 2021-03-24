@@ -1,7 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa;
 
-import com.karmanchik.chtotib_bot_rest_service.entity.Group;
-import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

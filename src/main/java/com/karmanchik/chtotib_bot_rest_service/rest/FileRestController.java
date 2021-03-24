@@ -1,13 +1,10 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.service.GroupService;
 import com.karmanchik.chtotib_bot_rest_service.service.ReplacementService;
 import lombok.extern.log4j.Log4j2;
-import netscape.javascript.JSObject;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

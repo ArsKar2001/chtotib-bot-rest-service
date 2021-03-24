@@ -1,10 +1,9 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.ReplacementService;
 import lombok.extern.log4j.Log4j2;
-import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

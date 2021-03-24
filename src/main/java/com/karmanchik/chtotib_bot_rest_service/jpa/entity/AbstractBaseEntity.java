@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.entity;
+package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
 
 import lombok.Getter;
 

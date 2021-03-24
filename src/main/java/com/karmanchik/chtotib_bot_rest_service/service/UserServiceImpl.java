@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.entity.User;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.User;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaUserRepository;
 import lombok.extern.log4j.Log4j2;

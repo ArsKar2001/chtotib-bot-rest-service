@@ -1,9 +1,9 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaReplacementRepository;

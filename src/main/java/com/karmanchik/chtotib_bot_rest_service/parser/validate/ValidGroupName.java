@@ -14,11 +14,11 @@ public class ValidGroupName {
     private ValidGroupName() {
     }
 
-    public static Pattern getGroupName() {
+    public static Pattern getPatternGroupName() {
         return GROUP_NAME;
     }
 
-    public static Pattern getItemGroupName() {
+    public static Pattern getPatternItemGroupName() {
         return ITEM_GROUP_NAME;
     }
 

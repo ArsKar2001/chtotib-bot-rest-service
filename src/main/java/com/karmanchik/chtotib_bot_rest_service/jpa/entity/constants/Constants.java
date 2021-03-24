@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.entity.constants;
+package com.karmanchik.chtotib_bot_rest_service.jpa.entity.constants;
 
 public class Constants {
     static class Group {
