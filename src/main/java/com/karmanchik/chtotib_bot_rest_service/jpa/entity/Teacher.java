@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Teacher extends AbstractBaseEntity {
+public class Teacher extends BaseEntity {
     @Setter
     @Getter
     @Column(name = "name")
@@ -21,11 +21,21 @@ public class Teacher extends AbstractBaseEntity {
 
     @Getter
     @JsonManagedReference
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
     private List<Lesson> lessons;
 
     @Getter
     @JsonManagedReference
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
     private List<Replacement> replacements;
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "name='" + name + '\'' +
+                ", lessons=" + lessons +
+                ", replacements=" + replacements +
+                ", id=" + id +
+                '}';
+    }
 }

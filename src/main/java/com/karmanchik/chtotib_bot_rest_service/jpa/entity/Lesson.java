@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Lesson extends AbstractBaseEntity {
+public class Lesson extends BaseEntity {
     @Setter
     @Getter
     @Column(name = "pair_number")
@@ -24,6 +24,11 @@ public class Lesson extends AbstractBaseEntity {
     @Column(name = "day")
     @NotNull
     private Integer day;
+
+    @Getter
+    @Column(name = "group_id", insertable = false, updatable = false)
+    @NotNull
+    private Integer groupId;
 
     @Setter
     @Getter
@@ -43,12 +48,12 @@ public class Lesson extends AbstractBaseEntity {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "group_id", nullable=false)
     private Group group;
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "teacher_id")
+    @JoinColumn(name = "teacher_id", nullable=false)
     private Teacher teacher;
 
     @Override

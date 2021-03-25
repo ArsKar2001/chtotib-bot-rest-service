@@ -2,8 +2,6 @@ package com.karmanchik.chtotib_bot_rest_service.jpa;
 
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +12,5 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface JpaGroupRepository extends JpaRepository<Group, Integer> {
-    Optional<Group> findByGroupName(@NotNull String groupName);
-    @Query("SELECT g.id FROM Group g WHERE g.name = :groupName")
-    Optional<Integer> getIdByGroupName(@Param("groupName") @NotNull String groupName);
+    Optional<Group> getByName(@NotNull String groupName);
 }

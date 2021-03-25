@@ -3,8 +3,8 @@ package com.karmanchik.chtotib_bot_rest_service.parser;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.model.Month;
-import com.karmanchik.chtotib_bot_rest_service.service.Word;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,14 +25,15 @@ public class ReplacementParser extends AbstractBaseParser {
         this.stream = stream;
     }
 
-    public String parse() throws StringReadException {
+    public String parse() throws StringReadException, InvalidFormatException {
         JSONArray replacements = new JSONArray();
         JSONObject replacement;
         JSONArray lessons;
         JSONObject lesson;
         String groupName = "";
 
-        final String text = Word.getText(stream);
+        final String text;
+        text = Word.getText(stream);
         final var lists = textToCSV(text);
 
 //        for (var list : lists) {

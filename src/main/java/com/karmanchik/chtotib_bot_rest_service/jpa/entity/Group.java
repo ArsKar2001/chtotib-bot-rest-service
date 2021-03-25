@@ -17,31 +17,45 @@ import java.util.List;
                         columnNames = "name",
                         name = "schedule_group_name_uindex")
         })
+@EqualsAndHashCode(callSuper = true)
 @Getter
-@Setter
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-@Builder
+@Builder(builderMethodName = "hiddenBuilder")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Group extends AbstractBaseEntity {
+public class Group extends BaseEntity {
     @Column(name = "name", unique = true)
     @NotNull
     private String name;
 
-    @Getter
+    @Setter
     @JsonManagedReference
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
-    @Getter
+    @Setter
     @JsonManagedReference
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     @OrderBy(value = "date ASC")
     private List<Replacement> replacements;
 
-    public Group(String name) {
-        this.name = name;
+    private static GroupBuilder builder() {
+        return new GroupBuilder();
     }
 
+    public static GroupBuilder builder(String name) {
+        return hiddenBuilder().name(name);
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "name='" + name + '\'' +
+                ", lessons=" + lessons +
+                ", replacements=" + replacements +
+                ", id=" + id +
+                '}';
+    }
 }
+

@@ -2,9 +2,14 @@ package com.karmanchik.chtotib_bot_rest_service.parser;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.enums.WeekType;
+import com.karmanchik.chtotib_bot_rest_service.model.DayOfWeek;
+import com.karmanchik.chtotib_bot_rest_service.model.NumberLesson;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
+import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,24 +29,32 @@ public class TimetableParser extends AbstractBaseParser {
      */
     @Override
     public List<List<String>> textToCSV(String text) throws StringReadException {
-        textToListOfLists(text);
+        String cText = textCorrection(text);
+        textToListOfLists(cText);
         splitListsOfLists();
         listsOfListsCorrection();
         splitStringToListOfLists();
+        splitStringByColumnAndSplitToListOfLists(SPLIT_GROUP_ITEM, 5, 4, 3);
+        splitStringByColumnAndSplitToListOfLists(DEFAULT_SPLIT, 5, 4);
+        splitStringByColumnAndSplitToListOfLists(DEFAULT_SPLIT, 2);
+        listCorrectionAndValidate();
         return lists;
     }
 
-    private void textToListOfLists(String text) {
+
+    private String textCorrection(String text) {
         char newChar = ';';
         char oldChar = '\t';
-        String regex = "\n";
-        String rText = text.replace(oldChar, newChar).replace('║', ',');
-        Pattern pattern = Pattern.compile("(\\|{2}|\u2551)");
+        String rText = text.replace(oldChar, newChar);
 
+        Pattern pattern = Pattern.compile("(\\|{2})");
         Matcher matcher = pattern.matcher(rText);
-        rText = matcher.replaceAll(",");
+        return matcher.replaceAll(SPLIT_GROUP_ITEM);
+    }
 
-        String[] array = rText.split(regex);
+    private void textToListOfLists(String text) {
+        String split = "\n";
+        String[] array = text.split(split);
 
         List<String> tempList = new LinkedList<>();
         for (String s : array) {
@@ -133,6 +146,11 @@ public class TimetableParser extends AbstractBaseParser {
             this.lists.add(new LinkedList<>(tL));
             tL.clear();
         }
+        lists.forEach(lists -> lists.removeIf(s -> {
+            String[] strings = s.split(CSV_SPLIT);
+            String numberLesson = strings[2];
+            return numberLesson.equals(DEFAULT_VALUE);
+        }));
     }
 
     private void splitStringToListOfLists() {
@@ -171,12 +189,103 @@ public class TimetableParser extends AbstractBaseParser {
                             String.join(CSV_SPLIT, ltl)
                     ).append(CSV_SPLIT).append(WeekType.DOWN);
                     tl.add(rsb.toString());
-                    continue;
                 } else
                     lsb.append(s).append(CSV_SPLIT).append(WeekType.NONE);
                 tl.add(lsb.toString());
             }
             lists.add(new LinkedList<>(tl));
+        }
+    }
+
+    private void splitStringByColumnAndSplitToListOfLists(String split, Integer... column) throws StringReadException {
+        List<List<String>> tLL = new LinkedList<>(this.lists);
+        List<Integer> columns = Arrays.asList(column);
+
+        List<String> tl = new LinkedList<>();
+        List<String> rtl = new LinkedList<>();
+        List<String> ltl = new LinkedList<>();
+        lists.clear();
+
+        StringBuilder rsb;
+        StringBuilder lsb;
+
+        for (List<String> list : tLL) {
+            tl.clear();
+            for (String s : list) {
+                rtl.clear();
+                ltl.clear();
+                rsb = new StringBuilder();
+                lsb = new StringBuilder();
+                final String[] strings = s.split(CSV_SPLIT, SPLIT_LIMIT);
+                if (s.contains(split)) {
+                    for (int i = 0; i < strings.length; i++) {
+                        try {
+                            if (columns.contains(i) && strings[i].contains(split)) {
+                                final String[] upDown = strings[i].split(split, SPLIT_LIMIT);
+                                rtl.add(upDown[0].trim().isBlank() ? DEFAULT_VALUE : upDown[0].trim());
+                                ltl.add(upDown[1].trim().isBlank() ? DEFAULT_VALUE : upDown[1].trim());
+                            } else {
+                                rtl.add(strings[i].trim());
+                                ltl.add(strings[i].trim());
+                            }
+                        } catch (Exception e) {
+                            throw new StringReadException(s, strings[i], e);
+                        }
+                    }
+                    rsb.append(
+                            String.join(CSV_SPLIT, rtl)
+                    );
+                    lsb.append(
+                            String.join(CSV_SPLIT, ltl)
+                    );
+                    tl.add(rsb.toString());
+                } else
+                    lsb.append(s);
+                tl.add(lsb.toString());
+            }
+            lists.add(new LinkedList<>(tl));
+        }
+    }
+
+    private void listCorrectionAndValidate() throws StringReadException {
+        List<List<String>> tLL = new LinkedList<>(this.lists);
+        List<String> tl = new LinkedList<>();
+        lists.clear();
+
+        for (List<String> list : tLL) {
+            for (String s : list) {
+                String[] strings = s.split(CSV_SPLIT, SPLIT_LIMIT);
+                String groupName = strings[0];
+                String dayOfWeek = strings[1];
+                String numberLesson = strings[2];
+                String teacher = strings[5];
+                if (ValidGroupName.isGroupName(groupName))
+                    strings[0] = ValidGroupName.getValidGroupName(groupName);
+                else
+                    throw new StringReadException(s, groupName, "АРХ-18-1 или ЗИО-18-2к");
+
+                if (!teacher.equals(DEFAULT_VALUE))
+                    if (ValidTeacherName.isTeacher(teacher))
+                        strings[5] = teacher;
+                    else
+                        throw new StringReadException(s, teacher, "Иванов И.И.");
+
+                if (DayOfWeek.containsKey(dayOfWeek))
+                    strings[1] = DayOfWeek.get(dayOfWeek).toString();
+                else {
+                    Arrays.sort(DayOfWeek.getKeys().toArray());
+                    throw new StringReadException(s, dayOfWeek, Arrays.toString(DayOfWeek.getKeys().toArray()));
+                }
+
+                if (NumberLesson.containsKey(numberLesson))
+                    strings[2] = NumberLesson.get(numberLesson).toString();
+                else
+                    throw new StringReadException(s, teacher, Arrays.toString(NumberLesson.getKeys().toArray()));
+
+                tl.add(String.join(CSV_SPLIT, strings));
+            }
+            lists.add(new ArrayList<>(tl));
+            tl.clear();
         }
     }
 }

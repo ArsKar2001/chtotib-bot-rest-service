@@ -2,6 +2,7 @@ package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -19,7 +20,7 @@ class ReplacementServiceImplTest {
         try (FileInputStream stream = new FileInputStream(FILE_1)) {
             final ReplacementParser parser = new ReplacementParser(stream);
             System.out.println(parser.parse());
-        } catch (IOException | StringReadException e) {
+        } catch (IOException | StringReadException | InvalidFormatException e) {
             e.printStackTrace();
         }
     }
@@ -29,7 +30,7 @@ class ReplacementServiceImplTest {
         try (FileInputStream stream = new FileInputStream(FILE_2)) {
             final ReplacementParser parser = new ReplacementParser(stream);
             System.out.println(parser.parse());
-        } catch (IOException | StringReadException e) {
+        } catch (IOException | StringReadException | InvalidFormatException e) {
             e.printStackTrace();
         }
     }
@@ -39,7 +40,7 @@ class ReplacementServiceImplTest {
         try (FileInputStream stream = new FileInputStream(FILE_3)) {
             final ReplacementParser parser = new ReplacementParser(stream);
             System.out.println(parser.parse());
-        } catch (IOException | StringReadException e) {
+        } catch (IOException | StringReadException | InvalidFormatException e) {
             e.printStackTrace();
         }
     }

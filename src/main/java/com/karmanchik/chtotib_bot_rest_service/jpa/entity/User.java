@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends AbstractBaseEntity {
+public class User extends BaseEntity {
     @Column(name = "chat_id", unique = true)
     @NotNull
     private Integer chatId;
@@ -29,21 +29,21 @@ public class User extends AbstractBaseEntity {
     @NotNull
     private String userName;
 
-    @Column(name = "user_state_id")
+    @Column(name = "user_state_id", insertable = false, updatable = false)
     @NotNull
     private Integer userStateId;
 
-    @Column(name = "bot_state_id")
+    @Column(name = "bot_state_id", insertable = false, updatable = false)
     @NotNull
     private Integer botStateId;
 
-    @Column(name = "role_id")
+    @Column(name = "role_id", insertable = false, updatable = false)
     @NotNull
     private Integer roleId;
 
     @Column(name = "data", nullable = false)
     @Type(type = "jsonb")
-    private AbstractBaseEntity data;
+    private BaseEntity data;
 
 
     @Column(name = "role_id")

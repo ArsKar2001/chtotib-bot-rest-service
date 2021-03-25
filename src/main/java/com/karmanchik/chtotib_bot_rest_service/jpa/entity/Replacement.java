@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Replacement extends AbstractBaseEntity {
+public class Replacement extends BaseEntity {
 
     @Getter
     @Setter

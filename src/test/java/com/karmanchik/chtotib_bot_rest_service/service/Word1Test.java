@@ -1,5 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
+import com.karmanchik.chtotib_bot_rest_service.parser.Word;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -22,7 +24,7 @@ class Word1Test {
             final List<String> stringList = new LinkedList<>(Arrays.asList(timetable.split("\n")));
             stringList.removeIf(String::isBlank);
             stringList.forEach(System.out::println);
-        } catch (IOException e) {
+        } catch (IOException | InvalidFormatException e) {
             e.printStackTrace();
         }
     }

@@ -6,14 +6,14 @@ import java.util.Map;
 
 public class NumberLesson {
     private static final Map<String, Integer> COURSES = Map.of(
-            "I", 0,
-            "II", 1,
-            "III", 2,
-            "IV", 3,
-            "V", 4,
-            "VI", 5,
-            "VII", 6,
-            "VIII", 7
+            "I", 1,
+            "II", 2,
+            "III", 3,
+            "IV", 4,
+            "V", 5,
+            "VI", 6,
+            "VII", 7,
+            "VIII", 8
 
     );
 
@@ -24,16 +24,16 @@ public class NumberLesson {
         return COURSES;
     }
 
-    public static boolean containsKey(Object o) {
-        return COURSES.containsKey(o);
+    public static boolean containsKey(String s) {
+        return COURSES.containsKey(s);
     }
 
-    public static boolean containsValue(Object o) {
-        return COURSES.containsValue(o);
+    public static boolean containsValue(Integer integer) {
+        return COURSES.containsValue(integer);
     }
 
-    public static Integer get(Object o) {
-        return COURSES.get(o);
+    public static Integer get(String s) {
+        return COURSES.get(s);
     }
 
     public static List<String> getKeys() {
