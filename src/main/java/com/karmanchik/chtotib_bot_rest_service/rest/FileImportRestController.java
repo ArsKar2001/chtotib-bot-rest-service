@@ -56,6 +56,8 @@ public class FileImportRestController {
         lessonService.deleteAll();
 
         for (MultipartFile file : files) {
+            teacherNames.clear();
+            groupNames.clear();
             try (InputStream stream = file.getInputStream()) {
                 log.info("Start import from file \"{}\"", file.getOriginalFilename());
                 String text = Word.getText(stream);
@@ -105,19 +107,18 @@ public class FileImportRestController {
                             .weekType(weekType)
                             .build());
                 });
-
-                log.info("Importing groups...");
-                groupService.saveAll(groups);
-                log.info("Importing teacher...");
-                teacherService.saveAll(teachers);
-                log.info("Importing lessons...");
-                lessonService.saveAll(lessons);
-
             } catch (IOException | InvalidFormatException | StringReadException e) {
                 log.error("Ошибка ипорта файла: {}; {}; {}", file.getOriginalFilename(), e.getMessage(), e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
+
+        log.info("Importing groups...");
+        groupService.saveAll(groups);
+        log.info("Importing teacher...");
+        teacherService.saveAll(teachers);
+        log.info("Importing lessons...");
+        lessonService.saveAll(lessons);
 
         HashMap<String, Integer> response = new HashMap<>();
         response.put("lessons", lessons.size());
