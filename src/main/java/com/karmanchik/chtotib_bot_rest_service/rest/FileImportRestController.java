@@ -47,9 +47,6 @@ public class FileImportRestController {
         List<Group> groups = new ArrayList<>();
         List<Teacher> teachers = new ArrayList<>();
 
-        Set<String> teacherNames = new HashSet<>();
-        Set<String> groupNames = new HashSet<>();
-
         userService.deleteAll();
         groupService.deleteAll();
         teacherService.deleteAll();
@@ -65,18 +62,20 @@ public class FileImportRestController {
                     final String groupName = item.getString("group_name");
                     final String teacherName = item.getString("teacher_name");
 
-                    if (!teacherNames.contains(teacherName)) {
-                        teacherNames.add(teacherName);
-                        Teacher teacher = Teacher.builder().name(teacherName).build();
-                        teachers.add(teacher);
-                    }
-
-                    if (!groupNames.contains(groupName)) {
-                        groupNames.add(groupName);
-                        Group group = Group.builder(groupName).build();
-                        groups.add(group);
-                    }
+                    teachers.add(Teacher.builder()
+                            .name(teacherName)
+                            .build());
+                    groups.add(Group.builder(groupName)
+                            .build());
                 }
+                HashSet<Teacher> teacherHashSet = new HashSet<>(teachers);
+                teachers.clear();
+                teachers.addAll(teacherHashSet);
+
+                HashSet<Group> groupHashSet = new HashSet<>(groups);
+                groups.clear();
+                groups.addAll(groupHashSet);
+
                 log.info("Importing groups...");
                 groupService.saveAll(groups);
                 log.info("Importing teacher...");
@@ -113,10 +112,6 @@ public class FileImportRestController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
-
-        groupService.saveAll(groups);
-        teacherService.saveAll(teachers);
-        lessonService.saveAll(lessons);
 
         HashMap<String, Integer> response = new HashMap<>();
         response.put("lessons", lessons.size());
