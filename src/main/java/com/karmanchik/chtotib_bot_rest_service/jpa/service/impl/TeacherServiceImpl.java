@@ -47,6 +47,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public <S extends Teacher> void deleteAll() {
+        log.info("Deleted all users!");
         teacherRepository.deleteAllInBatch();
     }
 

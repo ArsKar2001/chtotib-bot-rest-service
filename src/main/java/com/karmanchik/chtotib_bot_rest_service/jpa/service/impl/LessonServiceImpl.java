@@ -38,6 +38,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public <S extends Lesson> void deleteAll() {
+        log.info("Deleted all lessons!");
         lessonsRepository.deleteAllInBatch();
     }
 

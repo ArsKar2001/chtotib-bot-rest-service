@@ -21,8 +21,7 @@ class Word1Test2 {
         try (FileInputStream stream = new FileInputStream(FILE_1)) {
             final String text = Word.getText(stream);
             TimetableParser parser = new TimetableParser();
-            parser.textToCSV(text)
-                    .forEach(System.out::println);
+            System.out.println(parser.textToJSON(text));
         } catch (StringReadException | IOException | InvalidFormatException e) {
             log.error("Ошибка в файле: {}; {}", FILE_1.getName(), e);
         }

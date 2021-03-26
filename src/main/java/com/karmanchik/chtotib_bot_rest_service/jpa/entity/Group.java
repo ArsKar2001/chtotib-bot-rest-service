@@ -24,6 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Group extends BaseEntity {
+    @Setter
     @Column(name = "name", unique = true)
     @NotNull
     private String name;

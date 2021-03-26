@@ -17,8 +17,8 @@ public class GroupServiceImpl implements GroupService {
     private final JpaGroupRepository groupRepository;
 
     @Override
-    public Group getByName(String groupName) {
-        return groupRepository.getByName(groupName)
+    public <S extends Group> S getByName(String groupName) {
+        return (S) groupRepository.getByName(groupName)
                 .orElseGet(() -> groupRepository
                         .save(Group.builder(groupName)
                                 .build()));
@@ -46,6 +46,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public <S extends Group> void deleteAll() {
+        log.info("Deleted all groups!");
         groupRepository.deleteAllInBatch();
     }
 

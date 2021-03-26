@@ -50,9 +50,6 @@ public class FileImportRestController {
         Set<String> teacherNames = new HashSet<>();
         Set<String> groupNames = new HashSet<>();
 
-        Group group = new Group();
-        Teacher teacher = new Teacher();
-
         userService.deleteAll();
         groupService.deleteAll();
         teacherService.deleteAll();
@@ -66,6 +63,28 @@ public class FileImportRestController {
                 for (Object o : array) {
                     JSONObject item = (JSONObject) o;
                     final String groupName = item.getString("group_name");
+                    final String teacherName = item.getString("teacher_name");
+
+                    if (!teacherNames.contains(teacherName)) {
+                        teacherNames.add(teacherName);
+                        Teacher teacher = Teacher.builder().name(teacherName).build();
+                        teachers.add(teacher);
+                    }
+
+                    if (!groupNames.contains(groupName)) {
+                        groupNames.add(groupName);
+                        Group group = Group.builder(groupName).build();
+                        groups.add(group);
+                    }
+                }
+                log.info("Importing groups...");
+                groupService.saveAll(groups);
+                log.info("Importing teacher...");
+                teacherService.saveAll(teachers);
+
+                array.forEach(o -> {
+                    JSONObject item = (JSONObject) o;
+                    final String groupName = item.getString("group_name");
                     final int day = item.getInt("day");
                     final int pair = item.getInt("pair");
                     final String discipline = item.getString("discipline");
@@ -73,17 +92,8 @@ public class FileImportRestController {
                     final String teacherName = item.getString("teacher_name");
                     final WeekType weekType = item.getEnum(WeekType.class, "week");
 
-                    if (!teacherNames.contains(teacherName)) {
-                        teacherNames.add(teacherName);
-                        teacher = Teacher.builder().name(teacherName).build();
-                        teachers.add(teacher);
-                    }
-
-                    if (!groupNames.contains(groupName)) {
-                        groupNames.add(groupName);
-                        group = Group.builder(groupName).build();
-                        groups.add(group);
-                    }
+                    Teacher teacher = teacherService.getByName(teacherName);
+                    Group group = groupService.getByName(groupName);
 
                     lessons.add(Lesson.builder()
                             .group(group)
@@ -94,7 +104,10 @@ public class FileImportRestController {
                             .auditorium(auditorium)
                             .weekType(weekType)
                             .build());
-                }
+                });
+                log.info("Importing lessons...");
+                lessonService.saveAll(lessons);
+
             } catch (IOException | InvalidFormatException | StringReadException e) {
                 log.error("Ошибка ипорта файла: {}; {}; {}", file.getOriginalFilename(), e.getMessage(), e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

@@ -22,9 +22,15 @@ spring:
       ddl-auto: update
     open-in-view: false
     generate-ddl: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 4
+          order_inserts: true
 server:
   error:
     whitelabel:
       enabled: false
     include-stacktrace: always
+
 
