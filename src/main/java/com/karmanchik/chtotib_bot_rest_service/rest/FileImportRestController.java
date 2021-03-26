@@ -47,6 +47,9 @@ public class FileImportRestController {
         List<Group> groups = new ArrayList<>();
         List<Teacher> teachers = new ArrayList<>();
 
+        Set<String> teacherNames = new HashSet<>();
+        Set<String> groupNames = new HashSet<>();
+
         userService.deleteAll();
         groupService.deleteAll();
         teacherService.deleteAll();
@@ -57,24 +60,21 @@ public class FileImportRestController {
                 log.info("Start import from file \"{}\"", file.getOriginalFilename());
                 String text = Word.getText(stream);
                 JSONArray array = parser.textToJSON(text);
-                for (Object o : array) {
+
+                array.forEach(o -> {
                     JSONObject item = (JSONObject) o;
                     final String groupName = item.getString("group_name");
                     final String teacherName = item.getString("teacher_name");
 
-                    teachers.add(Teacher.builder()
-                            .name(teacherName)
-                            .build());
-                    groups.add(Group.builder(groupName)
-                            .build());
-                }
-                HashSet<Teacher> teacherHashSet = new HashSet<>(teachers);
-                teachers.clear();
-                teachers.addAll(teacherHashSet);
+                    teacherNames.add(teacherName);
+                    groupNames.add(groupName);
+                });
 
-                HashSet<Group> groupHashSet = new HashSet<>(groups);
-                groups.clear();
-                groups.addAll(groupHashSet);
+                teacherNames.forEach(s ->
+                        teachers.add(Teacher.builder().name(s).build()));
+
+                groupNames.forEach(s ->
+                        groups.add(Group.builder(s).build()));
 
                 log.info("Importing groups...");
                 groupService.saveAll(groups);
