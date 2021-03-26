@@ -1,16 +1,21 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
+import com.karmanchik.chtotib_bot_rest_service.jpa.enums.WeekType;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
+import com.karmanchik.chtotib_bot_rest_service.jpa.service.UserService;
 import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
-import com.karmanchik.chtotib_bot_rest_service.parser.Word;
+import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,10 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Log4j2
 @RestController
@@ -34,75 +36,80 @@ public class FileImportRestController {
     private final LessonService lessonService;
     private final TeacherService teacherService;
     private final GroupService groupService;
+    private final UserService userService;
 
     @PostMapping("/lessons")
     @ResponseBody
-    public ResponseEntity<?> importLessons(MultipartFile[] files) {
+    public ResponseEntity<?> importTimetable(MultipartFile[] files) {
         TimetableParser parser = new TimetableParser();
-        Set<Lesson> lessons = new HashSet<>();
+
+        List<Lesson> lessons = new ArrayList<>();
+        List<Group> groups = new ArrayList<>();
+        List<Teacher> teachers = new ArrayList<>();
+
+        Set<String> teacherNames = new HashSet<>();
+        Set<String> groupNames = new HashSet<>();
+
+        Group group = new Group();
+        Teacher teacher = new Teacher();
+
+        userService.deleteAll();
+        groupService.deleteAll();
+        teacherService.deleteAll();
+        lessonService.deleteAll();
 
         for (MultipartFile file : files) {
             try (InputStream stream = file.getInputStream()) {
                 log.info("Start import from file \"{}\"", file.getOriginalFilename());
                 String text = Word.getText(stream);
+                JSONArray array = parser.textToJSON(text);
+                for (Object o : array) {
+                    JSONObject item = (JSONObject) o;
+                    final String groupName = item.getString("group_name");
+                    final int day = item.getInt("day");
+                    final int pair = item.getInt("pair");
+                    final String discipline = item.getString("discipline");
+                    final String auditorium = item.getString("auditorium");
+                    final String teacherName = item.getString("teacher_name");
+                    final WeekType weekType = item.getEnum(WeekType.class, "week");
 
-                final List<List<String>> csv = parser.textToCSV(text);
-                List<Teacher> teachers = getTeachers(csv);
+                    if (!teacherNames.contains(teacherName)) {
+                        teacherNames.add(teacherName);
+                        teacher = Teacher.builder().name(teacherName).build();
+                        teachers.add(teacher);
+                    }
 
-//                parser.textToCSV(text).forEach(list -> {
-//                    list.forEach(s -> {
-//                        log.debug("Importing csv str: \"{}\"", s);
-//                        String[] strings = s.split(";");
-//                        String groupName = strings[0];
-//                        Integer dayOfWeek = Integer.valueOf(strings[1]);
-//                        Integer pairNumber = Integer.valueOf(strings[2]);
-//                        String discipline = strings[3];
-//                        String auditorium = strings[4];
-//                        String teacherName = strings[5];
-//                        WeekType weekType = WeekType.valueOf(strings[6]);
-//
-//                        Teacher teacher = teacherService.getByName(teacherName);
-//                        log.debug("Get teacher {}", teacher.getId());
-//                        Group group = groupService.getByName(groupName);
-//                        log.debug("Get group {}", group.getId());
-//
-//                        Lesson lesson = lessonService.save(Lesson.builder()
-//                                .group(group)
-//                                .teacher(teacher)
-//                                .day(dayOfWeek)
-//                                .pairNumber(pairNumber)
-//                                .discipline(discipline)
-//                                .auditorium(auditorium)
-//                                .weekType(weekType)
-//                                .build());
-//
-//                        log.debug("Insert lesson {}", lesson);
-//                        lessons.add(lesson);
-//                    });
-//                });
+                    if (!groupNames.contains(groupName)) {
+                        groupNames.add(groupName);
+                        group = Group.builder(groupName).build();
+                        groups.add(group);
+                    }
+
+                    lessons.add(Lesson.builder()
+                            .group(group)
+                            .teacher(teacher)
+                            .day(day)
+                            .pairNumber(pair)
+                            .discipline(discipline)
+                            .auditorium(auditorium)
+                            .weekType(weekType)
+                            .build());
+                }
             } catch (IOException | InvalidFormatException | StringReadException e) {
-                log.error("Ошибка файла: {}; {}", file.getOriginalFilename(), e);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+                log.error("Ошибка ипорта файла: {}; {}; {}", file.getOriginalFilename(), e.getMessage(), e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
-        return ResponseEntity.ok(lessons);
-    }
 
-    private List<Teacher> getTeachers(List<List<String>> csv) {
-        List<String> teachersNames = new ArrayList<>();
-        List<Teacher> teachers = new ArrayList<>();
+        groupService.saveAll(groups);
+        teacherService.saveAll(teachers);
+        lessonService.saveAll(lessons);
 
-        csv.forEach(list -> {
-            list.forEach(s -> {
-                final String[] strings = s.split(";");
-                String teacherName = strings[5];
-                teachersNames.add(teacherName);
-            });
-        });
-
-        HashSet<String> uniqueTeachers = new HashSet<>(teachersNames);
-
-
-        return null;
+        HashMap<String, Integer> response = new HashMap<>();
+        response.put("lessons", lessons.size());
+        response.put("groups", groups.size());
+        response.put("teacher", teachers.size());
+        response.put("all", teachers.size() + lessons.size() + teachers.size());
+        return ResponseEntity.ok().body(response);
     }
 }

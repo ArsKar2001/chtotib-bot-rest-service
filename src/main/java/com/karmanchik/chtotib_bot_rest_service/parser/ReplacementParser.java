@@ -3,11 +3,13 @@ package com.karmanchik.chtotib_bot_rest_service.parser;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.model.Month;
+import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.Year;
@@ -25,7 +27,7 @@ public class ReplacementParser extends AbstractBaseParser {
         this.stream = stream;
     }
 
-    public String parse() throws StringReadException, InvalidFormatException {
+    public String parse() throws StringReadException, InvalidFormatException, IOException {
         JSONArray replacements = new JSONArray();
         JSONObject replacement;
         JSONArray lessons;
@@ -72,9 +74,14 @@ public class ReplacementParser extends AbstractBaseParser {
      * @throws StringReadException Неверное чтение строки
      */
     @Override
-    public List<List<String>> textToCSV(String text) throws StringReadException {
+    public List<? extends String> textToCSV(String text) throws StringReadException {
         String[] sText = splitText(text);
         var list = createList(sText);
+        return null;
+    }
+
+    @Override
+    public JSONArray textToJSON(String text) throws StringReadException {
         return null;
     }
 

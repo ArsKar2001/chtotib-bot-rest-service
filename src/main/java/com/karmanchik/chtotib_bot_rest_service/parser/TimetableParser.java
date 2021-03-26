@@ -7,11 +7,10 @@ import com.karmanchik.chtotib_bot_rest_service.model.NumberLesson;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +27,53 @@ public class TimetableParser extends AbstractBaseParser {
      * @throws StringReadException Неверное чтение строки
      */
     @Override
-    public List<List<String>> textToCSV(String text) throws StringReadException {
+    public List<? extends String> textToCSV(String text) throws StringReadException {
+        List<String> csv = new ArrayList<>();
+        this.textToListLists(text);
+        lists.forEach(csv::addAll);
+        return csv;
+    }
+
+    @Override
+    public JSONArray textToJSON(String text) throws StringReadException {
+        JSONArray array = new JSONArray();
+        JSONObject object;
+
+        this.textToListLists(text);
+
+        for (List<String> listCSV : lists) {
+            for (String s : listCSV) {
+                String[] strings = s.split(CSV_SPLIT, SPLIT_LIMIT);
+                if (strings.length == CSV_COLUMN_SIZE) {
+                    object = new JSONObject();
+                    String groupName = strings[0];
+                    String dayOfWeek = strings[1];
+                    String pairNumber = strings[2];
+                    String discipline = strings[3];
+                    String auditorium = strings[4];
+                    String teacherName = strings[5];
+                    String weekType = strings[6];
+
+                    int day = Integer.parseInt(dayOfWeek);
+                    int pair = Integer.parseInt(pairNumber);
+                    WeekType week = WeekType.valueOf(weekType);
+
+                    object.put("group_name", groupName);
+                    object.put("day", day);
+                    object.put("pair", pair);
+                    object.put("discipline", discipline);
+                    object.put("auditorium", auditorium);
+                    object.put("teacher_name", teacherName);
+                    object.put("week", week);
+                    array.put(object);
+                } else
+                    throw new StringReadException(s, strings.length);
+            }
+        }
+        return array;
+    }
+
+    private void textToListLists(String text) throws StringReadException {
         String cText = textCorrection(text);
         textToListOfLists(cText);
         splitListsOfLists();
@@ -38,7 +83,6 @@ public class TimetableParser extends AbstractBaseParser {
         splitStringByColumnAndSplitToListOfLists(DEFAULT_SPLIT, 5, 4);
         splitStringByColumnAndSplitToListOfLists(DEFAULT_SPLIT, 2);
         listCorrectionAndValidate();
-        return lists;
     }
 
 
@@ -259,6 +303,7 @@ public class TimetableParser extends AbstractBaseParser {
                 String dayOfWeek = strings[1];
                 String numberLesson = strings[2];
                 String teacher = strings[5];
+
                 if (ValidGroupName.isGroupName(groupName))
                     strings[0] = ValidGroupName.getValidGroupName(groupName);
                 else
@@ -280,7 +325,7 @@ public class TimetableParser extends AbstractBaseParser {
                 if (NumberLesson.containsKey(numberLesson))
                     strings[2] = NumberLesson.get(numberLesson).toString();
                 else
-                    throw new StringReadException(s, teacher, Arrays.toString(NumberLesson.getKeys().toArray()));
+                    throw new StringReadException(s, numberLesson, Arrays.toString(NumberLesson.getKeys().toArray()));
 
                 tl.add(String.join(CSV_SPLIT, strings));
             }

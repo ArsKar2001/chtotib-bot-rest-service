@@ -25,11 +25,6 @@ public class Lesson extends BaseEntity {
     @NotNull
     private Integer day;
 
-    @Getter
-    @Column(name = "group_id", insertable = false, updatable = false)
-    @NotNull
-    private Integer groupId;
-
     @Setter
     @Getter
     @Column(name = "discipline", nullable = false)
@@ -48,12 +43,12 @@ public class Lesson extends BaseEntity {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "group_id", nullable=false)
+    @JoinColumn(name = "group_id")
     private Group group;
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "teacher_id", nullable=false)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @Override

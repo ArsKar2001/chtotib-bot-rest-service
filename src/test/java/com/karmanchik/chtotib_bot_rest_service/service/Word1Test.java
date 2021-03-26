@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.parser.Word;
+import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.jupiter.api.Test;
 
