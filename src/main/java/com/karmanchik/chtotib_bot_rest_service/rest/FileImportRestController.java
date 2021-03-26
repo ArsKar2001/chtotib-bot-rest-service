@@ -56,8 +56,6 @@ public class FileImportRestController {
         lessonService.deleteAll();
 
         for (MultipartFile file : files) {
-            teacherNames.clear();
-            groupNames.clear();
             try (InputStream stream = file.getInputStream()) {
                 log.info("Start import from file \"{}\"", file.getOriginalFilename());
                 String text = Word.getText(stream);
@@ -72,11 +70,20 @@ public class FileImportRestController {
                     groupNames.add(groupName);
                 });
 
-                teacherNames.forEach(s ->
-                        teachers.add(Teacher.builder().name(s).build()));
+            } catch (IOException | InvalidFormatException | StringReadException e) {
+                log.error("Ошибка ипорта файла: {}; {}; {}", file.getOriginalFilename(), e.getMessage(), e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            }
+        }
 
-                groupNames.forEach(s ->
-                        groups.add(Group.builder(s).build()));
+        teacherNames.forEach(s -> teachers.add(Teacher.builder(s).build()));
+        groupNames.forEach(s -> groups.add(Group.builder(s).build()));
+
+        for (MultipartFile file : files) {
+            try (InputStream stream = file.getInputStream()) {
+                log.info("Start import from file \"{}\"", file.getOriginalFilename());
+                String text = Word.getText(stream);
+                JSONArray array = parser.textToJSON(text);
 
                 array.forEach(o -> {
                     JSONObject item = (JSONObject) o;
@@ -107,6 +114,7 @@ public class FileImportRestController {
                             .weekType(weekType)
                             .build());
                 });
+
             } catch (IOException | InvalidFormatException | StringReadException e) {
                 log.error("Ошибка ипорта файла: {}; {}; {}", file.getOriginalFilename(), e.getMessage(), e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

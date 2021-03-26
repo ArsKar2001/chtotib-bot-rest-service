@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "teacher")
-@Builder
+@Builder(builderMethodName = "hiddenBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Teacher extends BaseEntity {
@@ -28,6 +28,10 @@ public class Teacher extends BaseEntity {
     @JsonManagedReference
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Replacement> replacements;
+
+    public static TeacherBuilder builder(String name) {
+        return hiddenBuilder().name(name);
+    }
 
     @Override
     public String toString() {
