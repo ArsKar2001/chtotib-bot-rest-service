@@ -20,8 +20,7 @@ public class TeacherServiceImpl implements TeacherService {
     public Teacher getByName(String teacherName) {
         return teacherRepository.getByName(teacherName)
                 .orElseGet(() -> teacherRepository
-                        .save(Teacher.builder()
-                                .name(teacherName)
+                        .save(Teacher.builder(teacherName)
                                 .build()));
     }
 
