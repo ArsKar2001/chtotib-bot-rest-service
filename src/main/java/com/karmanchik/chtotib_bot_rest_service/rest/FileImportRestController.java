@@ -57,7 +57,6 @@ public class FileImportRestController {
 
         for (MultipartFile file : files) {
             try (InputStream stream = file.getInputStream()) {
-                log.info("Start import from file \"{}\"", file.getOriginalFilename());
                 String text = Word.getText(stream);
                 JSONArray array = parser.textToJSON(text);
 
@@ -81,7 +80,6 @@ public class FileImportRestController {
 
         for (MultipartFile file : files) {
             try (InputStream stream = file.getInputStream()) {
-                log.info("Start import from file \"{}\"", file.getOriginalFilename());
                 String text = Word.getText(stream);
                 JSONArray array = parser.textToJSON(text);
 
