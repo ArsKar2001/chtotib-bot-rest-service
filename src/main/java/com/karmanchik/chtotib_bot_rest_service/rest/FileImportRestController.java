@@ -76,11 +76,6 @@ public class FileImportRestController {
                 groupNames.forEach(s ->
                         groups.add(Group.builder(s).build()));
 
-                log.info("Importing groups...");
-                groupService.saveAll(groups);
-                log.info("Importing teacher...");
-                teacherService.saveAll(teachers);
-
                 array.forEach(o -> {
                     JSONObject item = (JSONObject) o;
                     final String groupName = item.getString("group_name");
@@ -91,8 +86,14 @@ public class FileImportRestController {
                     final String teacherName = item.getString("teacher_name");
                     final WeekType weekType = item.getEnum(WeekType.class, "week");
 
-                    Teacher teacher = teacherService.getByName(teacherName);
-                    Group group = groupService.getByName(groupName);
+                    Teacher teacher = teachers.stream()
+                            .filter(t -> t.getName().equalsIgnoreCase(teacherName))
+                            .findFirst()
+                            .orElseThrow(IllegalAccessError::new);
+                    Group group = groups.stream()
+                            .filter(g -> g.getName().equalsIgnoreCase(groupName))
+                            .findFirst()
+                            .orElseThrow(IllegalAccessError::new);
 
                     lessons.add(Lesson.builder()
                             .group(group)
@@ -104,6 +105,11 @@ public class FileImportRestController {
                             .weekType(weekType)
                             .build());
                 });
+
+                log.info("Importing groups...");
+                groupService.saveAll(groups);
+                log.info("Importing teacher...");
+                teacherService.saveAll(teachers);
                 log.info("Importing lessons...");
                 lessonService.saveAll(lessons);
 
