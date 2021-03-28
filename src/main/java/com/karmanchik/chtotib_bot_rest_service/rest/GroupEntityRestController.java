@@ -14,7 +14,7 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/v1/groups")
+@RequestMapping("/api/v1/")
 public class GroupEntityRestController implements EntityRestControllerInterface<Group> {
     private final GroupService groupService;
 
@@ -24,7 +24,7 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
 
 
     @Override
-    @GetMapping("?id={id}")
+    @GetMapping("/groups?id={id}")
     public ResponseEntity<?> get(@PathVariable("id") @NotNull Integer id) {
         try {
             final Group group = groupService.findById(id)
@@ -36,7 +36,7 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
     }
 
     @Override
-    @GetMapping("/all")
+    @GetMapping("/groups/all")
     public ResponseEntity<?> getAll() {
         final List<Group> all = groupService.findAll();
         return ResponseEntity.ok(all);
@@ -49,7 +49,7 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
     }
 
     @Override
-    @PutMapping("?id={id}&group={group}")
+    @PutMapping("/groups?id={id}&group={group}")
     public <S extends Group> ResponseEntity<?> put(@PathVariable("id") @NotNull Integer id,
                                                    @PathVariable("group") @Valid @NotNull S s) {
         try {
@@ -65,14 +65,14 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
     }
 
     @Override
-    @DeleteMapping("?id={id}")
+    @DeleteMapping("/groups?id={id}")
     public ResponseEntity<?> delete(@PathVariable("id") @NotNull Integer id) {
         groupService.deleteById(id);
         return ResponseEntity.ok(id);
     }
 
     @Override
-    @DeleteMapping("?group={group}")
+    @DeleteMapping("/groups?group={group}")
     public <S extends Group> ResponseEntity<?> delete(@PathVariable("group") @Valid S s) {
         log.info("Delete group {}", s.getId());
         groupService.delete(s);
@@ -80,7 +80,7 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
     }
 
     @Override
-    @DeleteMapping("/all")
+    @DeleteMapping("/groups/all")
     public ResponseEntity<?> deleteAll() {
         log.info("Deleted all groups");
         groupService.deleteAll();

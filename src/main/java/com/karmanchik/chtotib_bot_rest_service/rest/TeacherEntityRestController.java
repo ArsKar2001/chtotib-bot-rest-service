@@ -14,7 +14,7 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/v1/teachers/")
+@RequestMapping("/api/v1/")
 public class TeacherEntityRestController implements EntityRestControllerInterface<Teacher> {
     private final TeacherService teacherService;
 
@@ -23,7 +23,7 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
     }
 
     @Override
-    @GetMapping("/{id}")
+    @GetMapping("/teachers?id={id}")
     public ResponseEntity<?> get(@PathVariable("id") @NotNull Integer id) {
         try {
             final Teacher teacher = teacherService.findById(id)
@@ -35,7 +35,7 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
     }
 
     @Override
-    @GetMapping("/all")
+    @GetMapping("/teachers/all")
     public ResponseEntity<?> getAll() {
         List<Teacher> all = teacherService.findAll();
         return ResponseEntity.ok(all);
@@ -51,7 +51,6 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
      * @return null
      */
     @Override
-
     public <S extends Teacher> ResponseEntity<?> put(@NotNull Integer id,
                                                      @Valid @NotNull S s) {
         return null;
@@ -68,6 +67,7 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
     }
 
     @Override
+    @DeleteMapping("/teachers/all")
     public ResponseEntity<?> deleteAll() {
         return null;
     }

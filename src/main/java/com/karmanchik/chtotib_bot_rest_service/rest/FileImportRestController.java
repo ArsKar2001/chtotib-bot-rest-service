@@ -177,7 +177,7 @@ public class FileImportRestController {
                 Teacher teacher = teachers.stream()
                         .filter(t -> t.getName().equalsIgnoreCase(teacherName))
                         .findFirst()
-                        .orElseThrow(() -> new ResourceNotFoundException(teacherName, Teacher.class));
+                        .orElse(null);
 
                 replacements.add(
                         Replacement.builder()
