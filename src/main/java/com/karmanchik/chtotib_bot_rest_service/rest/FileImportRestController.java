@@ -145,6 +145,9 @@ public class FileImportRestController {
         try (InputStream stream = file.getInputStream()) {
             ReplacementParser parser = new ReplacementParser();
 
+            log.info("Delete all replacement.");
+            replacementService.deleteAll();
+
             log.info("Find all groups from db...");
             List<Group> groups = groupService.findAll();
             log.info("Find all groups from db... OK");
@@ -165,8 +168,7 @@ public class FileImportRestController {
                 String discipline = json.getString("discipline");
                 String auditorium = json.getString("auditorium");
                 String teacherName = json.getString("teacher_name");
-                String date = json.getString("date");
-                LocalDate localDate = LocalDate.parse(date);
+                LocalDate date = (LocalDate) json.get("date");
 
                 Group group = groups.stream()
                         .filter(g -> g.getName().equalsIgnoreCase(groupName))
@@ -181,7 +183,7 @@ public class FileImportRestController {
                         Replacement.builder()
                                 .group(group)
                                 .teacher(teacher)
-                                .date(localDate)
+                                .date(date)
                                 .discipline(discipline)
                                 .auditorium(auditorium)
                                 .pairNumber(pairNumber)
