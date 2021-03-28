@@ -109,6 +109,7 @@ public class TimetableParser extends AbstractBaseParser {
             } else
                 tempList.add(s.trim());
         }
+        lists.add(new LinkedList<>(tempList));
         lists.removeIf(List::isEmpty);
     }
 
@@ -261,7 +262,7 @@ public class TimetableParser extends AbstractBaseParser {
                 rsb = new StringBuilder();
                 lsb = new StringBuilder();
                 final String[] strings = s.split(CSV_SPLIT, SPLIT_LIMIT);
-                if (s.contains(split) && !strings[3].contains(split)) {
+                if (s.contains(split)) {
                     for (int i = 0; i < strings.length; i++) {
                         try {
                             if (columns.contains(i) && strings[i].contains(split)) {

@@ -15,7 +15,7 @@ public abstract class AbstractBaseParser {
     public static final String UP_DOWN_SPLIT = "/";
     public static final String CSV_SPLIT = ";";
     public static final String DEFAULT_SPLIT = ",";
-    public static final String SPLIT_GROUP_ITEM = "\u2551";
+    public static final String SPLIT_GROUP_ITEM = "║";
 
     /**
      * Формирует данные в csv из исходного текста
