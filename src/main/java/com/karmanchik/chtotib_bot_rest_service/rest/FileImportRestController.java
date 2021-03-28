@@ -85,7 +85,7 @@ public class FileImportRestController {
                 String text = Word.getText(stream);
                 JSONArray array = parser.textToJSON(text);
 
-                array.forEach(o -> {
+                for (Object o : array) {
                     JSONObject item = (JSONObject) o;
                     final String groupName = item.getString("group_name");
                     final int day = item.getInt("day");
@@ -98,11 +98,11 @@ public class FileImportRestController {
                     Teacher teacher = teachers.stream()
                             .filter(t -> t.getName().equalsIgnoreCase(teacherName))
                             .findFirst()
-                            .orElseThrow(IllegalAccessError::new);
+                            .orElseThrow(() -> new ResourceNotFoundException(teacherName, Teacher.class));
                     Group group = groups.stream()
                             .filter(g -> g.getName().equalsIgnoreCase(groupName))
                             .findFirst()
-                            .orElseThrow(IllegalAccessError::new);
+                            .orElseThrow(() -> new ResourceNotFoundException(groupName, Group.class));
 
                     lessons.add(Lesson.builder()
                             .group(group)
@@ -113,9 +113,9 @@ public class FileImportRestController {
                             .auditorium(auditorium)
                             .weekType(weekType)
                             .build());
-                });
+                }
 
-            } catch (IOException | InvalidFormatException | StringReadException e) {
+            } catch (IOException | InvalidFormatException | StringReadException | ResourceNotFoundException e) {
                 log.error("Ошибка ипорта файла: {}; {}; {}", file.getOriginalFilename(), e.getMessage(), e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
@@ -177,7 +177,7 @@ public class FileImportRestController {
                 Teacher teacher = teachers.stream()
                         .filter(t -> t.getName().equalsIgnoreCase(teacherName))
                         .findFirst()
-                        .orElse(null);
+                        .orElseThrow(() -> new ResourceNotFoundException(teacherName, Teacher.class));
 
                 replacements.add(
                         Replacement.builder()

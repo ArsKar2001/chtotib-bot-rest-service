@@ -57,7 +57,6 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public <S extends Teacher> List<S> findAll() {
-        log.info("");
         return (List<S>) teacherRepository.findAll();
     }
 
