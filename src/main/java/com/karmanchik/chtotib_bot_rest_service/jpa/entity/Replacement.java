@@ -35,6 +35,16 @@ public class Replacement extends BaseEntity {
     @NotNull
     private String auditorium;
 
+    @Setter
+    @Getter
+    @Column(name = "group_name", nullable = false)
+    private String groupName;
+
+    @Setter
+    @Getter
+    @Column(name = "teacher_name", nullable = false)
+    private String teacherName;
+
     @Getter
     @Setter
     @Column(name = "date_value")

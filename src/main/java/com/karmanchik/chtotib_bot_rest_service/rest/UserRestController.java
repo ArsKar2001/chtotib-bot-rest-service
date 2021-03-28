@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/v1/users/")
+@RequestMapping("/api/v1/")
 public class UserRestController implements EntityRestControllerInterface<User> {
     private final UserService userService;
 
@@ -25,8 +26,8 @@ public class UserRestController implements EntityRestControllerInterface<User> {
     }
 
     @Override
-    @GetMapping("/?id={id}")
-    public ResponseEntity<?> get(@PathVariable("id") @Valid @NotNull Integer id) {
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> get(@PathVariable("id") @NotNull Integer id) {
         try {
             User user = userService.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException(id, User.class));
@@ -38,8 +39,10 @@ public class UserRestController implements EntityRestControllerInterface<User> {
     }
 
     @Override
+    @GetMapping("/users")
     public ResponseEntity<?> getAll() {
-        return null;
+        List<User> all = userService.findAll();
+        return ResponseEntity.ok(all);
     }
 
     @Override
@@ -54,11 +57,6 @@ public class UserRestController implements EntityRestControllerInterface<User> {
 
     @Override
     public ResponseEntity<?> delete(@NotNull Integer id) {
-        return null;
-    }
-
-    @Override
-    public <S extends User> ResponseEntity<?> delete(S s) {
         return null;
     }
 

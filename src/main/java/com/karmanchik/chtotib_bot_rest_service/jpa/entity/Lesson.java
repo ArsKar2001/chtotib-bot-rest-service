@@ -37,6 +37,16 @@ public class Lesson extends BaseEntity {
 
     @Setter
     @Getter
+    @Column(name = "group_name", nullable = false)
+    private String groupName;
+
+    @Setter
+    @Getter
+    @Column(name = "teacher_name", nullable = false)
+    private String teacherName;
+
+    @Setter
+    @Getter
     @Column(name = "week_type")
     @NotNull
     private WeekType weekType;

@@ -106,7 +106,9 @@ public class FileImportRestController {
 
                     lessons.add(Lesson.builder()
                             .group(group)
+                            .groupName(groupName)
                             .teacher(teacher)
+                            .teacherName(teacherName)
                             .day(day)
                             .pairNumber(pair)
                             .discipline(discipline)
@@ -182,7 +184,9 @@ public class FileImportRestController {
                 replacements.add(
                         Replacement.builder()
                                 .group(group)
+                                .groupName(groupName)
                                 .teacher(teacher)
+                                .teacherName(teacherName)
                                 .date(date)
                                 .discipline(discipline)
                                 .auditorium(auditorium)

@@ -23,7 +23,7 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
     }
 
     @Override
-    @GetMapping("/teachers?id={id}")
+    @GetMapping("/teachers/{id}")
     public ResponseEntity<?> get(@PathVariable("id") @NotNull Integer id) {
         try {
             final Teacher teacher = teacherService.findById(id)
@@ -35,7 +35,7 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
     }
 
     @Override
-    @GetMapping("/teachers/all")
+    @GetMapping("/teachers")
     public ResponseEntity<?> getAll() {
         List<Teacher> all = teacherService.findAll();
         return ResponseEntity.ok(all);
@@ -46,23 +46,13 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
         return null;
     }
 
-    /**
-     * Не используется для этой сущности
-     * @return null
-     */
     @Override
-    public <S extends Teacher> ResponseEntity<?> put(@NotNull Integer id,
-                                                     @Valid @NotNull S s) {
+    public <S extends Teacher> ResponseEntity<?> put(@NotNull Integer id, @Valid S s) {
         return null;
     }
 
     @Override
     public ResponseEntity<?> delete(@NotNull Integer id) {
-        return null;
-    }
-
-    @Override
-    public <S extends Teacher> ResponseEntity<?> delete(S s) {
         return null;
     }
 

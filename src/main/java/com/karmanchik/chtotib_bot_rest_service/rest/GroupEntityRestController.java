@@ -24,7 +24,7 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
 
 
     @Override
-    @GetMapping("/groups?id={id}")
+    @GetMapping("/groups/{id}")
     public ResponseEntity<?> get(@PathVariable("id") @NotNull Integer id) {
         try {
             final Group group = groupService.findById(id)
@@ -36,22 +36,23 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
     }
 
     @Override
-    @GetMapping("/groups/all")
+    @GetMapping("/groups")
     public ResponseEntity<?> getAll() {
         final List<Group> all = groupService.findAll();
         return ResponseEntity.ok(all);
     }
 
     @Override
+    @PostMapping(value = "/groups", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> post(Group s) {
         groupService.save(s);
         return ResponseEntity.ok(s);
     }
 
     @Override
-    @PutMapping("/groups?id={id}&group={group}")
-    public <S extends Group> ResponseEntity<?> put(@PathVariable("id") @NotNull Integer id,
-                                                   @PathVariable("group") @Valid @NotNull S s) {
+    @PutMapping(value = "/groups/{id}")
+    public <S extends Group> ResponseEntity<?> put(@NotNull @PathVariable("id") Integer id,
+                                                   @Valid @RequestBody S s) {
         try {
             Group group = groupService.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
@@ -65,18 +66,10 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
     }
 
     @Override
-    @DeleteMapping("/groups?id={id}")
+    @DeleteMapping("/groups/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") @NotNull Integer id) {
         groupService.deleteById(id);
         return ResponseEntity.ok(id);
-    }
-
-    @Override
-    @DeleteMapping("/groups?group={group}")
-    public <S extends Group> ResponseEntity<?> delete(@PathVariable("group") @Valid S s) {
-        log.info("Delete group {}", s.getId());
-        groupService.delete(s);
-        return ResponseEntity.ok(s);
     }
 
     @Override
