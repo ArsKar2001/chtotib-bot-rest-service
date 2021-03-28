@@ -3,14 +3,11 @@ package com.karmanchik.chtotib_bot_rest_service.jpa.service;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeacherService extends BaseService<Teacher> {
 
-    @Override
-    <S extends Teacher> S save(S s);
+    <S extends Teacher> S getByName(String teacherName);
 
-    @Override
-    <S extends Teacher> List<S> saveAll(List<S> s);
-
-    <E> E getByName(String teacherName);
+    Optional<List<String>> getAllNames();
 }

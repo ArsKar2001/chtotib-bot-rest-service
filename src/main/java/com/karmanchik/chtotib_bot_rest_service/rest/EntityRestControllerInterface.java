@@ -15,8 +15,6 @@ public interface EntityRestControllerInterface<T extends BaseEntity> {
 
     <S extends T> ResponseEntity<?> put(@NotNull Integer id, @Valid @NotNull S s);
 
-    <S extends T> ResponseEntity<?> put(S s);
-
     ResponseEntity<?> delete(@NotNull Integer id);
 
     <S extends T> ResponseEntity<?> delete(S s);

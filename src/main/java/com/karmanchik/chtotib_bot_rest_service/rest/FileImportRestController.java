@@ -1,14 +1,14 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.jpa.enums.WeekType;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.UserService;
+import com.karmanchik.chtotib_bot_rest_service.jpa.service.*;
+import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
 import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
 import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.*;
 
 @Log4j2
@@ -37,6 +38,7 @@ public class FileImportRestController {
     private final TeacherService teacherService;
     private final GroupService groupService;
     private final UserService userService;
+    private final ReplacementService replacementService;
 
     @PostMapping("/lessons")
     @ResponseBody
@@ -121,10 +123,13 @@ public class FileImportRestController {
 
         log.info("Importing groups...");
         groupService.saveAll(groups);
+        log.info("Importing groups... OK");
         log.info("Importing teacher...");
         teacherService.saveAll(teachers);
+        log.info("Importing teacher... OK");
         log.info("Importing lessons...");
         lessonService.saveAll(lessons);
+        log.info("Importing lessons... OK");
 
         HashMap<String, Integer> response = new HashMap<>();
         response.put("lessons", lessons.size());
@@ -132,5 +137,64 @@ public class FileImportRestController {
         response.put("teacher", teachers.size());
         response.put("all", teachers.size() + lessons.size() + teachers.size());
         return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/replacement")
+    public ResponseEntity<?> importReplacement(MultipartFile file) {
+        log.info("Start import data from file \"{}\"", file.getOriginalFilename());
+        try (InputStream stream = file.getInputStream()) {
+            ReplacementParser parser = new ReplacementParser();
+
+            log.info("Find all groups from db...");
+            List<Group> groups = groupService.findAll();
+            log.info("Find all groups from db... OK");
+            log.info("Find all teachers from db...");
+            List<Teacher> teachers = teacherService.findAll();
+            log.info("Find all teachers from db... OK");
+
+
+            List<Replacement> replacements = new ArrayList<>();
+
+            String text = Word.getText(stream);
+            JSONArray array = parser.textToJSON(text);
+            log.debug("Parsed text to JSON: {}", array);
+            for (Object o : array) {
+                JSONObject json = (JSONObject) o;
+                String groupName = json.getString("group_name");
+                String pairNumber = json.getString("pair_number");
+                String discipline = json.getString("discipline");
+                String auditorium = json.getString("auditorium");
+                String teacherName = json.getString("teacher_name");
+                String date = json.getString("date");
+                LocalDate localDate = LocalDate.parse(date);
+
+                Group group = groups.stream()
+                        .filter(g -> g.getName().equalsIgnoreCase(groupName))
+                        .findFirst()
+                        .orElseThrow(() -> new ResourceNotFoundException(groupName, Group.class));
+                Teacher teacher = teachers.stream()
+                        .filter(t -> t.getName().equalsIgnoreCase(teacherName))
+                        .findFirst()
+                        .orElse(null);
+
+                replacements.add(
+                        Replacement.builder()
+                                .group(group)
+                                .teacher(teacher)
+                                .date(localDate)
+                                .discipline(discipline)
+                                .auditorium(auditorium)
+                                .pairNumber(pairNumber)
+                                .build()
+                );
+            }
+            log.info("Importing replacements...");
+            replacementService.saveAll(replacements);
+            log.info("Importing replacements... OK");
+            return ResponseEntity.ok(Map.of("replacement", replacements.size()));
+        } catch (IOException | InvalidFormatException | StringReadException | ResourceNotFoundException e) {
+            log.error("Ошибка ипорта файла: {}; {}; {}", file.getOriginalFilename(), e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

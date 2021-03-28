@@ -2,6 +2,8 @@ package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
+import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
+import org.apache.poi.hssf.record.DVALRecord;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +20,9 @@ class ReplacementServiceImplTest {
     @Test
     void test_File1() {
         try (FileInputStream stream = new FileInputStream(FILE_1)) {
-            final ReplacementParser parser = new ReplacementParser(stream);
-            System.out.println(parser.parse());
+            ReplacementParser parser = new ReplacementParser();
+            String text = Word.getText(stream);
+            System.out.println(parser.textToJSON(text));
         } catch (IOException | StringReadException | InvalidFormatException e) {
             e.printStackTrace();
         }
@@ -28,8 +31,10 @@ class ReplacementServiceImplTest {
     @Test
     void test_File2() {
         try (FileInputStream stream = new FileInputStream(FILE_2)) {
-            final ReplacementParser parser = new ReplacementParser(stream);
-            System.out.println(parser.parse());
+            ReplacementParser parser = new ReplacementParser();
+            String text = Word.getText(stream);
+            parser.textToCSV(text)
+                    .forEach(System.out::println);
         } catch (IOException | StringReadException | InvalidFormatException e) {
             e.printStackTrace();
         }
@@ -38,8 +43,10 @@ class ReplacementServiceImplTest {
     @Test
     void test_File3() {
         try (FileInputStream stream = new FileInputStream(FILE_3)) {
-            final ReplacementParser parser = new ReplacementParser(stream);
-            System.out.println(parser.parse());
+            ReplacementParser parser = new ReplacementParser();
+            String text = Word.getText(stream);
+            parser.textToCSV(text)
+                    .forEach(System.out::println);
         } catch (IOException | StringReadException | InvalidFormatException e) {
             e.printStackTrace();
         }

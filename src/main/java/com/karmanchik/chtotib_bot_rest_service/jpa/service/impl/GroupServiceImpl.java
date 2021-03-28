@@ -17,11 +17,16 @@ public class GroupServiceImpl implements GroupService {
     private final JpaGroupRepository groupRepository;
 
     @Override
-    public <S extends Group> S getByName(String groupName) {
-        return (S) groupRepository.getByName(groupName)
+    public <S extends Group> S getByName(String name) {
+        return (S) groupRepository.getByName(name)
                 .orElseGet(() -> groupRepository
-                        .save(Group.builder(groupName)
+                        .save(Group.builder(name)
                                 .build()));
+    }
+
+    @Override
+    public Optional<List<String>> getAllGroupName() {
+        return groupRepository.getAllGroupName();
     }
 
     @Override

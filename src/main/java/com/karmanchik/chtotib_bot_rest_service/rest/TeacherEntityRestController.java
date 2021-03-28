@@ -6,13 +6,11 @@ import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Log4j2
 @RestController
@@ -37,8 +35,10 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
     }
 
     @Override
+    @GetMapping("/all")
     public ResponseEntity<?> getAll() {
-        return null;
+        List<Teacher> all = teacherService.findAll();
+        return ResponseEntity.ok(all);
     }
 
     @Override
@@ -46,13 +46,14 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
         return null;
     }
 
+    /**
+     * Не используется для этой сущности
+     * @return null
+     */
     @Override
-    public <S extends Teacher> ResponseEntity<?> put(@NotNull Integer id, @Valid @NotNull S s) {
-        return null;
-    }
 
-    @Override
-    public <S extends Teacher> ResponseEntity<?> put(S s) {
+    public <S extends Teacher> ResponseEntity<?> put(@NotNull Integer id,
+                                                     @Valid @NotNull S s) {
         return null;
     }
 

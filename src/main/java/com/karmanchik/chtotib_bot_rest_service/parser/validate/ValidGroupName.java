@@ -10,10 +10,14 @@ import java.util.regex.Pattern;
 
 public class ValidGroupName {
     private static final Pattern GROUP_NAME =
-            Pattern.compile("[А-Яа-я]+(\\s?+-\\s?+|\\s?+)\\d{2}(\\s?+-\\s?+)\\d(\\S?|)");
+            Pattern.compile("[А-Яа-я]+(\\s?+-\\s?+|\\s?+)\\d{2}(\\s?+-\\s?+)\\d([а-я]?|)");
     private static final Pattern ITEM_GROUP_NAME = Pattern.compile("((\\d+([а-я]|))|([А-Я]|[а-я])+)");
 
     private ValidGroupName() {
+    }
+
+    public static Matcher getMatcher(String s) {
+        return GROUP_NAME.matcher(s);
     }
 
     public static Pattern getPatternGroupName() {

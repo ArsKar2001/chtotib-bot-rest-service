@@ -22,6 +22,7 @@ public class Teacher extends BaseEntity {
     @Getter
     @JsonManagedReference
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Getter

@@ -21,7 +21,7 @@ public class Replacement extends BaseEntity {
     @Setter
     @Column(name = "pair_number")
     @NotNull
-    private Integer pairNumber;
+    private String pairNumber;
 
     @Getter
     @Setter

@@ -17,8 +17,8 @@ public class TeacherServiceImpl implements TeacherService {
     private final JpaTeacherRepository teacherRepository;
 
     @Override
-    public Teacher getByName(String teacherName) {
-        return teacherRepository.getByName(teacherName)
+    public <S extends Teacher> S getByName(String teacherName) {
+        return (S) teacherRepository.getByName(teacherName)
                 .orElseGet(() -> teacherRepository
                         .save(Teacher.builder(teacherName)
                                 .build()));
@@ -59,5 +59,10 @@ public class TeacherServiceImpl implements TeacherService {
     public <S extends Teacher> List<S> findAll() {
         log.info("");
         return (List<S>) teacherRepository.findAll();
+    }
+
+    @Override
+    public Optional<List<String>> getAllNames() {
+        return teacherRepository.getAllNames();
     }
 }

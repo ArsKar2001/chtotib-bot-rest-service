@@ -29,7 +29,7 @@ public class TimetableParser extends AbstractBaseParser {
     @Override
     public List<? extends String> textToCSV(String text) throws StringReadException {
         List<String> csv = new ArrayList<>();
-        this.textToListLists(text);
+        this.textToList(text);
         lists.forEach(csv::addAll);
         return csv;
     }
@@ -39,7 +39,7 @@ public class TimetableParser extends AbstractBaseParser {
         JSONArray array = new JSONArray();
         JSONObject object;
 
-        this.textToListLists(text);
+        this.textToList(text);
 
         for (List<String> listCSV : lists) {
             for (String s : listCSV) {
@@ -73,7 +73,7 @@ public class TimetableParser extends AbstractBaseParser {
         return array;
     }
 
-    private void textToListLists(String text) throws StringReadException {
+    private void textToList(String text) throws StringReadException {
         String cText = textCorrection(text);
         textToListOfLists(cText);
         splitListsOfLists();
@@ -261,7 +261,7 @@ public class TimetableParser extends AbstractBaseParser {
                 rsb = new StringBuilder();
                 lsb = new StringBuilder();
                 final String[] strings = s.split(CSV_SPLIT, SPLIT_LIMIT);
-                if (s.contains(split)) {
+                if (s.contains(split) && !strings[3].contains(split)) {
                     for (int i = 0; i < strings.length; i++) {
                         try {
                             if (columns.contains(i) && strings[i].contains(split)) {
