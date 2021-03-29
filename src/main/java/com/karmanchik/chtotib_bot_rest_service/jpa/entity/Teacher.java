@@ -28,14 +28,14 @@ public class Teacher extends BaseEntity {
 
     @Getter
     @JsonManagedReference
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Getter
     @JsonManagedReference
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<Replacement> replacements;
 

@@ -38,14 +38,14 @@ public class Group extends BaseEntity {
 
     @Setter
     @JsonManagedReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Setter
     @JsonManagedReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     @OrderBy(value = "date ASC")
     private List<Replacement> replacements;
