@@ -1,8 +1,14 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
@@ -11,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -34,28 +41,29 @@ public class Group extends BaseEntity {
     @NotNull
     private String name;
 
-//    @Setter
-//    @OneToOne(mappedBy = "group")
-//    private User user;
+    @Setter
+    @JsonBackReference
+    @OneToOne(mappedBy = "group")
+    private User user;
 
     @Setter
-    @JsonManagedReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Setter
-    @JsonManagedReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy(value = "date ASC")
     private List<Replacement> replacements;
 
-    private static GroupBuilder builder() {
-        return new GroupBuilder();
-    }
-
     public static GroupBuilder builder(String name) {
         return hiddenBuilder().name(name);
+    }
+
+    public List<Replacement> getReplacements() {
+        return replacements;
     }
 
     @Override

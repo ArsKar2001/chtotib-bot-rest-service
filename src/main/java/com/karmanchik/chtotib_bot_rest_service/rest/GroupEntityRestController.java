@@ -2,6 +2,7 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
