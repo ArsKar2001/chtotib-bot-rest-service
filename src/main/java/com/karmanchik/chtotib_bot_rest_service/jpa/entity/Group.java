@@ -8,6 +8,7 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(
@@ -37,13 +38,13 @@ public class Group extends BaseEntity {
     @JsonManagedReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("day, pairNumber ASC")
-    private List<Lesson> lessons;
+    private Set<Lesson> lessons;
 
     @Setter
     @JsonManagedReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy(value = "date ASC")
-    private List<Replacement> replacements;
+    private Set<Replacement> replacements;
 
     private static GroupBuilder builder() {
         return new GroupBuilder();
