@@ -41,17 +41,17 @@ public class User extends BaseEntity {
     @NotNull
     private Integer roleId;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_teacher",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "teacher_id", referencedColumnName = "id", nullable = false)})
-    private Teacher teacher;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_group",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id", nullable = false)})
-    private Group group;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinTable(name = "user_teacher",
+//            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)},
+//            inverseJoinColumns = {@JoinColumn(name = "teacher_id", referencedColumnName = "id", nullable = false)})
+//    private Teacher teacher;
+//
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinTable(name = "user_group",
+//            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)},
+//            inverseJoinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id", nullable = false)})
+//    private Group group;
 
 
     @Column(name = "role_id")

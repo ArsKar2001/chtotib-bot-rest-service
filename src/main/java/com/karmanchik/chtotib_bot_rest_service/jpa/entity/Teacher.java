@@ -24,21 +24,19 @@ public class Teacher extends BaseEntity {
     @NotNull
     private String name;
 
-    @Setter
-    @OneToOne(mappedBy = "teacher")
-    private User user;
+//    @Setter
+//    @OneToOne(mappedBy = "teacher")
+//    private User user;
 
     @Getter
     @JsonManagedReference
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Getter
     @JsonManagedReference
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
     @OrderBy("date, pairNumber ASC")
     private List<Replacement> replacements;
 

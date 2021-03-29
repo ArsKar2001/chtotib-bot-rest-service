@@ -34,21 +34,19 @@ public class Group extends BaseEntity {
     @NotNull
     private String name;
 
-    @Setter
-    @OneToOne(mappedBy = "group")
-    private User user;
+//    @Setter
+//    @OneToOne(mappedBy = "group")
+//    private User user;
 
     @Setter
     @JsonManagedReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Setter
     @JsonManagedReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
     @OrderBy(value = "date ASC")
     private List<Replacement> replacements;
 
