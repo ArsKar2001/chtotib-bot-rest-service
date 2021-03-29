@@ -19,6 +19,10 @@ public class Teacher extends BaseEntity {
     @NotNull
     private String name;
 
+    @Setter
+    @OneToOne(mappedBy = "teacher")
+    private User user;
+
     @Getter
     @JsonManagedReference
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

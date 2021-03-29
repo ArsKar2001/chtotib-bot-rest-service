@@ -30,6 +30,10 @@ public class Group extends BaseEntity {
     private String name;
 
     @Setter
+    @OneToOne(mappedBy = "group")
+    private User user;
+
+    @Setter
     @JsonManagedReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("day, pairNumber ASC")
