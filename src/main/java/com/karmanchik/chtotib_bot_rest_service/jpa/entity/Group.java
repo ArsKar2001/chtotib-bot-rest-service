@@ -40,15 +40,15 @@ public class Group extends BaseEntity {
 
     @Setter
     @JsonManagedReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Setter
     @JsonManagedReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     @OrderBy(value = "date ASC")
     private List<Replacement> replacements;
 
