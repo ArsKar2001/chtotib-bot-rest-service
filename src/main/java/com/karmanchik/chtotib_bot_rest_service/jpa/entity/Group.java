@@ -3,6 +3,8 @@ package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
@@ -36,15 +38,17 @@ public class Group extends BaseEntity {
 
     @Setter
     @JsonManagedReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
     @OrderBy("day, pairNumber ASC")
-    private Set<Lesson> lessons;
+    private List<Lesson> lessons;
 
     @Setter
     @JsonManagedReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
     @OrderBy(value = "date ASC")
-    private Set<Replacement> replacements;
+    private List<Replacement> replacements;
 
     private static GroupBuilder builder() {
         return new GroupBuilder();

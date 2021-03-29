@@ -2,6 +2,8 @@ package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -26,14 +28,16 @@ public class Teacher extends BaseEntity {
 
     @Getter
     @JsonManagedReference
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
     @OrderBy("day, pairNumber ASC")
-    private Set<Lesson> lessons;
+    private List<Lesson> lessons;
 
     @Getter
     @JsonManagedReference
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Replacement> replacements;
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private List<Replacement> replacements;
 
     public static TeacherBuilder builder(String name) {
         return hiddenBuilder().name(name);
