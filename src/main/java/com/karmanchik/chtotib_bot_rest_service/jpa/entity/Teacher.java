@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -28,15 +30,15 @@ public class Teacher extends BaseEntity {
 
     @Getter
     @JsonManagedReference
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Getter
     @JsonManagedReference
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Replacement> replacements;
 
     public static TeacherBuilder builder(String name) {

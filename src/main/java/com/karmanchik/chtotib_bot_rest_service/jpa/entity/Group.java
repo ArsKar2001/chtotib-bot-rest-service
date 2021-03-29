@@ -3,11 +3,13 @@ package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
@@ -38,15 +40,15 @@ public class Group extends BaseEntity {
 
     @Setter
     @JsonManagedReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Setter
     @JsonManagedReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy(value = "date ASC")
     private List<Replacement> replacements;
 
