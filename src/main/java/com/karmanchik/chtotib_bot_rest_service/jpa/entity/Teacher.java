@@ -35,14 +35,16 @@ public class Teacher extends BaseEntity {
     private User user;
 
     @Getter
-    @JsonIgnore
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "teacher")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Getter
-    @JsonIgnore
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "teacher")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy("date, pairNumber ASC")
     private List<Replacement> replacements;
 

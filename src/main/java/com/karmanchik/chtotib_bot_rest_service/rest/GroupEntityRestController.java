@@ -2,16 +2,20 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Log4j2
 @RestController
@@ -36,34 +40,35 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
         }
     }
 
+
     @Override
-    @GetMapping("/groups")
-    public ResponseEntity<?> getAll() {
-        final List<Group> all = groupService.findAll();
-        return ResponseEntity.ok(all);
+    public CollectionModel<EntityModel<Group>> getAll() {
+        return null;
     }
 
     @Override
     @PostMapping(value = "/groups", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> post(Group s) {
-        groupService.save(s);
-        return ResponseEntity.ok(s);
+        return ResponseEntity.ok()
+                .body(groupService.save(s));
     }
 
     @Override
     @PutMapping(value = "/groups/{id}")
-    public <S extends Group> ResponseEntity<?> put(@NotNull @PathVariable("id") Integer id,
-                                                   @Valid @RequestBody S s) {
-        try {
-            Group group = groupService.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
-            group.setLessons(s.getLessons());
-            group.setReplacements(s.getReplacements());
-            return ResponseEntity.ok(groupService.save(group));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-
-        }
+    public ResponseEntity<?> put(@NotNull @PathVariable("id") Integer id,
+                                 @RequestBody @Valid Group t) {
+        return ResponseEntity.ok()
+                .body(groupService.findById(id)
+                        .map(group -> {
+                            group.setName(t.getName());
+                            group.setLessons(t.getLessons());
+                            group.setReplacements(t.getReplacements());
+                            return group;
+                        })
+                        .orElseGet(() -> {
+                            t.setId(id);
+                            return groupService.save(t);
+                        }));
     }
 
     @Override

@@ -1,9 +1,12 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.User;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.UserService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -40,9 +42,10 @@ public class UserRestController implements EntityRestControllerInterface<User> {
 
     @Override
     @GetMapping("/users")
-    public ResponseEntity<?> getAll() {
+    public CollectionModel<EntityModel<Group>> getAll() {
         List<User> all = userService.findAll();
-        return ResponseEntity.ok(all);
+//        return ResponseEntity.ok(all);
+        return null;
     }
 
     @Override
@@ -51,7 +54,7 @@ public class UserRestController implements EntityRestControllerInterface<User> {
     }
 
     @Override
-    public <S extends User> ResponseEntity<?> put(@NotNull Integer id, @Valid @NotNull S s) {
+    public ResponseEntity<?> put(@NotNull Integer id, User t) {
         return null;
     }
 

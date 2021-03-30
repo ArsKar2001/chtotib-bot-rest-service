@@ -1,14 +1,16 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -36,9 +38,10 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
 
     @Override
     @GetMapping("/teachers")
-    public ResponseEntity<?> getAll() {
-        List<Teacher> all = teacherService.findAll();
-        return ResponseEntity.ok(all);
+    public CollectionModel<EntityModel<Group>> getAll() {
+//        List<Teacher> all = teacherService.findAll();
+//        return ResponseEntity.ok(all);
+        return null;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
     }
 
     @Override
-    public <S extends Teacher> ResponseEntity<?> put(@NotNull Integer id, @Valid S s) {
+    public ResponseEntity<?> put(@NotNull Integer id, Teacher t) {
         return null;
     }
 
