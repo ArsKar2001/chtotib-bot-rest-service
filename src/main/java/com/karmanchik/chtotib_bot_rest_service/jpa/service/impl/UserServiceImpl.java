@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteAllInBatch();
     }
 
+
     @Override
     public <S extends User> Optional<S> findById(Integer id) {
         return (Optional<S>) userRepository.findById(id);
