@@ -4,17 +4,12 @@ import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundExcepti
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Log4j2
@@ -32,9 +27,9 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
     @GetMapping("/groups/{id}")
     public ResponseEntity<?> get(@PathVariable("id") @NotNull Integer id) {
         try {
-            final Group group = groupService.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
-            return ResponseEntity.ok(group);
+            return ResponseEntity.ok()
+                    .body(groupService.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException(id, Group.class)));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -42,8 +37,9 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
 
 
     @Override
-    public CollectionModel<EntityModel<Group>> getAll() {
-        return null;
+    @GetMapping("/groups")
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok(groupService.findAll());
     }
 
     @Override

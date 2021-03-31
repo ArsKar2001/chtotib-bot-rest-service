@@ -1,6 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa.service;
 
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.BaseEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;

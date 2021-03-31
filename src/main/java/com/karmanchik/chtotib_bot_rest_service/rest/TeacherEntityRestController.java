@@ -1,18 +1,15 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Log4j2
 @RestController
@@ -38,19 +35,22 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
 
     @Override
     @GetMapping("/teachers")
-    public CollectionModel<EntityModel<Group>> getAll() {
-//        List<Teacher> all = teacherService.findAll();
-//        return ResponseEntity.ok(all);
-        return null;
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok()
+                .body(teacherService.findAll());
     }
 
     @Override
-    public ResponseEntity<?> post(Teacher teacher) {
-        return null;
+    @PostMapping(value = "/teachers/{id}", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> post(@RequestBody @Valid Teacher t) {
+        return ResponseEntity.ok()
+                .body(teacherService.save(t));
     }
 
     @Override
-    public ResponseEntity<?> put(@NotNull Integer id, Teacher t) {
+    @PutMapping(value = "/teachers/{id}", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> put(@PathVariable("id") @NotNull Integer id,
+                                 Teacher t) {
         return null;
     }
 

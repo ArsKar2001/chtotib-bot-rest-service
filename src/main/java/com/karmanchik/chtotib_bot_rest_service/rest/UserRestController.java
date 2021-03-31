@@ -1,19 +1,14 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.User;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.UserService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -42,10 +37,8 @@ public class UserRestController implements EntityRestControllerInterface<User> {
 
     @Override
     @GetMapping("/users")
-    public CollectionModel<EntityModel<Group>> getAll() {
-        List<User> all = userService.findAll();
-//        return ResponseEntity.ok(all);
-        return null;
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok(userService.findAll());
     }
 
     @Override
@@ -54,17 +47,39 @@ public class UserRestController implements EntityRestControllerInterface<User> {
     }
 
     @Override
-    public ResponseEntity<?> put(@NotNull Integer id, User t) {
-        return null;
+    @PutMapping(value = "/users/{id}", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> put(@PathVariable("id") @NotNull Integer id,
+                                 @RequestBody @Valid User t) {
+        try {
+            return ResponseEntity.ok()
+                    .body(userService.findById(id)
+                            .map(user -> {
+                                user.setBotState(t.getBotState());
+                                user.setUserState(t.getUserState());
+                                user.setTeacher(t.getTeacher());
+                                user.setGroup(t.getGroup());
+                                return user;
+                            }).orElseThrow(() -> new ResourceNotFoundException(id, User.class)));
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
     }
 
     @Override
-    public ResponseEntity<?> delete(@NotNull Integer id) {
-        return null;
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") @NotNull Integer id) {
+        log.info("Deleted user by id {}", id);
+        userService.deleteById(id);
+        return ResponseEntity.ok(id);
     }
 
     @Override
+    @DeleteMapping("/users")
     public ResponseEntity<?> deleteAll() {
-        return null;
+        log.info("Deleted all users");
+        userService.deleteAll();
+        return ResponseEntity.ok("Deleted all users");
     }
 }

@@ -6,13 +6,13 @@ import java.util.Map;
 
 public class DayOfWeek {
     private static final Map<String, Integer> DAYS_OF_WEEK = Map.of(
-            "Понедельник", 0,
-            "Вторник", 1,
-            "Среда", 2,
-            "Четверг", 3,
-            "Пятница", 4,
-            "Суббота", 5,
-            "Воскресенье", 6
+            "Понедельник", 1,
+            "Вторник", 2,
+            "Среда", 3,
+            "Четверг", 4,
+            "Пятница", 5,
+            "Суббота", 6,
+            "Воскресенье", 7
     );
 
     private DayOfWeek() {

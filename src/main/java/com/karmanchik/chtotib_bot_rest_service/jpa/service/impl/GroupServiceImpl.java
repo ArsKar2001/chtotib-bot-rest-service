@@ -54,6 +54,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public boolean existBiId(Integer id) {
+        return groupRepository.existsById(id);
+    }
+
+    @Override
     public void deleteAll() {
         log.info("Deleted all groups!");
         groupRepository.deleteAllInBatch();

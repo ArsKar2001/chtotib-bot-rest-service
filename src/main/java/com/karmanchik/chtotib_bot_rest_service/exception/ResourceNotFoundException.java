@@ -11,7 +11,7 @@ public class ResourceNotFoundException extends Exception {
      * call to {@link #initCause}.
      */
     public ResourceNotFoundException(Class aClass) {
-        super("Не найдены " + aClass.getName());
+        super("Не найден " + aClass.getName());
     }
 
     /**
