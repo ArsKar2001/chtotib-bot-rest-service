@@ -5,7 +5,7 @@ import org.json.JSONArray;
 
 import java.util.List;
 
-public abstract class AbstractBaseParser {
+public abstract class AbstractParser {
 
     public static final int CSV_COLUMN_SIZE = 7;
     public static final int MAX_COLUMN_SIZE = 5;
@@ -16,6 +16,7 @@ public abstract class AbstractBaseParser {
     public static final String CSV_SPLIT = ";";
     public static final String DEFAULT_SPLIT = ",";
     public static final String SPLIT_GROUP_ITEM = "║";
+    public static final String LINE_SPLIT = "\n";
 
     /**
      * Формирует данные в csv из исходного текста
@@ -23,7 +24,7 @@ public abstract class AbstractBaseParser {
      * @return данные для импорта в csv-формате
      * @throws StringReadException Неверное чтение строки
      */
-    public abstract List<? extends String> textToCSV(String text) throws StringReadException;
+    public abstract List<String> textToCSV(String text) throws StringReadException;
 
     /**
      * Формирует данные в json из исходного текста

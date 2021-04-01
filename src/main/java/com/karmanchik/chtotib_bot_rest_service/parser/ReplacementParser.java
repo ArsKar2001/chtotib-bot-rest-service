@@ -1,8 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.parser;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.model.DayOfWeek;
-import com.karmanchik.chtotib_bot_rest_service.model.NumberLesson;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidDate;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
@@ -19,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j2
-public class ReplacementParser extends AbstractBaseParser {
+public class ReplacementParser extends AbstractParser {
 
     private final List<String> list = new LinkedList<>();
 
@@ -31,7 +29,7 @@ public class ReplacementParser extends AbstractBaseParser {
      * @throws StringReadException Неверное чтение строки
      */
     @Override
-    public List<? extends String> textToCSV(String text) throws StringReadException {
+    public List<String> textToCSV(String text) throws StringReadException {
         textToList(text);
         return list;
     }

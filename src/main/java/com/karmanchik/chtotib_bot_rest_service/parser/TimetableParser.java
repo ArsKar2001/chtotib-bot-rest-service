@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j2
-public class TimetableParser extends AbstractBaseParser {
+public class TimetableParser extends AbstractParser {
 
     private final List<List<String>> lists = new LinkedList<>();
 
@@ -27,7 +27,7 @@ public class TimetableParser extends AbstractBaseParser {
      * @throws StringReadException Неверное чтение строки
      */
     @Override
-    public List<? extends String> textToCSV(String text) throws StringReadException {
+    public List<String> textToCSV(String text) throws StringReadException {
         List<String> csv = new ArrayList<>();
         this.textToList(text);
         lists.forEach(csv::addAll);
