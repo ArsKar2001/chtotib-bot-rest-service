@@ -56,6 +56,7 @@ public class FileImportRestController {
         groupService.deleteAll();
         teacherService.deleteAll();
         lessonService.deleteAll();
+        replacementService.deleteAll();
 
         for (MultipartFile file : files) {
             try (InputStream stream = file.getInputStream()) {
