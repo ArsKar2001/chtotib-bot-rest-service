@@ -48,8 +48,8 @@ public class FileImportRestController {
         List<Group> groups = new ArrayList<>();
         List<Teacher> teachers = new ArrayList<>();
 
-        List<String> teacherNames = new ArrayList<>();
-        List<String> groupNames = new ArrayList<>();
+        Set<String> teacherNames = new HashSet<>();
+        Set<String> groupNames = new HashSet<>();
 
         groupService.deleteAll();
         teacherService.deleteAll();
@@ -76,14 +76,8 @@ public class FileImportRestController {
             }
         }
 
-        teacherNames.stream()
-                .distinct()
-                .map(s -> Teacher.builder(s).build())
-                .forEach(teachers::add);
-        groupNames.stream()
-                .distinct()
-                .map(s -> Group.builder(s).build())
-                .forEach(groups::add);
+        teacherNames.forEach(s -> teachers.add(Teacher.builder(s).build()));
+        groupNames.forEach(s -> groups.add(Group.builder(s).build()));
 
         for (MultipartFile file : files) {
             try (InputStream stream = file.getInputStream()) {
