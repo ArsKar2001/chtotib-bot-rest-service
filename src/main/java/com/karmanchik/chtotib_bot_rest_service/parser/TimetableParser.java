@@ -163,8 +163,7 @@ public class TimetableParser extends AbstractParser {
         String s1 = "";
         String s3;
 
-        Pattern ptLesson
-                = Pattern.compile("^([А-Яа-я]+|-);");
+        Pattern ptLesson = Pattern.compile("^([А-Яа-я]+|-);");
         Pattern ptGroup = ValidGroupName.getPatternGroupName();
 
         for (List<String> list : tLL) {
