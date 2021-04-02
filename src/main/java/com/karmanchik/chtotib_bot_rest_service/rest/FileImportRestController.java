@@ -2,10 +2,10 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.*;
+import com.karmanchik.chtotib_bot_rest_service.jpa.enums.BotState;
+import com.karmanchik.chtotib_bot_rest_service.jpa.enums.Role;
+import com.karmanchik.chtotib_bot_rest_service.jpa.enums.UserState;
 import com.karmanchik.chtotib_bot_rest_service.jpa.enums.WeekType;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.*;
 import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
@@ -36,6 +37,7 @@ import java.util.*;
 public class FileImportRestController {
     private final LessonService lessonService;
     private final TeacherService teacherService;
+    private final UserService userService;
     private final GroupService groupService;
     private final ReplacementService replacementService;
 
@@ -51,6 +53,18 @@ public class FileImportRestController {
         Set<String> teacherNames = new HashSet<>();
         Set<String> groupNames = new HashSet<>();
 
+        log.info("Update all users...");
+        userService.saveAll(userService.findAll()
+                .stream()
+                .peek(user -> {
+                    user.setBotState(BotState.START);
+                    user.setUserState(UserState.NONE);
+                    user.setTeacher(null);
+                    user.setGroup(null);
+                    user.setRole(Role.NONE);
+                }).collect(Collectors.toList()));
+        log.info("Update all users... OK");
+
         groupService.deleteAll();
         teacherService.deleteAll();
         lessonService.deleteAll();
@@ -62,11 +76,10 @@ public class FileImportRestController {
                 String text = Word.getText(stream);
                 JSONArray array = parser.textToJSON(text);
                 array.toList().stream()
-                        .filter(JSONObject.class::isInstance)
-                        .map(JSONObject.class::cast)
-                        .forEach(json -> {
-                            String groupName = json.getString("group_name");
-                            String teacherName = json.getString("teacher_name");
+                        .map(Map.class::cast)
+                        .forEach(item -> {
+                            String groupName = (String) item.get("group_name");
+                            String teacherName = (String) item.get("teacher_name");
                             teacherNames.add(teacherName);
                             groupNames.add(groupName);
                         });
@@ -76,8 +89,15 @@ public class FileImportRestController {
             }
         }
 
-        teacherNames.forEach(s -> teachers.add(Teacher.builder(s).build()));
-        groupNames.forEach(s -> groups.add(Group.builder(s).build()));
+        teacherNames.stream()
+                .distinct()
+                .map(s -> Teacher.builder(s).build())
+                .forEach(teachers::add);
+
+        groupNames.stream()
+                .distinct()
+                .map(s -> Group.builder(s).build())
+                .forEach(groups::add);
 
         for (MultipartFile file : files) {
             try (InputStream stream = file.getInputStream()) {
