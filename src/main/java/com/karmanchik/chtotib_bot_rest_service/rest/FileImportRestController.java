@@ -37,7 +37,6 @@ public class FileImportRestController {
     private final LessonService lessonService;
     private final TeacherService teacherService;
     private final GroupService groupService;
-    private final UserService userService;
     private final ReplacementService replacementService;
 
     @PostMapping("/lessons")
@@ -49,37 +48,42 @@ public class FileImportRestController {
         List<Group> groups = new ArrayList<>();
         List<Teacher> teachers = new ArrayList<>();
 
-        Set<String> teacherNames = new HashSet<>();
-        Set<String> groupNames = new HashSet<>();
+        List<String> teacherNames = new ArrayList<>();
+        List<String> groupNames = new ArrayList<>();
 
-        userService.deleteAll();
         groupService.deleteAll();
         teacherService.deleteAll();
         lessonService.deleteAll();
         replacementService.deleteAll();
 
+
         for (MultipartFile file : files) {
             try (InputStream stream = file.getInputStream()) {
                 String text = Word.getText(stream);
                 JSONArray array = parser.textToJSON(text);
-
-                array.forEach(o -> {
-                    JSONObject item = (JSONObject) o;
-                    final String groupName = item.getString("group_name");
-                    final String teacherName = item.getString("teacher_name");
-
-                    teacherNames.add(teacherName);
-                    groupNames.add(groupName);
-                });
-
+                array.toList().stream()
+                        .filter(JSONObject.class::isInstance)
+                        .map(JSONObject.class::cast)
+                        .forEach(json -> {
+                            String groupName = json.getString("group_name");
+                            String teacherName = json.getString("teacher_name");
+                            teacherNames.add(teacherName);
+                            groupNames.add(groupName);
+                        });
             } catch (IOException | InvalidFormatException | StringReadException e) {
                 log.error("Ошибка ипорта файла: {}; {}; {}", file.getOriginalFilename(), e.getMessage(), e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
 
-        teacherNames.forEach(s -> teachers.add(Teacher.builder(s).build()));
-        groupNames.forEach(s -> groups.add(Group.builder(s).build()));
+        teacherNames.stream()
+                .distinct()
+                .map(s -> Teacher.builder(s).build())
+                .forEach(teachers::add);
+        groupNames.stream()
+                .distinct()
+                .map(s -> Group.builder(s).build())
+                .forEach(groups::add);
 
         for (MultipartFile file : files) {
             try (InputStream stream = file.getInputStream()) {
@@ -117,7 +121,6 @@ public class FileImportRestController {
                             .weekType(weekType)
                             .build());
                 }
-
             } catch (IOException | InvalidFormatException | StringReadException | ResourceNotFoundException e) {
                 log.error("Ошибка ипорта файла: {}; {}; {}", file.getOriginalFilename(), e.getMessage(), e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

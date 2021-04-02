@@ -69,8 +69,8 @@ public class Lesson extends BaseEntity {
                 ", discipline='" + discipline + '\'' +
                 ", auditorium='" + auditorium + '\'' +
                 ", weekType=" + weekType +
-                ", group=" + group +
-                ", teacher=" + teacher +
+                ", group=" + group.getId() +
+                ", teacher=" + teacher.getId() +
                 ", id=" + id +
                 '}';
     }

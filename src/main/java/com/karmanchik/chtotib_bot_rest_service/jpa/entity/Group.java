@@ -41,12 +41,14 @@ public class Group extends BaseEntity {
     @Setter
     @JsonManagedReference
     @OneToMany(mappedBy = "group")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Setter
     @JsonManagedReference
     @OneToMany(mappedBy = "group")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy(value = "date ASC")
     private List<Replacement> replacements;
 

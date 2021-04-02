@@ -19,6 +19,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "teacher")
+@Getter
 @Builder(builderMethodName = "hiddenBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
