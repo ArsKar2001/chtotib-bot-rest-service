@@ -3,6 +3,7 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
+import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,11 @@ import javax.validation.constraints.NotNull;
 @RequestMapping("/api/v1/")
 public class GroupEntityRestController implements EntityRestControllerInterface<Group> {
     private final GroupService groupService;
+    private final LessonService lessonService;
 
-    public GroupEntityRestController(GroupService groupService) {
+    public GroupEntityRestController(GroupService groupService, LessonService lessonService) {
         this.groupService = groupService;
+        this.lessonService = lessonService;
     }
 
 
@@ -30,6 +33,26 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
             return ResponseEntity.ok()
                     .body(groupService.findById(id)
                             .orElseThrow(() -> new ResourceNotFoundException(id, Group.class)));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/groups/{id}/lessons")
+    public ResponseEntity<?> getLessons(@PathVariable("id") @NotNull Integer id) {
+        try {
+            return ResponseEntity.ok()
+                    .body(groupService.getLessonsByGroupId(id));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/groups/{id}/replacements")
+    public ResponseEntity<?> getReplacements(@PathVariable("id") @NotNull Integer id) {
+        try {
+            return ResponseEntity.ok()
+                    .body(groupService.getReplacementByGroupId(id));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

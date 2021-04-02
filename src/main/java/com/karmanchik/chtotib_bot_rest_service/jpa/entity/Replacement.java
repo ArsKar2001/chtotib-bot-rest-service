@@ -51,11 +51,13 @@ public class Replacement extends BaseEntity {
     @NotNull
     private LocalDate date;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "group_id")
     private Group group;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "teacher_id")

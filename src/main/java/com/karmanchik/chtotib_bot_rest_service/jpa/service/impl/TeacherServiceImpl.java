@@ -1,5 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa.service.impl;
 
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
@@ -55,21 +56,17 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<Lesson> getLessonsByGroupId(Integer id) {
-        return (List<Lesson>) entityManager.createQuery(
-                "SELECT l FROM Lesson l " +
-                        "WHERE l.group.id = :id " +
-                        "ORDER BY l.day, l.pairNumber")
-                .setParameter("id", id).getResultList();
+    public List<Lesson> getLessonsByGroupId(Integer id) throws ResourceNotFoundException {
+        return teacherRepository.findById(id)
+                .map(Teacher::getLessons)
+                .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
     }
 
     @Override
-    public List<Replacement> getReplacementsByGroupId(Integer id) {
-        return (List<Replacement>) entityManager.createQuery(
-                "SELECT r FROM Replacement r " +
-                        "WHERE r.group.id = :id " +
-                        "ORDER BY r.date, r.pairNumber")
-                .setParameter("id", id).getResultList();
+    public List<Replacement> getReplacementsByGroupId(Integer id) throws ResourceNotFoundException {
+        return teacherRepository.findById(id)
+                .map(Teacher::getReplacements)
+                .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
     }
 
     @Override

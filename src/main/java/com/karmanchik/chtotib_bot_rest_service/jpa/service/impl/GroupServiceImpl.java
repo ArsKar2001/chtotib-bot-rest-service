@@ -1,5 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa.service.impl;
 
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
@@ -18,7 +19,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
     private final JpaGroupRepository groupRepository;
-    private final EntityManager entityManager;
 
     @Override
     public <S extends Group> S getByName(String name) {
@@ -60,21 +60,17 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Lesson> getLessonsByGroupId(Integer id) {
-        return (List<Lesson>) entityManager.createQuery(
-                "SELECT l FROM Lesson l " +
-                        "WHERE l.group.id = :id " +
-                        "ORDER BY l.day, l.pairNumber")
-                .setParameter("id", id).getResultList();
+    public List<Lesson> getLessonsByGroupId(Integer id) throws ResourceNotFoundException {
+        return groupRepository.findById(id)
+                .map(Group::getLessons)
+                .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
     }
 
     @Override
-    public List<Replacement> getReplacementByGroupId(Integer id) {
-        return (List<Replacement>) entityManager.createQuery(
-                "SELECT r FROM Replacement r " +
-                        "WHERE r.group.id = :id " +
-                        "ORDER BY r.date, r.pairNumber")
-                .setParameter("id", id).getResultList();
+    public List<Replacement> getReplacementByGroupId(Integer id) throws ResourceNotFoundException {
+        return groupRepository.findById(id)
+                .map(Group::getReplacements)
+                .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
     }
 
     @Override

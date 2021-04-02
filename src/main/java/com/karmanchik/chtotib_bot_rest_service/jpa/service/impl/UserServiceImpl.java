@@ -18,12 +18,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public <S extends User> S save(S s) {
-        return null;
+        return userRepository.save(s);
     }
 
     @Override
     public <S extends User> List<S> saveAll(List<S> s) {
-        return null;
+        return userRepository.saveAll(s);
     }
 
     @Override

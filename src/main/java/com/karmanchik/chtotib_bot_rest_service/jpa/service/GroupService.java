@@ -1,5 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa.service;
 
+import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
@@ -12,7 +13,7 @@ public interface GroupService extends BaseService<Group> {
 
     Optional<List<String>> getAllGroupName();
 
-    List<Lesson> getLessonsByGroupId(Integer id);
+    List<Lesson> getLessonsByGroupId(Integer id) throws ResourceNotFoundException;
 
-    List<Replacement> getReplacementByGroupId(Integer id);
+    List<Replacement> getReplacementByGroupId(Integer id) throws ResourceNotFoundException;
 }

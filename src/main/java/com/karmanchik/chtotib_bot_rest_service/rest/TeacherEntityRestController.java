@@ -28,7 +28,28 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
             final Teacher teacher = teacherService.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
             return ResponseEntity.ok(teacher);
-        } catch (ResourceNotFoundException e) {
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/teachers/{id}/lessons")
+    public ResponseEntity<?> getLessons(@PathVariable("id") @NotNull Integer id) {
+        try {
+
+            return ResponseEntity.ok()
+                    .body(teacherService.getLessonsByGroupId(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/teachers/{id}/replacements")
+    public ResponseEntity<?> getReplacements(@PathVariable("id") @NotNull Integer id) {
+        try {
+            return ResponseEntity.ok()
+                    .body(teacherService.getReplacementsByGroupId(id));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
@@ -51,7 +72,16 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
     @PutMapping(value = "/teachers/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> put(@PathVariable("id") @NotNull Integer id,
                                  Teacher t) {
-        return null;
+        try {
+            return ResponseEntity.ok()
+                    .body(teacherService.save(teacherService.findById(id)
+                    .map(teacher -> {
+                        teacher.setName(t.getName());
+                        return teacher;
+                    }).orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class))));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @Override
