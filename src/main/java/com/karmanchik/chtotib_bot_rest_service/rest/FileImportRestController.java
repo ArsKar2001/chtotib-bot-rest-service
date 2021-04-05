@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/v1/import/")
+@RequestMapping("/api/import/")
 @RequiredArgsConstructor
 public class FileImportRestController {
     private final LessonService lessonService;

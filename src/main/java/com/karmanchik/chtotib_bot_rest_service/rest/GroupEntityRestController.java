@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/")
 public class GroupEntityRestController implements EntityRestControllerInterface<Group> {
     private final GroupService groupService;
 

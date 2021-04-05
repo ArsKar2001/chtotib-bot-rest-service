@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/")
 public class TeacherEntityRestController implements EntityRestControllerInterface<Teacher> {
     private final TeacherService teacherService;
     private final LessonService lessonService;

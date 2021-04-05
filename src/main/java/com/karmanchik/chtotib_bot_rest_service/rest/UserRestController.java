@@ -14,7 +14,7 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/")
 public class UserRestController implements EntityRestControllerInterface<User> {
     private final UserService userService;
 
