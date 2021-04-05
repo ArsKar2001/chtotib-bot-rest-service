@@ -39,14 +39,13 @@ public class Group extends BaseEntity {
     private User user;
 
     @Setter
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "group")
-    @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Setter
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "group")
     @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy(value = "date ASC")

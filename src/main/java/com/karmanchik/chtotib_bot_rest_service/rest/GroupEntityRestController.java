@@ -18,11 +18,9 @@ import javax.validation.constraints.NotNull;
 @RequestMapping("/api/v1/")
 public class GroupEntityRestController implements EntityRestControllerInterface<Group> {
     private final GroupService groupService;
-    private final LessonService lessonService;
 
-    public GroupEntityRestController(GroupService groupService, LessonService lessonService) {
+    public GroupEntityRestController(GroupService groupService) {
         this.groupService = groupService;
-        this.lessonService = lessonService;
     }
 
 
@@ -67,7 +65,7 @@ public class GroupEntityRestController implements EntityRestControllerInterface<
 
     @Override
     @PostMapping(value = "/groups", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> post(Group s) {
+    public ResponseEntity<?> post(@RequestBody @Valid Group s) {
         return ResponseEntity.ok()
                 .body(groupService.save(s));
     }

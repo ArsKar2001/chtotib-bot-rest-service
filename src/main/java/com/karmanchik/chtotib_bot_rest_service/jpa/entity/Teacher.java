@@ -2,24 +2,16 @@ package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "teacher")
 @Getter
+@Setter
 @Builder(builderMethodName = "hiddenBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,16 +28,14 @@ public class Teacher extends BaseEntity {
     private User user;
 
     @Getter
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "teacher")
-    @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Getter
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "teacher")
-    @LazyCollection(LazyCollectionOption.FALSE)
     @OrderBy("date, pairNumber ASC")
     private List<Replacement> replacements;
 

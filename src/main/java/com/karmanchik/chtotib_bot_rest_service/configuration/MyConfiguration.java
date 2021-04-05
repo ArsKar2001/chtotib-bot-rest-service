@@ -35,7 +35,7 @@ public class MyConfiguration {
         config.setAllowCredentials(true);
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-        config.addAllowedOriginPattern("(http://localhost:8080|https://chtotib-bot-rest-service.herokuapp.com)");
+        config.addAllowedOriginPattern("(http://localhost:8080|http://chtotib-bot-rest-service.herokuapp.com)");
         source.registerCorsConfiguration("/api/**", config);
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
         bean.setOrder(0);

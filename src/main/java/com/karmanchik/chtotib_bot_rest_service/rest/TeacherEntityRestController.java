@@ -1,7 +1,9 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
+import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -10,15 +12,19 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
 @RequestMapping("/api/v1/")
 public class TeacherEntityRestController implements EntityRestControllerInterface<Teacher> {
     private final TeacherService teacherService;
+    private final LessonService lessonService;
 
-    public TeacherEntityRestController(TeacherService teacherService) {
+    public TeacherEntityRestController(TeacherService teacherService, LessonService lessonService) {
         this.teacherService = teacherService;
+        this.lessonService = lessonService;
     }
 
     @Override
@@ -39,6 +45,32 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
 
             return ResponseEntity.ok()
                     .body(teacherService.getLessonsByGroupId(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/teachers/{id}/lessons")
+    public ResponseEntity<?> postLessons(@PathVariable("id") @NotNull Integer id,
+                                         @RequestBody @Valid List<Lesson> lessons) {
+        try {
+            Teacher teacher = teacherService.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
+            return ResponseEntity.ok()
+                    .body(lessonService.saveAll(lessons.stream()
+                            .peek(lesson -> lesson.setTeacher(teacher))
+                            .collect(Collectors.toList())));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/teachers/{id}/lessons")
+    public ResponseEntity<?> putLessons(@PathVariable("id") @NotNull Integer id,
+                                         @RequestBody @Valid List<Lesson> lessons) {
+        try {
+            return ResponseEntity.ok()
+                    .body(lessonService.saveAll(lessons));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -75,10 +107,10 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
         try {
             return ResponseEntity.ok()
                     .body(teacherService.save(teacherService.findById(id)
-                    .map(teacher -> {
-                        teacher.setName(t.getName());
-                        return teacher;
-                    }).orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class))));
+                            .map(teacher -> {
+                                teacher.setName(t.getName());
+                                return teacher;
+                            }).orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class))));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
