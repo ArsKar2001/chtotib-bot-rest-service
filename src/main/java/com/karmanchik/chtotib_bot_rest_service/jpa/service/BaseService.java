@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BaseService<T extends BaseEntity> {
-    <S extends T> S save(S s);
+    T save(T t);
 
     List<T> saveAll(List<T> t);
 
     void deleteById(Integer id);
 
-    <S extends T> void delete(S s);
+    void deleteAll(List<T> t);
 
     void deleteAll();
 

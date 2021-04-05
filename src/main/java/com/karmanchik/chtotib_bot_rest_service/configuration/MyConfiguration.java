@@ -38,7 +38,7 @@ public class MyConfiguration {
                 registry.addMapping("/api/**")
                         .allowedOrigins("*")
                         .allowedMethods("PUT", "DELETE", "GET", "POST")
-                        .allowedHeaders("*")
+                        .allowedHeaders("Accept", "Content-Type", "Host", "Age")
                         .exposedHeaders("*")
                         .allowCredentials(false).maxAge(3600);
             }

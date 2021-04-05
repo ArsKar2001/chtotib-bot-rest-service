@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.exception;
 
-public class StringReadException extends Exception {
+public class StringReadException extends RuntimeException {
     private String code;
 
     /**
