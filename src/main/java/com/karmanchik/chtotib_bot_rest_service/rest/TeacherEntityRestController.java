@@ -50,32 +50,6 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
         }
     }
 
-    @PostMapping("/teachers/{id}/lessons")
-    public ResponseEntity<?> postLessons(@PathVariable("id") @NotNull Integer id,
-                                         @RequestBody @Valid List<Lesson> lessons) {
-        try {
-            Teacher teacher = teacherService.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
-            return ResponseEntity.ok()
-                    .body(lessonService.saveAll(lessons.stream()
-                            .peek(lesson -> lesson.setTeacher(teacher))
-                            .collect(Collectors.toList())));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/teachers/{id}/lessons")
-    public ResponseEntity<?> putLessons(@PathVariable("id") @NotNull Integer id,
-                                         @RequestBody @Valid List<Lesson> lessons) {
-        try {
-            return ResponseEntity.ok()
-                    .body(lessonService.saveAll(lessons));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
     @GetMapping("/teachers/{id}/replacements")
     public ResponseEntity<?> getReplacements(@PathVariable("id") @NotNull Integer id) {
         try {
@@ -94,7 +68,7 @@ public class TeacherEntityRestController implements EntityRestControllerInterfac
     }
 
     @Override
-    @PostMapping(value = "/teachers/{id}", produces = "application/json", consumes = "application/json")
+    @PostMapping(value = "/teachers", produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> post(@RequestBody @Valid Teacher t) {
         return ResponseEntity.ok()
                 .body(teacherService.save(t));

@@ -16,24 +16,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Teacher extends BaseEntity {
-    @Setter
-    @Getter
     @Column(name = "name")
     @NotNull
     private String name;
 
-    @Setter
     @JsonBackReference
     @OneToOne(mappedBy = "teacher")
     private User user;
 
-    @Getter
     @JsonIgnore
     @OneToMany(mappedBy = "teacher")
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
-    @Getter
     @JsonIgnore
     @OneToMany(mappedBy = "teacher")
     @OrderBy("date, pairNumber ASC")
@@ -47,8 +42,6 @@ public class Teacher extends BaseEntity {
     public String toString() {
         return "Teacher{" +
                 "name='" + name + '\'' +
-                ", lessons=" + lessons +
-                ", replacements=" + replacements +
                 ", id=" + id +
                 '}';
     }

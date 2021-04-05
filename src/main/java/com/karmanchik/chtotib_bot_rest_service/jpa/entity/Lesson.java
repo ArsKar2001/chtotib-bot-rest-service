@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "lessons")
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Lesson extends BaseEntity {
@@ -37,29 +38,17 @@ public class Lesson extends BaseEntity {
 
     @Setter
     @Getter
-    @Column(name = "group_name", nullable = false)
-    private String groupName;
-
-    @Setter
-    @Getter
-    @Column(name = "teacher_name", nullable = false)
-    private String teacherName;
-
-    @Setter
-    @Getter
     @Column(name = "week_type")
     @NotNull
     private WeekType weekType;
 
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
     private Group group;
 
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 

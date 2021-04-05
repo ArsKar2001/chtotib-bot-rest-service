@@ -13,53 +13,33 @@ import java.time.LocalDate;
 @Table(name = "replacement")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Replacement extends BaseEntity {
 
-    @Getter
-    @Setter
     @Column(name = "pair_number")
     @NotNull
     private String pairNumber;
 
-    @Getter
-    @Setter
     @Column(name = "discipline")
     @NotNull
     private String discipline;
 
-    @Getter
-    @Setter
     @Column(name = "auditorium")
     @NotNull
     private String auditorium;
 
-    @Setter
-    @Getter
-    @Column(name = "group_name", nullable = false)
-    private String groupName;
-
-    @Setter
-    @Getter
-    @Column(name = "teacher_name", nullable = false)
-    private String teacherName;
-
-    @Getter
-    @Setter
     @Column(name = "date_value")
     @NotNull
     private LocalDate date;
 
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
@@ -69,9 +49,9 @@ public class Replacement extends BaseEntity {
                 "pairNumber='" + pairNumber + '\'' +
                 ", discipline='" + discipline + '\'' +
                 ", auditorium='" + auditorium + '\'' +
-                ", groupName='" + groupName + '\'' +
-                ", teacherName='" + teacherName + '\'' +
                 ", date=" + date +
+                ", group=" + group +
+                ", teacher=" + teacher +
                 ", id=" + id +
                 '}';
     }
