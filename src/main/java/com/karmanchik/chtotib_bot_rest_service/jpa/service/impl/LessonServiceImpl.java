@@ -22,8 +22,8 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public <S extends Lesson> List<S> saveAll(List<S> s) {
-        return lessonsRepository.saveAll(s);
+    public List<Lesson> saveAll(List<Lesson> t) {
+        return lessonsRepository.saveAll(t);
     }
 
     @Override
@@ -37,18 +37,18 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public <S extends Lesson> void deleteAll() {
+    public void deleteAll() {
         log.info("Deleted all lessons!");
         lessonsRepository.deleteAllInBatch();
     }
 
     @Override
-    public <S extends Lesson> Optional<S> findById(Integer id) {
-        return null;
+    public Optional<Lesson> findById(Integer id) {
+        return lessonsRepository.findById(id);
     }
 
     @Override
-    public <S extends Lesson> List<S> findAll() {
-        return (List<S>) lessonsRepository.findAll();
+    public List<Lesson> findAll() {
+        return lessonsRepository.findAll();
     }
 }

@@ -22,8 +22,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public <S extends User> List<S> saveAll(List<S> s) {
-        return userRepository.saveAll(s);
+    public List<User> saveAll(List<User> t) {
+        return userRepository.saveAll(t);
     }
 
     @Override
@@ -38,19 +38,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public <S extends User> void deleteAll() {
+    public void deleteAll() {
         log.info("Delete all users!");
         userRepository.deleteAllInBatch();
     }
 
 
     @Override
-    public <S extends User> Optional<S> findById(Integer id) {
-        return (Optional<S>) userRepository.findById(id);
+    public Optional<User> findById(Integer id) {
+        return userRepository.findById(id);
     }
 
     @Override
-    public <S extends User> List<S> findAll() {
-        return (List<S>) userRepository.findAll();
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }

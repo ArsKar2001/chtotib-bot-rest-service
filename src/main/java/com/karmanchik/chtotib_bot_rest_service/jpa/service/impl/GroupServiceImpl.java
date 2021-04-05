@@ -1,6 +1,5 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa.service.impl;
 
-import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
@@ -10,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,8 +37,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public <S extends Group> List<S> saveAll(List<S> s) {
-        return groupRepository.saveAll(s);
+    public List<Group> saveAll(List<Group> t) {
+        return groupRepository.saveAll(t);
     }
 
     @Override
@@ -60,26 +58,22 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Lesson> getLessonsByGroupId(Integer id) throws ResourceNotFoundException {
-        return groupRepository.findById(id)
-                .map(Group::getLessons)
-                .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
+    public List<Lesson> getLessonsByGroupId(Integer id) {
+        return groupRepository.getLessonsById(id);
     }
 
     @Override
-    public List<Replacement> getReplacementByGroupId(Integer id) throws ResourceNotFoundException {
-        return groupRepository.findById(id)
-                .map(Group::getReplacements)
-                .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
+    public List<Replacement> getReplacementByGroupId(Integer id) {
+        return groupRepository.getReplacementsById(id);
     }
 
     @Override
-    public <S extends Group> Optional<S> findById(Integer id) {
-        return (Optional<S>) groupRepository.findById(id);
+    public Optional<Group> findById(Integer id) {
+        return groupRepository.findById(id);
     }
 
     @Override
-    public <S extends Group> List<S> findAll() {
-        return (List<S>) groupRepository.findAll();
+    public List<Group> findAll() {
+        return groupRepository.findAll();
     }
 }

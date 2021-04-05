@@ -1,6 +1,5 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa.service.impl;
 
-import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
@@ -35,8 +34,8 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public <S extends Teacher> List<S> saveAll(List<S> s) {
-        return teacherRepository.saveAll(s);
+    public List<Teacher> saveAll(List<Teacher> t) {
+        return teacherRepository.saveAll(t);
     }
 
     @Override
@@ -50,33 +49,29 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public <S extends Teacher> void deleteAll() {
+    public void deleteAll() {
         log.info("Deleted all users!");
         teacherRepository.deleteAllInBatch();
     }
 
     @Override
-    public List<Lesson> getLessonsByGroupId(Integer id) throws ResourceNotFoundException {
-        return teacherRepository.findById(id)
-                .map(Teacher::getLessons)
-                .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
+    public List<Lesson> getLessonsByGroupId(Integer id) {
+        return teacherRepository.getLessonsById(id);
     }
 
     @Override
-    public List<Replacement> getReplacementsByGroupId(Integer id) throws ResourceNotFoundException {
-        return teacherRepository.findById(id)
-                .map(Teacher::getReplacements)
-                .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
+    public List<Replacement> getReplacementsByGroupId(Integer id) {
+        return teacherRepository.getReplacementsById(id);
     }
 
     @Override
-    public <S extends Teacher> Optional<S> findById(Integer id) {
-        return (Optional<S>) teacherRepository.findById(id);
+    public Optional<Teacher> findById(Integer id) {
+        return teacherRepository.findById(id);
     }
 
     @Override
-    public <S extends Teacher> List<S> findAll() {
-        return (List<S>) teacherRepository.findAll();
+    public List<Teacher> findAll() {
+        return teacherRepository.findAll();
     }
 
     @Override

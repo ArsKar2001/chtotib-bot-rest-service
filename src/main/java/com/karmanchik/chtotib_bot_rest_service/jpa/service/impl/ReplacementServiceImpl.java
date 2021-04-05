@@ -24,8 +24,8 @@ public class ReplacementServiceImpl implements ReplacementService {
     }
 
     @Override
-    public <S extends Replacement> List<S> saveAll(List<S> s) {
-        return replacementRepository.saveAll(s);
+    public List<Replacement> saveAll(List<Replacement> t) {
+        return replacementRepository.saveAll(t);
     }
 
     @Override
@@ -39,17 +39,17 @@ public class ReplacementServiceImpl implements ReplacementService {
     }
 
     @Override
-    public <S extends Replacement> void deleteAll() {
+    public void deleteAll() {
         replacementRepository.deleteAll();
     }
 
     @Override
-    public <S extends Replacement> Optional<S> findById(Integer id) {
-        return (Optional<S>) replacementRepository.findById(id);
+    public Optional<Replacement> findById(Integer id) {
+        return replacementRepository.findById(id);
     }
 
     @Override
-    public <S extends Replacement> List<S> findAll() {
-        return (List<S>) replacementRepository.findAll();
+    public List<Replacement> findAll() {
+        return replacementRepository.findAll();
     }
 }
