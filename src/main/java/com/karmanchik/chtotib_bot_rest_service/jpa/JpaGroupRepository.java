@@ -19,10 +19,8 @@ import java.util.Optional;
 public interface JpaGroupRepository extends JpaRepository<Group, Integer> {
     Optional<Group> getByName(@NotNull String groupName);
 
-    @Query("SELECT g.name FROM Group g")
-    Optional<List<String>> getAllGroupName();
-
-    @Query("SELECT g.lessons FROM Group g WHERE g.id = :id")
+    @Query("SELECT g.lessons FROM Group g " +
+            "WHERE g.id = :id")
     List<Lesson> getLessonsById(@Param("id") @NotNull Integer id);
 
     @Query("SELECT g.replacements FROM Group g " +

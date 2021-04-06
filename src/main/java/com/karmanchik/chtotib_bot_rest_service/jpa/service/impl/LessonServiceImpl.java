@@ -1,7 +1,9 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa.service.impl;
 
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaLessonsRepository;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -60,5 +62,15 @@ public class LessonServiceImpl implements LessonService {
     public List<Lesson> findAll() {
         log.info("Find the lessons");
         return lessonsRepository.findAll();
+    }
+
+    @Override
+    public List<Lesson> findAllByGroup(Group group) {
+        return lessonsRepository.findAllByGroup(group);
+    }
+
+    @Override
+    public List<Lesson> findAllByTeacher(Teacher teacher) {
+        return lessonsRepository.findAllByTeacher(teacher);
     }
 }

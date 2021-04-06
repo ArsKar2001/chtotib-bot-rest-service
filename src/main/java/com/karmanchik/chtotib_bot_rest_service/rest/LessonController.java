@@ -3,6 +3,7 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
+import com.karmanchik.chtotib_bot_rest_service.model.LessonList;
 import com.karmanchik.chtotib_bot_rest_service.rest.assembler.ModelAssembler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
@@ -75,6 +76,18 @@ public class LessonController implements Controller<Lesson> {
                 .body(model);
     }
 
+    @PostMapping("/lessons")
+    public ResponseEntity<?> postAll(@RequestBody @Valid LessonList lessons) {
+        List<Lesson> lessonList = lessonService.saveAll(lessons.getLessons());
+        List<EntityModel<Lesson>> models = lessonList.stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        CollectionModel<EntityModel<Lesson>> model = CollectionModel.of(models,
+                linkTo(methodOn(LessonController.class).getAll()).withSelfRel());
+        return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(model);
+    }
+
     /**
      * Изменит элемент таблицы БД
      *
@@ -102,6 +115,30 @@ public class LessonController implements Controller<Lesson> {
                 .body(model);
     }
 
+    @PutMapping("/lessons")
+    public ResponseEntity<?> putAll(@RequestBody() @Valid LessonList lessons) {
+        List<Lesson> lessonList = lessons.getLessons().stream()
+                .map(lesson -> lessonService.findById(lesson.getId())
+                        .map(l -> {
+                            l.setAuditorium(lesson.getAuditorium());
+                            l.setDay(lesson.getDay());
+                            l.setDiscipline(lesson.getDiscipline());
+                            l.setPairNumber(lesson.getPairNumber());
+                            l.setWeekType(lesson.getWeekType());
+                            l.setGroup(lesson.getGroup());
+                            l.setTeacher(lesson.getTeacher());
+                            return lessonService.save(l);
+                        }).orElseThrow(() -> new ResourceNotFoundException(lesson.getId(), Lesson.class)))
+                .collect(Collectors.toList());
+        List<EntityModel<Lesson>> models = lessonList.stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        CollectionModel<EntityModel<Lesson>> model = CollectionModel.of(models,
+                linkTo(methodOn(LessonController.class).getAll()).withSelfRel());
+        return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(model);
+    }
+
     /**
      * Удалит элемент из таблицы БД
      *
@@ -124,6 +161,12 @@ public class LessonController implements Controller<Lesson> {
     @DeleteMapping("/lessons")
     public ResponseEntity<?> deleteAll() {
         lessonService.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/lessons")
+    public ResponseEntity<?> deleteAll(@RequestBody LessonList lessons) {
+        lessonService.deleteAll(lessons.getLessons());
         return ResponseEntity.noContent().build();
     }
 }
