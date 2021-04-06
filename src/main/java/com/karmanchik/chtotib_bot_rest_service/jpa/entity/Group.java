@@ -40,13 +40,13 @@ public class Group extends BaseEntity {
 
     @Setter
     @JsonIgnore
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "group")
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @Setter
     @JsonIgnore
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "group")
     @OrderBy(value = "date ASC")
     private List<Replacement> replacements;
 

@@ -53,17 +53,7 @@ public class FileImportRestController {
         Set<String> teacherNames = new HashSet<>();
         Set<String> groupNames = new HashSet<>();
 
-        log.info("Update all users...");
-        userService.saveAll(userService.findAll()
-                .stream()
-                .peek(user -> {
-                    user.setBotState(BotState.START);
-                    user.setUserState(UserState.NONE);
-                    user.setTeacher(null);
-                    user.setGroup(null);
-                    user.setRole(Role.NONE);
-                }).collect(Collectors.toList()));
-        log.info("Update all users... OK");
+        updateUsers();
 
         groupService.deleteAll();
         teacherService.deleteAll();
@@ -118,9 +108,7 @@ public class FileImportRestController {
 
                     lessons.add(Lesson.builder()
                             .group(group)
-                            .groupName(groupName)
                             .teacher(teacher)
-                            .teacherName(teacherName)
                             .day(day)
                             .pairNumber(pair)
                             .discipline(discipline)
@@ -150,6 +138,20 @@ public class FileImportRestController {
         response.put("teacher", teachers.size());
         response.put("all", teachers.size() + lessons.size() + teachers.size());
         return ResponseEntity.ok().body(response);
+    }
+
+    private void updateUsers() {
+        log.info("Update all users...");
+        userService.saveAll(userService.findAll()
+                .stream()
+                .peek(user -> {
+                    user.setBotState(BotState.START);
+                    user.setUserState(UserState.NONE);
+                    user.setTeacher(null);
+                    user.setGroup(null);
+                    user.setRole(Role.NONE);
+                }).collect(Collectors.toList()));
+        log.info("Update all users... OK");
     }
 
     @PostMapping("/replacement")
@@ -195,9 +197,7 @@ public class FileImportRestController {
                 replacements.add(
                         Replacement.builder()
                                 .group(group)
-                                .groupName(groupName)
                                 .teacher(teacher)
-                                .teacherName(teacherName)
                                 .date(date)
                                 .discipline(discipline)
                                 .auditorium(auditorium)
