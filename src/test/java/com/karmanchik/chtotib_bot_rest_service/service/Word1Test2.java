@@ -34,10 +34,10 @@ class Word1Test2 {
     @Test
     void testFile_3() {
         try {
-            List<String> tables = Word.getTables(FILE_3);
+            Word.getTablesItems(FILE_3);
             TimetableParser parser = new TimetableParser();
 //            parser.textToCSV(text).forEach(System.out::println);
-            tables.forEach(System.out::println);
+//            tables.forEach(System.out::println);
         } catch (StringReadException | IOException | InvalidFormatException e) {
             log.error("Ошибка в файле: {}; {}", FILE_1.getName(), e);
         }

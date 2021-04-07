@@ -28,11 +28,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/api/")
 public class GroupController implements Controller<Group> {
     private final GroupService groupService;
-    private final ModelAssembler<Group> assembler;
+    private final ModelAssembler<Group> assembler = new ModelAssembler<>(this.getClass());
+    private final ModelAssembler<Lesson> assemblerLesson = new ModelAssembler<>(LessonController.class);
+    private final ModelAssembler<Replacement> assemblerReplacement = new ModelAssembler<>(ReplacementController.class);
 
     public GroupController(GroupService groupService) {
         this.groupService = groupService;
-        assembler = new ModelAssembler<>(this.getClass());
     }
 
     @GetMapping("/groups/{id}")
@@ -47,15 +48,25 @@ public class GroupController implements Controller<Group> {
     @GetMapping("/groups/{id}/lessons")
     public ResponseEntity<?> getLessons(@PathVariable @NotNull Integer id) {
         List<Lesson> lessons = groupService.getLessonsByGroupId(id);
-        return ResponseEntity.ok()
-                .body(lessons);
+        List<EntityModel<Lesson>> models = lessons.stream()
+                .map(assemblerLesson::toModel)
+                .collect(Collectors.toList());
+        CollectionModel<EntityModel<Lesson>> model = CollectionModel.of(models,
+                linkTo(methodOn(GroupController.class).getLessons(id)).withSelfRel());
+        return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(models);
     }
 
     @GetMapping("/groups/{id}/replacements")
     public ResponseEntity<?> getReplacements(@PathVariable @NotNull Integer id) {
         List<Replacement> replacements = groupService.getReplacementsByGroupId(id);
-        return ResponseEntity.ok()
-                .body(replacements);
+        List<EntityModel<Replacement>> models = replacements.stream()
+                .map(assemblerReplacement::toModel)
+                .collect(Collectors.toList());
+        CollectionModel<EntityModel<Replacement>> model = CollectionModel.of(models,
+                linkTo(methodOn(GroupController.class).getLessons(id)).withSelfRel());
+        return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(models);
     }
 
     @GetMapping("/groups")
