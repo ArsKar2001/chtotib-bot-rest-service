@@ -61,7 +61,9 @@ public class GroupController implements Controller<Group> {
     @GetMapping("/groups")
     public CollectionModel<EntityModel<Group>> getAll() {
         List<EntityModel<Group>> groups = groupService.findAll().stream()
-                .map(assembler::toModel)
+                .map(group -> assembler.toModel(group)
+                        .add(linkTo(methodOn(GroupController.class).getLessons(group.getId())).withRel("lessons"))
+                        .add(linkTo(methodOn(GroupController.class).getReplacements(group.getId())).withRel("replacements")))
                 .collect(Collectors.toList());
         return CollectionModel.of(groups,
                 linkTo(methodOn(GroupController.class).getAll()).withSelfRel());

@@ -59,7 +59,9 @@ public class TeacherController implements Controller<Teacher> {
     @GetMapping("/teachers")
     public CollectionModel<EntityModel<Teacher>> getAll() {
         List<EntityModel<Teacher>> teachers = teacherService.findAll().stream()
-                .map(assembler::toModel)
+                .map(teacher -> assembler.toModel(teacher)
+                        .add(linkTo(methodOn(TeacherController.class).getLessons(teacher.getId())).withRel("lessons"))
+                        .add(linkTo(methodOn(TeacherController.class).getReplacements(teacher.getId())).withRel("replacements")))
                 .collect(Collectors.toList());
         return CollectionModel.of(teachers,
                 linkTo(methodOn(TeacherController.class).getAll()).withSelfRel());
