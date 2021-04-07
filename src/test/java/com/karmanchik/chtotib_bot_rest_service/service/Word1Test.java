@@ -20,7 +20,7 @@ class Word1Test {
     @Test
     public void test_wordFiles1() {
         try (InputStream stream = new FileInputStream(FILE_1)) {
-            var timetable = Word.getText(stream);
+            var timetable = Word.getText(FILE_1);
             final List<String> stringList = new LinkedList<>(Arrays.asList(timetable.split("\n")));
             stringList.removeIf(String::isBlank);
             stringList.forEach(System.out::println);

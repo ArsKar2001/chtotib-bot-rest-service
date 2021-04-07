@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -63,7 +64,7 @@ public class FileImportRestController {
 
         for (MultipartFile file : files) {
             try (InputStream stream = file.getInputStream()) {
-                String text = Word.getText(stream);
+                String text = Word.getText((File) file);
                 JSONArray array = parser.textToJSON(text);
                 array.toList().stream()
                         .map(Map.class::cast)
@@ -84,7 +85,7 @@ public class FileImportRestController {
 
         for (MultipartFile file : files) {
             try (InputStream stream = file.getInputStream()) {
-                String text = Word.getText(stream);
+                String text = Word.getText((File) file);
                 JSONArray array = parser.textToJSON(text);
 
                 for (Object o : array) {
@@ -173,7 +174,7 @@ public class FileImportRestController {
 
             List<Replacement> replacements = new ArrayList<>();
 
-            String text = Word.getText(stream);
+            String text = Word.getText((File) file);
             JSONArray array = parser.textToJSON(text);
             log.debug("Parsed text to JSON: {}", array);
             for (Object o : array) {

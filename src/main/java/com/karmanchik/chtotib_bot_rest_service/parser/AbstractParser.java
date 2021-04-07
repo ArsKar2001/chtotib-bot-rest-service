@@ -17,6 +17,8 @@ public abstract class AbstractParser {
     public static final String DEFAULT_SPLIT = ",";
     public static final String SPLIT_GROUP_ITEM = "║";
     public static final String LINE_SPLIT = "\n";
+    public static final char NEW_CHAR = ';';
+    public static final char OLD_CHAR = '\t';
 
     /**
      * Формирует данные в csv из исходного текста

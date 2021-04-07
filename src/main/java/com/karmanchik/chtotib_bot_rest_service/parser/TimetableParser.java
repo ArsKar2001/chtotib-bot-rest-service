@@ -6,6 +6,7 @@ import com.karmanchik.chtotib_bot_rest_service.model.DayOfWeek;
 import com.karmanchik.chtotib_bot_rest_service.model.NumberLesson;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
+import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidText;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import org.json.JSONObject;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class TimetableParser extends AbstractParser {
@@ -28,10 +30,51 @@ public class TimetableParser extends AbstractParser {
      */
     @Override
     public List<String> textToCSV(String text) throws StringReadException {
-        List<String> csv = new ArrayList<>();
-        this.textToList(text);
-        lists.forEach(csv::addAll);
-        return csv;
+        return splitList(text);
+    }
+
+    private List<String> splitList(String text) {
+        List<String> leftList = new ArrayList<>();
+        List<String> rightList = new ArrayList<>();
+        List<String> leftStrList = new ArrayList<>();
+        List<String> rightStrList = new ArrayList<>();
+        List<String> newList = new ArrayList<>();
+        listValidValues(text).stream()
+                .map(s -> s.split(CSV_SPLIT, SPLIT_LIMIT))
+                .forEach(ss -> {
+                    for (int i = 0; i < ss.length; i++) {
+                        if (i < ss.length / 2) {
+                            leftStrList.add(ss[i]);
+                        } else
+                            rightStrList.add(ss[i]);
+                    }
+                    leftList.add(String.join(CSV_SPLIT, leftStrList));
+                    rightList.add(String.join(CSV_SPLIT, rightStrList));
+                    leftStrList.clear();
+                    rightStrList.clear();
+                });
+        newList.addAll(leftList);
+        newList.addAll(rightList);
+        return newList;
+    }
+
+    private List<String> listValidValues(String text) {
+        return textToListCorrection(text).stream()
+                .filter(s -> ValidText.getPatternCsvStr().matcher(s).find() ||
+                        ValidGroupName.getPatternGroupName().matcher(s).find())
+                .collect(Collectors.toList());
+    }
+
+    private List<String> textToListCorrection(String text) {
+        return Arrays.stream(text.replace(OLD_CHAR, NEW_CHAR)
+                .split(LINE_SPLIT, SPLIT_LIMIT)).filter(s -> !s.isBlank())
+                .map(String::trim)
+                .map(s -> ValidText.getPatternReplaceSymbol().matcher(s).replaceAll(SPLIT_GROUP_ITEM))
+                .map(s -> Arrays.stream(s.split(CSV_SPLIT, SPLIT_LIMIT))
+                        .map(String::trim)
+                        .map(s1 -> s1.isBlank() ? DEFAULT_VALUE : s1)
+                        .collect(Collectors.joining(CSV_SPLIT)))
+                .collect(Collectors.toList());
     }
 
     @Override

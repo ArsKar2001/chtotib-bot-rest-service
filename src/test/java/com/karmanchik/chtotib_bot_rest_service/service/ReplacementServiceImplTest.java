@@ -21,7 +21,7 @@ class ReplacementServiceImplTest {
     void test_File1() {
         try (FileInputStream stream = new FileInputStream(FILE_1)) {
             ReplacementParser parser = new ReplacementParser();
-            String text = Word.getText(stream);
+            String text = Word.getText(FILE_1);
             System.out.println(parser.textToJSON(text));
         } catch (IOException | StringReadException | InvalidFormatException e) {
             e.printStackTrace();
@@ -32,7 +32,7 @@ class ReplacementServiceImplTest {
     void test_File2() {
         try (FileInputStream stream = new FileInputStream(FILE_2)) {
             ReplacementParser parser = new ReplacementParser();
-            String text = Word.getText(stream);
+            String text = Word.getText(FILE_2);
             parser.textToCSV(text)
                     .forEach(System.out::println);
         } catch (IOException | StringReadException | InvalidFormatException e) {
@@ -44,7 +44,7 @@ class ReplacementServiceImplTest {
     void test_File3() {
         try (FileInputStream stream = new FileInputStream(FILE_3)) {
             ReplacementParser parser = new ReplacementParser();
-            String text = Word.getText(stream);
+            String text = Word.getText(FILE_3);
             parser.textToCSV(text)
                     .forEach(System.out::println);
         } catch (IOException | StringReadException | InvalidFormatException e) {
