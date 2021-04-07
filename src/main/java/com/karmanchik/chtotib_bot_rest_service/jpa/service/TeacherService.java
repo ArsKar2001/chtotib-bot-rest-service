@@ -1,8 +1,8 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa.service;
 
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
+import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
+import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 
 import java.util.List;
 

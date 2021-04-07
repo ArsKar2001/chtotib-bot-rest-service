@@ -1,11 +1,10 @@
-package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
+package com.karmanchik.chtotib_bot_rest_service.entity;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)

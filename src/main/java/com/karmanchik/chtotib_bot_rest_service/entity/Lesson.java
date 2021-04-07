@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
+package com.karmanchik.chtotib_bot_rest_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.karmanchik.chtotib_bot_rest_service.jpa.enums.WeekType;
@@ -6,51 +6,42 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "lessons")
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Lesson extends BaseEntity {
-    @Setter
-    @Getter
+
     @Column(name = "pair_number")
     @NotNull
     private Integer pairNumber;
 
-    @Setter
-    @Getter
     @Column(name = "day")
     @NotNull
     private Integer day;
 
-    @Setter
-    @Getter
     @Column(name = "discipline", nullable = false)
     private String discipline;
 
-    @Setter
-    @Getter
     @Column(name = "auditorium", nullable = false)
     private String auditorium;
 
-    @Setter
-    @Getter
     @Column(name = "week_type")
     @NotNull
     private WeekType weekType;
 
-    @Setter
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Group> groups;
 
-    @Setter
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Teacher> teachers;
 
     @Override
     public String toString() {
@@ -60,8 +51,8 @@ public class Lesson extends BaseEntity {
                 ", discipline='" + discipline + '\'' +
                 ", auditorium='" + auditorium + '\'' +
                 ", weekType=" + weekType +
-                ", group=" + group.getId() +
-                ", teacher=" + teacher.getId() +
+                ", groups=" + groups +
+                ", teachers=" + teachers +
                 ", id=" + id +
                 '}';
     }

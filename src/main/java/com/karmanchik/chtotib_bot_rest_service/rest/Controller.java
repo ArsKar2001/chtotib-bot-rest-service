@@ -1,6 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.BaseEntity;
+import com.karmanchik.chtotib_bot_rest_service.entity.BaseEntity;
+import com.karmanchik.chtotib_bot_rest_service.jpa.service.BaseService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -8,19 +9,20 @@ import org.springframework.http.ResponseEntity;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public interface Controller<T extends BaseEntity> {
+public interface Controller<T extends BaseEntity, S extends BaseService<T>> {
     /**
      * Возвращает один элемент из таблицы БД
+     *
      * @param id индентификатор эелемента
      * @return елемент
      */
-    EntityModel<T> get(@NotNull Integer id);
+    ResponseEntity<?> get(@NotNull Integer id);
 
     /**
      * Вернет коллекцию всех элементов из таблицы БД
      * @return коллекция элементов
      */
-    CollectionModel<EntityModel<T>> getAll();
+    ResponseEntity<?> getAll();
 
     /**
      * Добавит новый элемент в таблицу БД

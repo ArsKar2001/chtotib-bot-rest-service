@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa.service;
 
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.BaseEntity;
+import com.karmanchik.chtotib_bot_rest_service.entity.BaseEntity;
 
 import java.util.List;
 import java.util.Optional;

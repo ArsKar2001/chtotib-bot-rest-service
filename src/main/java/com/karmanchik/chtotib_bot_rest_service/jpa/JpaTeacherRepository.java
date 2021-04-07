@@ -1,8 +1,8 @@
 package com.karmanchik.chtotib_bot_rest_service.jpa;
 
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
+import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
+import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,175 +1,39 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
-import com.karmanchik.chtotib_bot_rest_service.model.LessonList;
-import com.karmanchik.chtotib_bot_rest_service.rest.assembler.ModelAssembler;
+import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Log4j2
 @RestController
 @RequestMapping("/api/")
 public class LessonController implements Controller<Lesson> {
-    private final ModelAssembler<Lesson> assembler;
-    private final LessonService lessonService;
-    private final GroupService groupService;
-    private final TeacherService teacherService;
-
-    public LessonController(LessonService lessonService, GroupService groupService, TeacherService teacherService) {
-        this.lessonService = lessonService;
-        this.groupService = groupService;
-        this.teacherService = teacherService;
-        assembler = new ModelAssembler<>(this.getClass());
+    public ResponseEntity<?> get(@NotNull Integer id) {
+        return null;
     }
 
-    /**
-     * Возвращает один элемент из таблицы БД
-     *
-     * @param id индентификатор эелемента
-     * @return елемент
-     */
-    @Override
-    @GetMapping("/lessons/{id}")
-    public EntityModel<Lesson> get(@PathVariable @NotNull Integer id) {
-        Lesson lesson = lessonService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(id, Lesson.class));
-        return assembler.toModel(lesson);
+    public ResponseEntity<?> getAll() {
+        return null;
     }
 
-    /**
-     * Вернет коллекцию всех элементов из таблицы БД
-     *
-     * @return коллекция элементов
-     */
-    @Override
-    @GetMapping(value = "/lessons/")
-    public CollectionModel<EntityModel<Lesson>> getAll() {
-        List<EntityModel<Lesson>> lessons = lessonService.findAll().stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-        return CollectionModel.of(lessons,
-                linkTo(methodOn(LessonController.class).getAll()).withSelfRel());
+    public ResponseEntity<?> post(Lesson lesson) {
+        return null;
     }
 
-    /**
-     * Добавит новый элемент в таблицу БД
-     *
-     * @param lesson тело элемент
-     * @return сохраненный элемент
-     */
-    @Override
-    @PostMapping(value = "/lessons/one")
-    public ResponseEntity<?> post(@RequestBody @Valid Lesson lesson) {
-        EntityModel<Lesson> model = assembler.toModel(lessonService.save(lesson));
-        return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
+    public ResponseEntity<?> put(@NotNull Integer id, Lesson lesson) {
+        return null;
     }
 
-    @PostMapping(value = "/lessons/all")
-    public ResponseEntity<?> postAll(@RequestBody @Valid LessonList lessons) {
-        List<Lesson> lessonList = lessonService.saveAll(lessons.getLessons());
-        List<EntityModel<Lesson>> models = lessonList.stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-        CollectionModel<EntityModel<Lesson>> model = CollectionModel.of(models,
-                linkTo(methodOn(LessonController.class).getAll()).withSelfRel());
-        return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
+    public ResponseEntity<?> delete(@NotNull Integer id) {
+        return null;
     }
 
-    /**
-     * Изменит элемент таблицы БД
-     *
-     * @param id     индентификатор элемента БД
-     * @param lesson тело элемента
-     * @return измененный элемент
-     */
-    @Override
-    @PutMapping("/lessons/{id}")
-    public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
-                                 @RequestBody @Valid Lesson lesson) {
-        Lesson les = lessonService.findById(id)
-                .map(l -> {
-                    l.setAuditorium(lesson.getAuditorium());
-                    l.setDay(lesson.getDay());
-                    l.setDiscipline(lesson.getDiscipline());
-                    l.setPairNumber(lesson.getPairNumber());
-                    l.setWeekType(lesson.getWeekType());
-                    l.setGroup(lesson.getGroup());
-                    l.setTeacher(lesson.getTeacher());
-                    return lessonService.save(l);
-                }).orElseThrow(() -> new ResourceNotFoundException(id, Lesson.class));
-        EntityModel<Lesson> model = assembler.toModel(les);
-        return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
-    }
-
-    @PutMapping("/lessons")
-    public ResponseEntity<?> putAll(@RequestBody() @Valid LessonList lessons) {
-        List<Lesson> lessonList = lessons.getLessons().stream()
-                .map(lesson -> lessonService.findById(lesson.getId())
-                        .map(l -> {
-                            l.setAuditorium(lesson.getAuditorium());
-                            l.setDay(lesson.getDay());
-                            l.setDiscipline(lesson.getDiscipline());
-                            l.setPairNumber(lesson.getPairNumber());
-                            l.setWeekType(lesson.getWeekType());
-                            l.setGroup(lesson.getGroup());
-                            l.setTeacher(lesson.getTeacher());
-                            return lessonService.save(l);
-                        }).orElseThrow(() -> new ResourceNotFoundException(lesson.getId(), Lesson.class)))
-                .collect(Collectors.toList());
-        List<EntityModel<Lesson>> models = lessonList.stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-        CollectionModel<EntityModel<Lesson>> model = CollectionModel.of(models,
-                linkTo(methodOn(LessonController.class).getAll()).withSelfRel());
-        return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
-    }
-
-    /**
-     * Удалит элемент из таблицы БД
-     *
-     * @param id индентификатор элемента таблицы БД
-     * @return
-     */
-    @Override
-    @DeleteMapping("/lessons/{id}")
-    public ResponseEntity<?> delete(@PathVariable @NotNull Integer id) {
-        lessonService.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Удалит все элементы из таблицы БД
-     *
-     * @return
-     * @param values
-     */
-    @Override
-    @DeleteMapping(value = "/lessons")
     public ResponseEntity<?> deleteAll(List<Integer> values) {
-        values.forEach(lessonService::deleteById);
-        return ResponseEntity.noContent().build();
+        return null;
     }
 }

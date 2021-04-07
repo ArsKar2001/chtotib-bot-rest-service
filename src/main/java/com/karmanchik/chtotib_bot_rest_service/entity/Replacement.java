@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
+package com.karmanchik.chtotib_bot_rest_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
@@ -8,6 +8,7 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "replacement")
@@ -35,13 +36,13 @@ public class Replacement extends BaseEntity {
     @NotNull
     private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Group> groups;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Teacher> teachers;
 
     @Override
     public String toString() {
@@ -50,8 +51,8 @@ public class Replacement extends BaseEntity {
                 ", discipline='" + discipline + '\'' +
                 ", auditorium='" + auditorium + '\'' +
                 ", date=" + date +
-                ", group=" + group +
-                ", teacher=" + teacher +
+                ", groups=" + groups +
+                ", teachers=" + teachers +
                 ", id=" + id +
                 '}';
     }

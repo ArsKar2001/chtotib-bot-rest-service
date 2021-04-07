@@ -1,8 +1,11 @@
-package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
+package com.karmanchik.chtotib_bot_rest_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -24,13 +27,23 @@ public class Teacher extends BaseEntity {
     @OneToOne(mappedBy = "teacher")
     private User user;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.TRUE)
+    @ManyToMany(mappedBy = "teachers", cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "teacher_lesson",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "lesson_id"))
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.TRUE)
+    @ManyToMany(mappedBy = "teachers", cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "teacher_replacement",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "replacement_id"))
     @OrderBy("date, pairNumber ASC")
     private List<Replacement> replacements;
 

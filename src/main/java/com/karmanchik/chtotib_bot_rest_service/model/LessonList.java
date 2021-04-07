@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.model;
 
-import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 
 import java.util.List;
 

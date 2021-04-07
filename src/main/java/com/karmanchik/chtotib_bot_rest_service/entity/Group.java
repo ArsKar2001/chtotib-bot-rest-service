@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.jpa.entity;
+package com.karmanchik.chtotib_bot_rest_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,43 +19,43 @@ import java.util.List;
         uniqueConstraints = {
                 @UniqueConstraint(
                         columnNames = "name",
-                        name = "schedule_group_name_uindex")
-        })
-@EqualsAndHashCode(callSuper = true)
+                        name = "schedule_group_name_uindex")})
 @Getter
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@Setter
 @Builder(builderMethodName = "hiddenBuilder")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Group extends BaseEntity {
-    @Setter
     @Column(name = "name", unique = true)
     @NotNull
     private String name;
 
-    @Setter
     @JsonBackReference
     @OneToOne(mappedBy = "group")
     private User user;
 
-    @Setter
-    @JsonIgnore
-    @OneToMany(mappedBy = "group")
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.TRUE)
+    @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "group_lesson",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "lesson_id"))
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
-    @Setter
-    @JsonIgnore
-    @OneToMany(mappedBy = "group")
-    @OrderBy(value = "date ASC")
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.TRUE)
+    @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "group_replacement",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "replacement_id"))
+    @OrderBy(value = "date, pairNumber ASC")
     private List<Replacement> replacements;
 
     public static GroupBuilder builder(String name) {
         return hiddenBuilder().name(name);
-    }
-
-    public List<Replacement> getReplacements() {
-        return replacements;
     }
 
     @Override
