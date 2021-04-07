@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ValidTeacherName {
-    private static final Pattern PATTERN = Pattern.compile("[А-Я][а-я]+\\s[А-Я][а-я]+\\.[А-Я][а-я]+\\.");
+    private static final Pattern PATTERN = Pattern.compile("[А-Я][а-я]+\\s[А-Я][а-я]?+\\.[А-Я][а-я]?+\\.");
 
     private ValidTeacherName() {
     }
