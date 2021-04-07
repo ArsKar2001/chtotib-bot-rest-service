@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 @Log4j2
@@ -23,21 +25,11 @@ class Word1Test2 {
     @Test
     void testFile_1() {
         try {
-            final String text = Word.getText(FILE_3);
-            TimetableParser parser = new TimetableParser(FILE_3);
-            parser.textToCSV(text).forEach(System.out::println);
-        } catch (StringReadException | IOException | InvalidFormatException e) {
-            log.error("Ошибка в файле: {}; {}", FILE_1.getName(), e);
-        }
-    }
-
-    @Test
-    void testFile_3() {
-        try {
-            Word.getTablesItems(FILE_3);
-            TimetableParser parser = new TimetableParser(FILE_3);
-//            parser.textToCSV(text).forEach(System.out::println);
-//            tables.forEach(System.out::println);
+            TimetableParser parser = new TimetableParser(FILE_1);
+            parser.parse().forEach(lists -> lists
+                    .forEach(list -> {
+                        System.out.println(Arrays.toString(list.toArray()));
+                    }));
         } catch (StringReadException | IOException | InvalidFormatException e) {
             log.error("Ошибка в файле: {}; {}", FILE_1.getName(), e);
         }
@@ -46,9 +38,24 @@ class Word1Test2 {
     @Test
     void testFile_2() {
         try {
-            final String text = Word.getText(FILE_4);
-            TimetableParser parser = new TimetableParser(FILE_4);
-            parser.textToCSV(text).forEach(System.out::println);
+            TimetableParser parser = new TimetableParser(FILE_2);
+            parser.parse().forEach(lists -> lists
+                    .forEach(list -> {
+                        System.out.println(Arrays.toString(list.toArray()));
+                    }));
+        } catch (StringReadException | IOException | InvalidFormatException e) {
+            log.error("Ошибка в файле: {}; {}", FILE_1.getName(), e);
+        }
+    }
+
+    @Test
+    void testFile_3() {
+        try {
+            TimetableParser parser = new TimetableParser(FILE_3);
+            parser.parse().forEach(lists -> lists
+                    .forEach(list -> {
+                        System.out.println(Arrays.toString(list.toArray()));
+                    }));
         } catch (StringReadException | IOException | InvalidFormatException e) {
             log.error("Ошибка в файле: {}; {}", FILE_1.getName(), e);
         }

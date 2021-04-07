@@ -9,10 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,6 +64,11 @@ public class ReplacementParser extends AbstractParser {
             array.put(object);
         });
         return array;
+    }
+
+    @Override
+    public List<List<List<String>>> parse() {
+        return null;
     }
 
     private void textToList(String text) throws StringReadException {

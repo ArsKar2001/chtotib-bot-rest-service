@@ -7,11 +7,14 @@ import com.karmanchik.chtotib_bot_rest_service.model.NumberLesson;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidText;
+import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +28,56 @@ public class TimetableParser extends AbstractParser {
 
     public TimetableParser(File file) {
         this.file = file;
+    }
+
+    @Override
+    public List<List<List<String>>> parse() throws IOException, InvalidFormatException {
+        return wordFileToList();
+    }
+
+    private List<List<List<String>>> wordFileToList() throws InvalidFormatException, IOException {
+        return Word.getTablesItems(file).parallelStream()
+                .map(table -> table.stream()
+                        .map(row -> row.stream()
+                                .map(String::trim)
+                                .map(s -> s.isBlank() ? DEFAULT_VALUE : s)
+                                .map(s -> ValidText.getPatternReplaceSymbol().matcher(s).replaceAll(SPLIT_GROUP_ITEM))
+                                .map(s -> {
+                                    Matcher mt = ValidGroupName.getMatcher(s);
+                                    if (mt.find()) {
+                                        return ValidGroupName.getValidGroupName(s.substring(mt.start(), mt.end()));
+                                    }
+                                    return s;
+                                }).collect(Collectors.toList()))
+                        .collect(Collectors.toList()))
+                .peek(this::splitTable)
+                .collect(Collectors.toList());
+    }
+
+    private void splitTable(List<List<String>> table) {
+        table.remove(1);
+        List<List<String>> leftList = new ArrayList<>();
+        List<List<String>> rightList = new ArrayList<>();
+        table.forEach(row -> {
+            int size = row.size();
+            leftList.add(row.subList(0, size / 2));
+            rightList.add(row.subList(size / 2, size));
+        });
+        table.clear();
+        table.addAll(addLists(leftList));
+        table.addAll(addLists(rightList));
+    }
+
+    private Collection<? extends List<String>> addLists(List<List<String>> list) {
+        List<String> firstRow = list.get(0);
+        String name = firstRow.get(0);
+        list.remove(0);
+        return list.stream()
+                .map(row -> {
+                    List<String> tempRow = new ArrayList<>(row);
+                    tempRow.add(0, name);
+                    return tempRow;
+                }).collect(Collectors.toList());
     }
 
     /**

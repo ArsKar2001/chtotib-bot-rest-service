@@ -1,5 +1,8 @@
 package com.karmanchik.chtotib_bot_rest_service.exception;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class StringReadException extends RuntimeException {
     private String code;
 
@@ -29,6 +32,10 @@ public class StringReadException extends RuntimeException {
      */
     public StringReadException(String message, Integer size) {
         super(String.format("\"%s\"; столбцов - %s; Неверное кол-во столбцов.", message, size));
+    }
+
+    public StringReadException(List<String> row, Integer size) {
+        super(String.format("\"%s\"; столбцов - %s; Неверное кол-во столбцов.", Arrays.toString(row.toArray()), size));
     }
 
     /**
