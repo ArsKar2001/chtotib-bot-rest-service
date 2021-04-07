@@ -44,7 +44,7 @@ public class TeacherController implements Controller<Teacher> {
                 .add(linkTo(methodOn(TeacherController.class).getReplacements(id)).withRel("replacements"));
     }
 
-    @GetMapping("/groups/{id}/lessons")
+    @GetMapping("/teachers/{id}/lessons")
     public ResponseEntity<?> getLessons(@PathVariable @NotNull Integer id) {
         List<Lesson> lessons = teacherService.getLessonsByTeacherId(id);
         List<EntityModel<Lesson>> models = lessons.stream()
@@ -56,7 +56,7 @@ public class TeacherController implements Controller<Teacher> {
                 .body(models);
     }
 
-    @GetMapping("/groups/{id}/replacements")
+    @GetMapping("/teachers/{id}/replacements")
     public ResponseEntity<?> getReplacements(@PathVariable @NotNull Integer id) {
         List<Replacement> replacements = teacherService.getReplacementsByTeacherId(id);
         List<EntityModel<Replacement>> models = replacements.stream()

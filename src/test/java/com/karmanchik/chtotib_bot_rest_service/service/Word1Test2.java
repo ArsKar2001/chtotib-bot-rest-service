@@ -24,7 +24,7 @@ class Word1Test2 {
     void testFile_1() {
         try {
             final String text = Word.getText(FILE_3);
-            TimetableParser parser = new TimetableParser();
+            TimetableParser parser = new TimetableParser(FILE_3);
             parser.textToCSV(text).forEach(System.out::println);
         } catch (StringReadException | IOException | InvalidFormatException e) {
             log.error("Ошибка в файле: {}; {}", FILE_1.getName(), e);
@@ -35,7 +35,7 @@ class Word1Test2 {
     void testFile_3() {
         try {
             Word.getTablesItems(FILE_3);
-            TimetableParser parser = new TimetableParser();
+            TimetableParser parser = new TimetableParser(FILE_3);
 //            parser.textToCSV(text).forEach(System.out::println);
 //            tables.forEach(System.out::println);
         } catch (StringReadException | IOException | InvalidFormatException e) {
@@ -47,7 +47,7 @@ class Word1Test2 {
     void testFile_2() {
         try {
             final String text = Word.getText(FILE_4);
-            TimetableParser parser = new TimetableParser();
+            TimetableParser parser = new TimetableParser(FILE_4);
             parser.textToCSV(text).forEach(System.out::println);
         } catch (StringReadException | IOException | InvalidFormatException e) {
             log.error("Ошибка в файле: {}; {}", FILE_1.getName(), e);

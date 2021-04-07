@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +21,11 @@ import java.util.stream.Collectors;
 public class TimetableParser extends AbstractParser {
 
     private final List<List<String>> lists = new LinkedList<>();
+    private final File file;
+
+    public TimetableParser(File file) {
+        this.file = file;
+    }
 
     /**
      * Формирует данные в csv из исходного текста

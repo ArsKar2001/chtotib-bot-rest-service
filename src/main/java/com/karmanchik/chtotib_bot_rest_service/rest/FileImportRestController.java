@@ -45,7 +45,7 @@ public class FileImportRestController {
     @PostMapping("/lessons")
     @ResponseBody
     public ResponseEntity<?> importTimetable(MultipartFile[] files) {
-        TimetableParser parser = new TimetableParser();
+        TimetableParser parser = new TimetableParser(null);
 
         List<Lesson> lessons = new ArrayList<>();
         List<Group> groups = new ArrayList<>();
