@@ -2,7 +2,9 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
+import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.ReplacementService;
+import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
 import com.karmanchik.chtotib_bot_rest_service.rest.assembler.ModelAssembler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class ReplacementController implements Controller<Replacement> {
     }
 
     @Override
-    @GetMapping("/replacements")
+    @GetMapping("/replacements/")
     public CollectionModel<EntityModel<Replacement>> getAll() {
         List<EntityModel<Replacement>> replacements = replacementService.findAll().stream()
                 .map(assembler::toModel)
@@ -86,8 +87,8 @@ public class ReplacementController implements Controller<Replacement> {
 
     @Override
     @DeleteMapping("/replacements")
-    public ResponseEntity<?> deleteAll() {
-        replacementService.deleteAll();
+    public ResponseEntity<?> deleteAll(@RequestParam("values") List<Integer> values) {
+        values.forEach(replacementService::deleteById);
         return ResponseEntity.noContent().build();
     }
 }

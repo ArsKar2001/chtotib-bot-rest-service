@@ -3,6 +3,8 @@ package com.karmanchik.chtotib_bot_rest_service.jpa.service.impl;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.BaseEntity;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -57,5 +59,15 @@ public class GroupServiceImpl implements GroupService {
     public List<Group> findAll() {
         log.info("Find the all group");
         return groupRepository.findAll();
+    }
+
+    @Override
+    public List<Lesson> getLessonsByGroupId(Integer groupId) {
+        return groupRepository.getLessonsById(groupId);
+    }
+
+    @Override
+    public List<Replacement> getReplacementsByGroupId(Integer groupId) {
+        return groupRepository.getReplacementsById(groupId);
     }
 }

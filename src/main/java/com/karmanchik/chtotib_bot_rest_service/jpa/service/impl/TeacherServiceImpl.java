@@ -61,4 +61,14 @@ public class TeacherServiceImpl implements TeacherService {
         log.info("Find the teachers");
         return teacherRepository.findAll();
     }
+
+    @Override
+    public List<Lesson> getLessonsByTeacherId(Integer teacherId) {
+        return teacherRepository.getLessonsById(teacherId);
+    }
+
+    @Override
+    public List<Replacement> getReplacementsByTeacherId(Integer teacherId) {
+        return teacherRepository.getReplacementsById(teacherId);
+    }
 }

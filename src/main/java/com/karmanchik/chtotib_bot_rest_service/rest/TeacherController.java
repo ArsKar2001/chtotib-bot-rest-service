@@ -1,6 +1,8 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
 import com.karmanchik.chtotib_bot_rest_service.rest.assembler.ModelAssembler;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,23 @@ public class TeacherController implements Controller<Teacher> {
     public EntityModel<Teacher> get(@PathVariable @NotNull Integer id) {
         Teacher teacher = teacherService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
-        return assembler.toModel(teacher);
+        return assembler.toModel(teacher)
+                .add(linkTo(methodOn(TeacherController.class).getLessons(id)).withRel("lessons"))
+                .add(linkTo(methodOn(TeacherController.class).getReplacements(id)).withRel("replacements"));
+    }
+
+    @GetMapping("/teachers/{id}/lessons")
+    public ResponseEntity<?> getLessons(@PathVariable @NotNull Integer id) {
+        List<Lesson> lessons = teacherService.getLessonsByTeacherId(id);
+        return ResponseEntity.ok()
+                .body(lessons);
+    }
+
+    @GetMapping("/teachers/{id}/replacements")
+    public ResponseEntity<?> getReplacements(@PathVariable @NotNull Integer id) {
+        List<Replacement> replacements = teacherService.getReplacementsByTeacherId(id);
+        return ResponseEntity.ok()
+                .body(replacements);
     }
 
     @GetMapping("/teachers")
@@ -75,8 +92,8 @@ public class TeacherController implements Controller<Teacher> {
     }
 
     @DeleteMapping("/teachers")
-    public ResponseEntity<?> deleteAll() {
-        teacherService.deleteAll();
+    public ResponseEntity<?> deleteAll(List<Integer> values) {
+        values.forEach(teacherService::deleteById);
         return ResponseEntity.noContent().build();
     }
 }

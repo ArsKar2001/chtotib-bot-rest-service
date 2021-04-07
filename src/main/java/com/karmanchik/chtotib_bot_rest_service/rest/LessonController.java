@@ -1,8 +1,12 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Teacher;
+import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
+import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
 import com.karmanchik.chtotib_bot_rest_service.model.LessonList;
 import com.karmanchik.chtotib_bot_rest_service.rest.assembler.ModelAssembler;
 import lombok.extern.log4j.Log4j2;
@@ -27,9 +31,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class LessonController implements Controller<Lesson> {
     private final ModelAssembler<Lesson> assembler;
     private final LessonService lessonService;
+    private final GroupService groupService;
+    private final TeacherService teacherService;
 
-    public LessonController(LessonService lessonService) {
+    public LessonController(LessonService lessonService, GroupService groupService, TeacherService teacherService) {
         this.lessonService = lessonService;
+        this.groupService = groupService;
+        this.teacherService = teacherService;
         assembler = new ModelAssembler<>(this.getClass());
     }
 
@@ -53,7 +61,7 @@ public class LessonController implements Controller<Lesson> {
      * @return коллекция элементов
      */
     @Override
-    @GetMapping("/lessons")
+    @GetMapping(value = "/lessons/")
     public CollectionModel<EntityModel<Lesson>> getAll() {
         List<EntityModel<Lesson>> lessons = lessonService.findAll().stream()
                 .map(assembler::toModel)
@@ -69,14 +77,14 @@ public class LessonController implements Controller<Lesson> {
      * @return сохраненный элемент
      */
     @Override
-    @PostMapping("/lessons")
+    @PostMapping(value = "/lessons/one")
     public ResponseEntity<?> post(@RequestBody @Valid Lesson lesson) {
         EntityModel<Lesson> model = assembler.toModel(lessonService.save(lesson));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
     }
 
-    @PostMapping("/lessons")
+    @PostMapping(value = "/lessons/all")
     public ResponseEntity<?> postAll(@RequestBody @Valid LessonList lessons) {
         List<Lesson> lessonList = lessonService.saveAll(lessons.getLessons());
         List<EntityModel<Lesson>> models = lessonList.stream()
@@ -156,17 +164,12 @@ public class LessonController implements Controller<Lesson> {
      * Удалит все элементы из таблицы БД
      *
      * @return
+     * @param values
      */
     @Override
-    @DeleteMapping("/lessons")
-    public ResponseEntity<?> deleteAll() {
-        lessonService.deleteAll();
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/lessons")
-    public ResponseEntity<?> deleteAll(@RequestBody LessonList lessons) {
-        lessonService.deleteAll(lessons.getLessons());
+    @DeleteMapping(value = "/lessons")
+    public ResponseEntity<?> deleteAll(List<Integer> values) {
+        values.forEach(lessonService::deleteById);
         return ResponseEntity.noContent().build();
     }
 }

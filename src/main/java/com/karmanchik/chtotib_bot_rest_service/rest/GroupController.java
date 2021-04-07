@@ -2,7 +2,10 @@ package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Group;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.jpa.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
+import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
 import com.karmanchik.chtotib_bot_rest_service.rest.assembler.ModelAssembler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
@@ -24,8 +27,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/api/")
 public class GroupController implements Controller<Group> {
-    private final ModelAssembler<Group> assembler;
     private final GroupService groupService;
+    private final ModelAssembler<Group> assembler;
 
     public GroupController(GroupService groupService) {
         this.groupService = groupService;
@@ -36,12 +39,27 @@ public class GroupController implements Controller<Group> {
     public EntityModel<Group> get(@PathVariable @NotNull Integer id) {
         Group group = groupService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
-        return assembler.toModel(group);
+        return assembler.toModel(group)
+                .add(linkTo(methodOn(GroupController.class).getLessons(id)).withRel("lessons"))
+                .add(linkTo(methodOn(GroupController.class).getReplacements(id)).withRel("replacements"));
+    }
+
+    @GetMapping("/groups/{id}/lessons")
+    public ResponseEntity<?> getLessons(@PathVariable @NotNull Integer id) {
+        List<Lesson> lessons = groupService.getLessonsByGroupId(id);
+        return ResponseEntity.ok()
+                .body(lessons);
+    }
+
+    @GetMapping("/groups/{id}/replacements")
+    public ResponseEntity<?> getReplacements(@PathVariable @NotNull Integer id) {
+        List<Replacement> replacements = groupService.getReplacementsByGroupId(id);
+        return ResponseEntity.ok()
+                .body(replacements);
     }
 
     @GetMapping("/groups")
     public CollectionModel<EntityModel<Group>> getAll() {
-
         List<EntityModel<Group>> groups = groupService.findAll().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
@@ -76,8 +94,8 @@ public class GroupController implements Controller<Group> {
     }
 
     @DeleteMapping("/groups")
-    public ResponseEntity<?> deleteAll() {
-        groupService.deleteAll();
+    public ResponseEntity<?> deleteAll(List<Integer> values) {
+        values.forEach(groupService::deleteById);
         return ResponseEntity.noContent().build();
     }
 }

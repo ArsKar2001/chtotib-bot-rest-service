@@ -6,6 +6,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public interface Controller<T extends BaseEntity> {
     /**
@@ -46,7 +47,8 @@ public interface Controller<T extends BaseEntity> {
     /**
      * Удалит все элементы из таблицы БД
      * @return
+     * @param values
      */
-    ResponseEntity<?> deleteAll();
+    ResponseEntity<?> deleteAll(List<Integer> values);
 
 }
