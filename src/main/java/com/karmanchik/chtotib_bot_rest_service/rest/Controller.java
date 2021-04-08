@@ -53,4 +53,6 @@ public interface Controller<T extends BaseEntity, S extends BaseService<T>> {
      */
     ResponseEntity<?> deleteAll(List<Integer> values);
 
+    ResponseEntity<?> deleteAll();
+
 }

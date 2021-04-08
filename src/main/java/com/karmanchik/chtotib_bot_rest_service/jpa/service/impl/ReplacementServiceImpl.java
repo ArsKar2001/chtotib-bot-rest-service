@@ -9,6 +9,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,12 +67,17 @@ public class ReplacementServiceImpl implements ReplacementService {
     }
 
     @Override
-    public List<Replacement> findAllByGroup(Group group) {
-        return replacementRepository.findAllByGroup(group);
+    public List<Replacement> findAllByGroups(List<Group> groups) {
+        return replacementRepository.findAllByGroups(groups);
     }
 
     @Override
-    public List<Replacement> findAllByTeacher(Teacher teacher) {
-        return replacementRepository.findAllByTeacher(teacher);
+    public List<Replacement> findAllByTeachers(List<Teacher> teachers) {
+        return replacementRepository.findAllByTeachers(teachers);
+    }
+
+    @Override
+    public List<Replacement> findAllByDate(@NotNull LocalDate date) {
+        return replacementRepository.findAllByDateOrderByPairNumber(date);
     }
 }

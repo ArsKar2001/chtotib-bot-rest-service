@@ -34,8 +34,7 @@ public class Group extends BaseEntity {
     @OneToOne(mappedBy = "group")
     private User user;
 
-    @JsonManagedReference
-    @LazyCollection(LazyCollectionOption.TRUE)
+    @JsonIgnore
     @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
     @JoinTable(
             name = "group_lesson",
@@ -44,8 +43,7 @@ public class Group extends BaseEntity {
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
-    @JsonManagedReference
-    @LazyCollection(LazyCollectionOption.TRUE)
+    @JsonIgnore
     @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
     @JoinTable(
             name = "group_replacement",

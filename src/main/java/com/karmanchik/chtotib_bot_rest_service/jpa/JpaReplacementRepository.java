@@ -7,11 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 @Transactional
 public interface JpaReplacementRepository extends JpaRepository<Replacement, Integer> {
-    List<Replacement> findAllByGroup(Group group);
-    List<Replacement> findAllByTeacher(Teacher teacher);
+    List<Replacement> findAllByGroups(List<Group> groups);
+    List<Replacement> findAllByTeachers(List<Teacher> teachers);
+
+    List<Replacement> findAllByDateOrderByPairNumber(@NotNull LocalDate date);
 }

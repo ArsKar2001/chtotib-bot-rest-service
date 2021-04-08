@@ -7,11 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.OrderBy;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Repository
 @Transactional
 public interface JpaLessonsRepository extends JpaRepository<Lesson, Integer> {
-    List<Lesson> findAllByGroup(Group group);
-    List<Lesson> findAllByTeacher(Teacher teacher);
+    List<Lesson> findAllByGroupsOrderByDayPairNumberAsc(List<Group> groups);
+    List<Lesson> findAllByTeachersOOrderByDayPairNumberAsc(List<Teacher> teachers);
+
+    List<Lesson> findAllByDayOOrderByPairNumber(@NotNull Integer day);
 }

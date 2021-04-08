@@ -27,8 +27,7 @@ public class Teacher extends BaseEntity {
     @OneToOne(mappedBy = "teacher")
     private User user;
 
-    @JsonManagedReference
-    @LazyCollection(LazyCollectionOption.TRUE)
+    @JsonIgnore
     @ManyToMany(mappedBy = "teachers", cascade = CascadeType.ALL)
     @JoinTable(
             name = "teacher_lesson",
@@ -37,8 +36,7 @@ public class Teacher extends BaseEntity {
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
-    @JsonManagedReference
-    @LazyCollection(LazyCollectionOption.TRUE)
+    @JsonIgnore
     @ManyToMany(mappedBy = "teachers", cascade = CascadeType.ALL)
     @JoinTable(
             name = "teacher_replacement",

@@ -4,6 +4,7 @@ import com.karmanchik.chtotib_bot_rest_service.assembler.model.LessonModel;
 import com.karmanchik.chtotib_bot_rest_service.assembler.model.ModelHelper;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.rest.LessonController;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,9 @@ public class LessonModelAssembler extends RepresentationModelAssemblerSupport<Le
                 .add(linkTo(methodOn(LessonController.class).get(entity.getId()))
                         .withSelfRel())
                 .add(linkTo(methodOn(LessonController.class).getAll())
-                        .withRel("lessons"));
+                        .withRel("lessons"))
+                .add(linkTo(methodOn(LessonController.class).getAllByDay(entity.getDay()))
+                        .withRel("lessons_by_day"));
         lessonModel.setId(entity.getId());
         lessonModel.setDay(entity.getDay());
         lessonModel.setGroups(ModelHelper.toGroupsModel(entity.getGroups()));
@@ -32,5 +35,11 @@ public class LessonModelAssembler extends RepresentationModelAssemblerSupport<Le
         lessonModel.setPairNumber(entity.getPairNumber());
         lessonModel.setWeekType(entity.getWeekType());
         return lessonModel;
+    }
+
+    @Override
+    public CollectionModel<LessonModel> toCollectionModel(Iterable<? extends Lesson> entities) {
+        return super.toCollectionModel(entities)
+                .add(linkTo(methodOn(LessonController.class).getAll()).withSelfRel());
     }
 }

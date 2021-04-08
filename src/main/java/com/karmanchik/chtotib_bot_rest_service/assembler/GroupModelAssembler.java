@@ -24,7 +24,11 @@ public class GroupModelAssembler extends RepresentationModelAssemblerSupport<Gro
                         .get(entity.getId()))
                         .withSelfRel())
                 .add(linkTo(methodOn(GroupController.class).getAll())
-                        .withRel("groups"));
+                        .withRel("groups"))
+                .add(linkTo(methodOn(GroupController.class).getLessons(entity.getId()))
+                        .withRel("lessons"))
+                .add(linkTo(methodOn(GroupController.class).getReplacements(entity.getId()))
+                        .withRel("replacements"));
         groupModel.setId(entity.getId());
         groupModel.setName(entity.getName());
         groupModel.setLessons(ModelHelper.toLessonsModel(entity.getLessons()));
@@ -34,6 +38,7 @@ public class GroupModelAssembler extends RepresentationModelAssemblerSupport<Gro
 
     @Override
     public CollectionModel<GroupModel> toCollectionModel(Iterable<? extends Group> entities) {
-        return super.toCollectionModel(entities);
+        return super.toCollectionModel(entities)
+                .add(linkTo(methodOn(GroupController.class).getAll()).withSelfRel());
     }
 }

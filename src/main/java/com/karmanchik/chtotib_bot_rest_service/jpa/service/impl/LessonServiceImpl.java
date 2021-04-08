@@ -65,12 +65,17 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Lesson> findAllByGroup(Group group) {
-        return lessonsRepository.findAllByGroup(group);
+    public List<Lesson> findAllByGroups(List<Group> groups) {
+        return lessonsRepository.findAllByGroupsOrderByDayPairNumberAsc(groups);
     }
 
     @Override
-    public List<Lesson> findAllByTeacher(Teacher teacher) {
-        return lessonsRepository.findAllByTeacher(teacher);
+    public List<Lesson> findAllByTeachers(List<Teacher> teachers) {
+        return lessonsRepository.findAllByTeachersOOrderByDayPairNumberAsc(teachers);
+    }
+
+    @Override
+    public List<Lesson> findAllByDay(Integer day) {
+        return lessonsRepository.findAllByDayOOrderByPairNumber(day);
     }
 }

@@ -37,10 +37,12 @@ public class Lesson extends BaseEntity {
 
     @JsonBackReference
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id", nullable = false)
     private List<Group> groups;
 
     @JsonBackReference
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "teacher_id", nullable = false)
     private List<Teacher> teachers;
 
     @Override

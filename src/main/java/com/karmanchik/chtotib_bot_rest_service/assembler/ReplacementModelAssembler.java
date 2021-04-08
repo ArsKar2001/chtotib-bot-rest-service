@@ -4,6 +4,7 @@ import com.karmanchik.chtotib_bot_rest_service.assembler.model.ModelHelper;
 import com.karmanchik.chtotib_bot_rest_service.assembler.model.ReplacementModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.rest.ReplacementController;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -31,5 +32,11 @@ public class ReplacementModelAssembler extends RepresentationModelAssemblerSuppo
         replacementModel.setAuditorium(entity.getAuditorium());
         replacementModel.setPairNumber(entity.getPairNumber());
         return replacementModel;
+    }
+
+    @Override
+    public CollectionModel<ReplacementModel> toCollectionModel(Iterable<? extends Replacement> entities) {
+        return super.toCollectionModel(entities)
+                .add(linkTo(methodOn(ReplacementController.class).getAll()).withSelfRel());
     }
 }

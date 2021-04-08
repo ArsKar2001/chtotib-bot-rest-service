@@ -60,4 +60,17 @@ class Word1Test2 {
             log.error("Ошибка в файле: {}; {}", FILE_1.getName(), e);
         }
     }
+
+    @Test
+    void testFile_4() {
+        try {
+            TimetableParser parser = new TimetableParser(FILE_4);
+            parser.parse().forEach(lists -> lists
+                    .forEach(list -> {
+                        System.out.println(Arrays.toString(list.toArray()));
+                    }));
+        } catch (StringReadException | IOException | InvalidFormatException e) {
+            log.error("Ошибка в файле: {}; {}", FILE_1.getName(), e);
+        }
+    }
 }
