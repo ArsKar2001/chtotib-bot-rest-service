@@ -74,8 +74,11 @@ public class GroupController extends BaseController<Group, GroupService> {
                 .map(model -> model.add(linkTo(methodOn(GroupController.class)
                         .getLessons(id)).withSelfRel()))
                 .collect(Collectors.toList());
-        return ResponseEntity.ok()
-                .body(collect);
+        CollectionModel<CollectionModel<LessonModel>> models = CollectionModel.of(collect,
+                linkTo(methodOn(LessonController.class).getAll()).withRel("lessons"),
+                linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
+        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(models);
     }
 
     @GetMapping("/groups/{id}/replacements")
@@ -95,8 +98,11 @@ public class GroupController extends BaseController<Group, GroupService> {
                 .map(model -> model.add(linkTo(methodOn(GroupController.class)
                         .getLessons(id)).withSelfRel()))
                 .collect(Collectors.toList());
-        return ResponseEntity.ok()
-                .body(collect);
+        CollectionModel<CollectionModel<ReplacementModel>> models = CollectionModel.of(collect,
+                linkTo(methodOn(ReplacementController.class).getAll()).withRel("replacements"),
+                linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
+        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(models);
     }
 
     @Override

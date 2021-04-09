@@ -24,6 +24,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Log4j2
 @RestController
 @RequestMapping("/api/")
@@ -68,10 +71,13 @@ public class TeacherController extends BaseController<Teacher, TeacherService> {
                             .sorted(Comparator.comparing(Lesson::getPairNumber))
                             .collect(Collectors.toList()));
                 });
-        List<CollectionModel<LessonModel>> models = sortLessons.stream()
+        List<CollectionModel<LessonModel>> collect = sortLessons.stream()
                 .map(lessonAssembler::toCollectionModel)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok()
+        CollectionModel<CollectionModel<LessonModel>> models = CollectionModel.of(collect,
+                linkTo(methodOn(LessonController.class).getAll()).withRel("lessons"),
+                linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
+        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(models);
     }
 
@@ -89,10 +95,13 @@ public class TeacherController extends BaseController<Teacher, TeacherService> {
                             .sorted(Comparator.comparing(Replacement::getPairNumber))
                             .collect(Collectors.toList()));
                 });
-        List<CollectionModel<ReplacementModel>> models = sortReplacement.stream()
+        List<CollectionModel<ReplacementModel>> collect = sortReplacement.stream()
                 .map(replacementAssembler::toCollectionModel)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok()
+        CollectionModel<CollectionModel<ReplacementModel>> models = CollectionModel.of(collect,
+                linkTo(methodOn(ReplacementController.class).getAll()).withRel("replacements"),
+                linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
+        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(models);
     }
 
