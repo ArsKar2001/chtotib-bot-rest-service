@@ -67,16 +67,6 @@ public class ReplacementServiceImpl implements ReplacementService {
     }
 
     @Override
-    public List<Replacement> findAllByGroups(List<Group> groups) {
-        return replacementRepository.findAllByGroups(groups);
-    }
-
-    @Override
-    public List<Replacement> findAllByTeachers(List<Teacher> teachers) {
-        return replacementRepository.findAllByTeachers(teachers);
-    }
-
-    @Override
     public List<Replacement> findAllByDate(@NotNull LocalDate date) {
         return replacementRepository.findAllByDateOrderByPairNumber(date);
     }

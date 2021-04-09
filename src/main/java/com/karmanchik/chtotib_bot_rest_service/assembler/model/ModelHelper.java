@@ -11,6 +11,7 @@ import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.rest.GroupController;
 import com.karmanchik.chtotib_bot_rest_service.rest.LessonController;
 import com.karmanchik.chtotib_bot_rest_service.rest.ReplacementController;
+import com.karmanchik.chtotib_bot_rest_service.rest.TeacherController;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class ModelHelper {
-    private ModelHelper() {}
+    private ModelHelper() {
+    }
 
     public static List<ReplacementModel> toReplacementsModel(List<Replacement> replacements) {
         if (replacements.isEmpty()) {
@@ -68,24 +70,21 @@ public class ModelHelper {
                         .id(teacher.getId())
                         .name(teacher.getName())
                         .build()
-                        .add(linkTo(methodOn(GroupController.class)
+                        .add(linkTo(methodOn(TeacherController.class)
                                 .get(teacher.getId()))
                                 .withSelfRel()))
                 .collect(Collectors.toList());
     }
 
-    public static List<GroupModel> toGroupsModel(List<Group> groups) {
-        if (groups.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return groups.stream()
-                .map(group -> GroupModel.builder()
-                        .id(group.getId())
-                        .name(group.getName())
-                        .build()
-                        .add(linkTo(methodOn(GroupController.class)
-                                .get(group.getId()))
-                                .withSelfRel()))
-                .collect(Collectors.toList());
+    public static GroupModel toGroupModel(Group group) {
+        return GroupModel.builder()
+                .id(group.getId())
+                .name(group.getName())
+                .lessons(ModelHelper.toLessonsModel(group.getLessons()))
+                .replacements(ModelHelper.toReplacementsModel(group.getReplacements()))
+                .build()
+                .add(linkTo(methodOn(GroupController.class)
+                        .get(group.getId()))
+                        .withSelfRel());
     }
 }

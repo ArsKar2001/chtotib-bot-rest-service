@@ -35,20 +35,12 @@ public class Group extends BaseEntity {
     private User user;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "group_lesson",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "lesson_id"))
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "group_replacement",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "replacement_id"))
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     @OrderBy(value = "date, pairNumber ASC")
     private List<Replacement> replacements;
 

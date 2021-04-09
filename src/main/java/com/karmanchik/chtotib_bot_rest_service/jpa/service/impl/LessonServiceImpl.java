@@ -7,7 +7,6 @@ import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +39,6 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    @DeleteMapping("api/lessons/")
     public void deleteAll(List<Lesson> t) {
         lessonsRepository.deleteAll(t);
     }
@@ -65,17 +63,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Lesson> findAllByGroups(List<Group> groups) {
-        return lessonsRepository.findAllByGroupsOrderByDayPairNumberAsc(groups);
-    }
-
-    @Override
-    public List<Lesson> findAllByTeachers(List<Teacher> teachers) {
-        return lessonsRepository.findAllByTeachersOOrderByDayPairNumberAsc(teachers);
-    }
-
-    @Override
     public List<Lesson> findAllByDay(Integer day) {
-        return lessonsRepository.findAllByDayOOrderByPairNumber(day);
+        return lessonsRepository.findAllByDayOrderByPairNumber(day);
     }
 }

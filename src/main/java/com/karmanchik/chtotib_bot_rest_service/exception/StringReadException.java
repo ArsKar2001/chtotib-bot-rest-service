@@ -14,12 +14,16 @@ public class StringReadException extends RuntimeException {
     public StringReadException() {
     }
 
-    public StringReadException(String str, String strItem, String example) {
-        super(String.format("\"%s\"; \"%s\" - не соответствует шаблону: \"%s\"", str, strItem, example));
+    public StringReadException(String[] str, String strItem, String example) {
+        super(String.format("\"%s\"; \"%s\" - не соответствует шаблону: \"%s\"", Arrays.toString(str), strItem, example));
     }
 
     public StringReadException(String str, String strItem, Throwable t) {
         super(String.format("\"%s\"; \"%s\" - не соответствует шаблону: \"%s\"", str, strItem, t.getMessage()));
+    }
+
+    public StringReadException(String[] str, String strItem, Throwable t) {
+        super(String.format("\"%s\"; \"%s\" - не соответствует шаблону: \"%s\"", Arrays.toString(str), strItem, t.getMessage()));
     }
 
     /**

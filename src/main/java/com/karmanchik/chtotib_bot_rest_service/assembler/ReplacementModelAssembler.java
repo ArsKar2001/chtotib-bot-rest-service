@@ -25,7 +25,7 @@ public class ReplacementModelAssembler extends RepresentationModelAssemblerSuppo
                 .add(linkTo(methodOn(ReplacementController.class).getAll())
                         .withRel("replacements"));
         replacementModel.setId(entity.getId());
-        replacementModel.setGroups(ModelHelper.toGroupsModel(entity.getGroups()));
+        replacementModel.setGroup(ModelHelper.toGroupModel(entity.getGroup()));
         replacementModel.setTeachers(ModelHelper.toTeachersModel(entity.getTeachers()));
         replacementModel.setDate(entity.getDate());
         replacementModel.setDiscipline(entity.getDiscipline());

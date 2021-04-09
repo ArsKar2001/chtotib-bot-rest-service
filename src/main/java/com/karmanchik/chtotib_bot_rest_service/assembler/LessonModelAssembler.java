@@ -28,7 +28,7 @@ public class LessonModelAssembler extends RepresentationModelAssemblerSupport<Le
                         .withRel("lessons_by_day"));
         lessonModel.setId(entity.getId());
         lessonModel.setDay(entity.getDay());
-        lessonModel.setGroups(ModelHelper.toGroupsModel(entity.getGroups()));
+        lessonModel.setGroup(ModelHelper.toGroupModel(entity.getGroup()));
         lessonModel.setTeachers(ModelHelper.toTeachersModel(entity.getTeachers()));
         lessonModel.setDiscipline(entity.getDiscipline());
         lessonModel.setAuditorium(entity.getAuditorium());

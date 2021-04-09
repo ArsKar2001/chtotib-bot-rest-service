@@ -28,7 +28,7 @@ public class Teacher extends BaseEntity {
     private User user;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "teachers", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "teacher_lesson",
             joinColumns = @JoinColumn(name = "teacher_id"),
@@ -37,7 +37,7 @@ public class Teacher extends BaseEntity {
     private List<Lesson> lessons;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "teachers", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "teacher_replacement",
             joinColumns = @JoinColumn(name = "teacher_id"),

@@ -24,7 +24,6 @@ public class LessonModel extends RepresentationModel<LessonModel> {
     private String discipline;
     private String auditorium;
     private WeekType weekType;
-
-    private List<GroupModel> groups;
+    private GroupModel group;
     private List<TeacherModel> teachers;
 }

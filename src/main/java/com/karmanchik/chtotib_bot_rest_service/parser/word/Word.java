@@ -12,27 +12,27 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Log4j2
 public class Word {
-    private Word() { }
+    private Word() {
+    }
 
-    public static String getText(File file) throws InvalidFormatException, IOException {
-        XWPFDocument document = new XWPFDocument(OPCPackage.open(file));
+    private static XWPFDocument readDocument(File file) throws InvalidFormatException, IOException {
+        return new XWPFDocument(OPCPackage.open(file));
+    }
+
+    public static String getText(File file) throws IOException, InvalidFormatException {
+        XWPFDocument document = readDocument(file);
         XWPFWordExtractor extractor = new XWPFWordExtractor(document);
         return extractor.getText();
     }
 
-    public static List<String> getTables(File file) throws InvalidFormatException, IOException {
-        return new XWPFDocument(OPCPackage.open(file)).getTables().stream()
-                .map(XWPFTable::getText)
-                .collect(Collectors.toList());
-    }
-
-    public static List<List<List<String>>> getTablesItems(File file) throws InvalidFormatException, IOException {
-        return new XWPFDocument(OPCPackage.open(file)).getTables().stream()
+    public static List<List<List<String>>> getTables(File file) throws InvalidFormatException, IOException {
+        return readDocument(file).getTables().stream()
                 .map(table -> table.getRows().stream()
                         .map(row -> row.getTableCells().stream()
                                 .map(XWPFTableCell::getText)

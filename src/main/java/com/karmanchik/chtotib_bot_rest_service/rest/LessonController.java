@@ -77,7 +77,7 @@ public class LessonController extends BaseController<Lesson, LessonService> {
         LessonModel model = lessonService.findById(id)
                 .map(l -> {
                     l.setDay(lesson.getDay());
-                    l.setGroups(lesson.getGroups());
+                    l.setGroup(lesson.getGroup());
                     l.setTeachers(lesson.getTeachers());
                     l.setDiscipline(lesson.getDiscipline());
                     l.setPairNumber(lesson.getPairNumber());

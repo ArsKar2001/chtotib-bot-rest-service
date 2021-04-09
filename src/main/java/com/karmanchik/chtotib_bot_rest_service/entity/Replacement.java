@@ -37,9 +37,9 @@ public class Replacement extends BaseEntity {
     private LocalDate date;
 
     @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", nullable = false)
-    private List<Group> groups;
+    private Group group;
 
     @JsonBackReference
     @ManyToMany(fetch = FetchType.EAGER)
@@ -53,7 +53,7 @@ public class Replacement extends BaseEntity {
                 ", discipline='" + discipline + '\'' +
                 ", auditorium='" + auditorium + '\'' +
                 ", date=" + date +
-                ", groups=" + groups +
+                ", group=" + group +
                 ", teachers=" + teachers +
                 ", id=" + id +
                 '}';

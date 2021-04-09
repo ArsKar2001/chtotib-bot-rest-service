@@ -77,7 +77,7 @@ public class ReplacementController extends BaseController<Replacement, Replaceme
         ReplacementModel model = replacementService.findById(id)
                 .map(r -> {
                     r.setDate(replacement.getDate());
-                    r.setGroups(replacement.getGroups());
+                    r.setGroup(replacement.getGroup());
                     r.setTeachers(replacement.getTeachers());
                     r.setDiscipline(replacement.getDiscipline());
                     r.setPairNumber(replacement.getPairNumber());

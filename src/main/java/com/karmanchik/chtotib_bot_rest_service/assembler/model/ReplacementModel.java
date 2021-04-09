@@ -25,6 +25,6 @@ public class ReplacementModel extends RepresentationModel<ReplacementModel> {
     private String auditorium;
     private LocalDate date;
 
-    private List<GroupModel> groups;
+    private GroupModel group;
     private List<TeacherModel> teachers;
 }

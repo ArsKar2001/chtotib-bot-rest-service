@@ -17,8 +17,7 @@ public class ValidTeacherName {
         return PATTERN.matcher(s).matches();
     }
 
-    public static String getValidTeacherName(String teacher) {
-        final Matcher matcher = PATTERN.matcher(teacher);
+    public static String getValidTeacherName(String teacher, Matcher matcher) {
         return teacher.substring(matcher.start(), matcher.end());
     }
 }

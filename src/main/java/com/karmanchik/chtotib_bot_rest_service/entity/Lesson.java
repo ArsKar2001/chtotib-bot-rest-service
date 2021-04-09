@@ -36,13 +36,12 @@ public class Lesson extends BaseEntity {
     private WeekType weekType;
 
     @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", nullable = false)
-    private List<Group> groups;
+    private Group group;
 
     @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "teacher_id", nullable = false)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "lessons")
     private List<Teacher> teachers;
 
     @Override
@@ -53,7 +52,7 @@ public class Lesson extends BaseEntity {
                 ", discipline='" + discipline + '\'' +
                 ", auditorium='" + auditorium + '\'' +
                 ", weekType=" + weekType +
-                ", groups=" + groups +
+                ", group=" + group +
                 ", teachers=" + teachers +
                 ", id=" + id +
                 '}';
