@@ -32,8 +32,8 @@ public class Teacher extends BaseEntity {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "teacher_lesson",
-            joinColumns = {@JoinColumn(name = "teacher_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "lesson_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "teacher_id")},
+            inverseJoinColumns = {@JoinColumn(name = "lesson_id")})
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
