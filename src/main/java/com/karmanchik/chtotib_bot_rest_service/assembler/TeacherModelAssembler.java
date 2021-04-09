@@ -29,7 +29,7 @@ public class TeacherModelAssembler extends RepresentationModelAssemblerSupport<T
                         .withRel("replacements"));;
         teacherModel.setId(entity.getId());
         teacherModel.setName(entity.getName());
-        return null;
+        return teacherModel;
     }
 
     @Override

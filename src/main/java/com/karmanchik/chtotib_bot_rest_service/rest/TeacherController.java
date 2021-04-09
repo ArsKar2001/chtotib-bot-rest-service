@@ -11,6 +11,7 @@ import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.TeacherService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
