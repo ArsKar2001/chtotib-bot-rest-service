@@ -36,11 +36,13 @@ public class Group extends BaseEntity {
 
     @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.TRUE)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.TRUE)
     @OrderBy(value = "date, pairNumber ASC")
     private List<Replacement> replacements;
 

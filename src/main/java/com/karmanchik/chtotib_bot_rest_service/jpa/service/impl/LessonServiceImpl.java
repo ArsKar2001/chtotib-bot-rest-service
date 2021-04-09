@@ -28,7 +28,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<Lesson> saveAll(List<Lesson> t) {
-        log.info("Save the lessons: {}", t);
+        log.info("Save the lessons: {}", t.size());
         return lessonsRepository.saveAll(t);
     }
 

@@ -80,8 +80,6 @@ public class ModelHelper {
         return GroupModel.builder()
                 .id(group.getId())
                 .name(group.getName())
-                .lessons(ModelHelper.toLessonsModel(group.getLessons()))
-                .replacements(ModelHelper.toReplacementsModel(group.getReplacements()))
                 .build()
                 .add(linkTo(methodOn(GroupController.class)
                         .get(group.getId()))

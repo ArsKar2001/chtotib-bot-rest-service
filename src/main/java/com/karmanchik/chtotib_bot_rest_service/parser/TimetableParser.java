@@ -52,6 +52,7 @@ public class TimetableParser extends AbstractParser {
                         .collect(Collectors.toList()))
                 .map(table -> table.stream()
                         .map(row -> String.join(CSV_SPLIT, row))
+
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
     }

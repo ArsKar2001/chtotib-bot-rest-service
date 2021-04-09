@@ -41,7 +41,7 @@ public class GroupServiceImpl implements GroupService {
 
     public void deleteAll(List<Group> t) {
         log.info("Delete the groups {}", t.stream()
-                .map(BaseEntity::getId)
+                .map(Group::getName)
                 .collect(Collectors.toList()));
         groupRepository.deleteAll(t);
     }

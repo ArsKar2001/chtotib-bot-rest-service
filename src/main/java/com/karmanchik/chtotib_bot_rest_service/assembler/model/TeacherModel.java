@@ -19,7 +19,4 @@ import java.util.List;
 public class TeacherModel extends RepresentationModel<TeacherModel> {
     private Integer id;
     private String name;
-
-    private List<LessonModel> lessons;
-    private List<ReplacementModel> replacements;
 }

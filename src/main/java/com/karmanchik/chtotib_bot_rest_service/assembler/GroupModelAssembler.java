@@ -31,8 +31,6 @@ public class GroupModelAssembler extends RepresentationModelAssemblerSupport<Gro
                         .withRel("replacements"));
         groupModel.setId(entity.getId());
         groupModel.setName(entity.getName());
-        groupModel.setLessons(ModelHelper.toLessonsModel(entity.getLessons()));
-        groupModel.setReplacements(ModelHelper.toReplacementsModel(entity.getReplacements()));
         return groupModel;
     }
 

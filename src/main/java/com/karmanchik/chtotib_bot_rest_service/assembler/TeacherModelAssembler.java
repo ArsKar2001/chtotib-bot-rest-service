@@ -31,8 +31,6 @@ public class TeacherModelAssembler extends RepresentationModelAssemblerSupport<T
                         .withRel("replacements"));;
         teacherModel.setId(entity.getId());
         teacherModel.setName(entity.getName());
-        teacherModel.setLessons(ModelHelper.toLessonsModel(entity.getLessons()));
-        teacherModel.setReplacements(ModelHelper.toReplacementsModel(entity.getReplacements()));
         return null;
     }
 

@@ -41,7 +41,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     public void deleteAll(List<Teacher> t) {
         log.info("Delete the teachers {}", t.stream()
-                .map(BaseEntity::getId)
+                .map(Teacher::getName)
                 .collect(Collectors.toList()));
         teacherRepository.deleteAll(t);
     }

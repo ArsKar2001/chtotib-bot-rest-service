@@ -130,21 +130,21 @@ public class TeacherController extends BaseController<Teacher, TeacherService> {
     }
 
     @Override
-    @DeleteMapping("/teacher/{id}")
+    @DeleteMapping("/teachers/{id}")
     public ResponseEntity<?> delete(@PathVariable @NotNull Integer id) {
         teacherService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    @DeleteMapping("/teacher")
+    @DeleteMapping("/teachers")
     public ResponseEntity<?> deleteAll(@RequestParam List<Integer> values) {
         values.forEach(teacherService::deleteById);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    @DeleteMapping("/teacher/")
+    @DeleteMapping("/teachers/")
     public ResponseEntity<?> deleteAll() {
         teacherService.deleteAll();
         return ResponseEntity.noContent().build();

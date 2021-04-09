@@ -20,9 +20,6 @@ import java.util.List;
 public class GroupModel extends RepresentationModel<GroupModel> {
     private Integer id;
     private String name;
-
-    private List<LessonModel> lessons;
-    private List<ReplacementModel> replacements;
 }
 
 
