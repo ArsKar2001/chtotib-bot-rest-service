@@ -33,7 +33,7 @@ public class Teacher extends BaseEntity {
     @JoinTable(
             name = "teacher_lesson",
             joinColumns = {@JoinColumn(name = "teacher_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "lesson_id", referencedColumnName = "teacher_id")})
+            inverseJoinColumns = {@JoinColumn(name = "lesson_id", referencedColumnName = "id")})
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 

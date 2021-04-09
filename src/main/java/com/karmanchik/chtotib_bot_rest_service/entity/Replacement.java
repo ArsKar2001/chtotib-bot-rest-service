@@ -42,8 +42,7 @@ public class Replacement extends BaseEntity {
     private Group group;
 
     @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "teacher_id", nullable = false)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "lessons")
     private List<Teacher> teachers;
 
     @Override
