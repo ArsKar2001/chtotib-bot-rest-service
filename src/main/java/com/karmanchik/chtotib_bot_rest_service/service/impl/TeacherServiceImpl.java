@@ -1,11 +1,10 @@
-package com.karmanchik.chtotib_bot_rest_service.jpa.service.impl;
+package com.karmanchik.chtotib_bot_rest_service.service.impl;
 
-import com.karmanchik.chtotib_bot_rest_service.entity.BaseEntity;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
+import com.karmanchik.chtotib_bot_rest_service.service.TeacherService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 

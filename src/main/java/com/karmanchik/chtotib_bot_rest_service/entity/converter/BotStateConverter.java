@@ -1,6 +1,6 @@
-package com.karmanchik.chtotib_bot_rest_service.jpa.converter;
+package com.karmanchik.chtotib_bot_rest_service.entity.converter;
 
-import com.karmanchik.chtotib_bot_rest_service.jpa.enums.BotState;
+import com.karmanchik.chtotib_bot_rest_service.entity.enums.BotState;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

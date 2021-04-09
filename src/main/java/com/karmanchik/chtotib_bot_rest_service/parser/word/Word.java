@@ -21,18 +21,18 @@ public class Word {
     private Word() {
     }
 
-    private static XWPFDocument readDocument(File file) throws InvalidFormatException, IOException {
-        return new XWPFDocument(OPCPackage.open(file));
+    private static XWPFDocument readDocument(InputStream stream) throws InvalidFormatException, IOException {
+        return new XWPFDocument(OPCPackage.open(stream));
     }
 
-    public static String getText(File file) throws IOException, InvalidFormatException {
-        XWPFDocument document = readDocument(file);
+    public static String getText(InputStream stream) throws IOException, InvalidFormatException {
+        XWPFDocument document = readDocument(stream);
         XWPFWordExtractor extractor = new XWPFWordExtractor(document);
         return extractor.getText();
     }
 
-    public static List<List<List<String>>> getTables(File file) throws InvalidFormatException, IOException {
-        return readDocument(file).getTables().stream()
+    public static List<List<List<String>>> getTables(InputStream stream) throws InvalidFormatException, IOException {
+        return readDocument(stream).getTables().stream()
                 .map(table -> table.getRows().stream()
                         .map(row -> row.getTableCells().stream()
                                 .map(XWPFTableCell::getText)

@@ -5,11 +5,11 @@ import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.jpa.enums.WeekType;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.GroupService;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.TeacherService;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.UserService;
+import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
+import com.karmanchik.chtotib_bot_rest_service.service.GroupService;
+import com.karmanchik.chtotib_bot_rest_service.service.LessonService;
+import com.karmanchik.chtotib_bot_rest_service.service.TeacherService;
+import com.karmanchik.chtotib_bot_rest_service.service.UserService;
 import com.karmanchik.chtotib_bot_rest_service.model.NumberLesson;
 import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
@@ -47,7 +47,6 @@ public class FileImportController {
 
             Set<String> uniqueTeacherNames = new HashSet<>();
             Set<String> uniqueGroupNames = new HashSet<>();
-            List<String> lessonsCsvString = new ArrayList<>();
             List<String> csv = getCSVListByFiles(files);
             for (String s : csv) {
                 String[] ss = s.split(CSV_SPLIT);
@@ -89,10 +88,11 @@ public class FileImportController {
                 WeekType weekType = WeekType.valueOf(weekTypeStr);
 
                 List<Teacher> teachersByPair = new ArrayList<>();
-                allTeachers.forEach(teacher -> {
-                    if (teachersName.toLowerCase().contains(teacher.getName().toLowerCase()))
-                        teachersByPair.add(teacher);
-                });
+
+                teachersByPair.add(allTeachers.stream()
+                        .filter(teacher -> teachersName.contains(teacher.getName()))
+                        .findAny()
+                        .orElseThrow(() -> new ResourceNotFoundException(groupName, Teacher.class)));
                 Group group = groups.stream()
                         .filter(g -> g.getName().contains(groupName))
                         .findFirst()
@@ -108,6 +108,14 @@ public class FileImportController {
                         .pairNumber(pairNumber)
                         .build());
             }
+
+            log.info("Importing teachers...");
+            teacherService.saveAll(allTeachers);
+            log.info("Importing teachers... OK");
+
+            log.info("Importing groups...");
+            groupService.saveAll(groups);
+            log.info("Importing groups... OK");
 
             log.info("Importing lessons...");
             lessonService.saveAll(lessons);
@@ -142,7 +150,7 @@ public class FileImportController {
         TimetableParser parser = new TimetableParser();
         List<String> csvList = new ArrayList<>();
         for (MultipartFile file : files)
-            parser.parse(MultipartFileToFileConverter.convert(file))
+            parser.parse(file.getInputStream())
                     .forEach(csvList::addAll);
         return csvList;
     }

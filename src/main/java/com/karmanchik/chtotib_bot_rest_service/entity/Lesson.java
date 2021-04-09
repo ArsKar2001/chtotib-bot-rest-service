@@ -1,7 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.karmanchik.chtotib_bot_rest_service.jpa.enums.WeekType;
+import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,12 +36,12 @@ public class Lesson extends BaseEntity {
     private WeekType weekType;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
     @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "lessons")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Teacher> teachers;
 
     @Override

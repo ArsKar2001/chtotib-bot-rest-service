@@ -1,12 +1,10 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.assembler.ReplacementModelAssembler;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.LessonModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.ReplacementModel;
-import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.assembler.dto.ReplacementModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.ReplacementService;
+import com.karmanchik.chtotib_bot_rest_service.service.ReplacementService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;

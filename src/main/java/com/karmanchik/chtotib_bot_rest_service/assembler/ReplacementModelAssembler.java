@@ -1,7 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.assembler;
 
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.ModelHelper;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.ReplacementModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.dto.ModelHelper;
+import com.karmanchik.chtotib_bot_rest_service.assembler.dto.ReplacementModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.rest.ReplacementController;
 import org.springframework.hateoas.CollectionModel;

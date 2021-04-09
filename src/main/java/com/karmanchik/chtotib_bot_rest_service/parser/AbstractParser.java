@@ -6,6 +6,7 @@ import org.json.JSONArray;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public abstract class AbstractParser {
@@ -26,5 +27,5 @@ public abstract class AbstractParser {
      */
     public abstract JSONArray textToJSON(String text) throws StringReadException;
 
-    public abstract List<List<String>> parse(File file) throws IOException, InvalidFormatException;
+    public abstract List<List<String>> parse(InputStream stream) throws IOException, InvalidFormatException;
 }

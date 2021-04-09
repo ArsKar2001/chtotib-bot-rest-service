@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.jpa.enums;
+package com.karmanchik.chtotib_bot_rest_service.entity.enums;
 
 public enum Role {
     STUDENT(102), TEACHER(101), NONE(100);

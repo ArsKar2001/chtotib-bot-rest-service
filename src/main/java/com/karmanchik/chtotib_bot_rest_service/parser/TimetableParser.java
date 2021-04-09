@@ -1,7 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.parser;
 
+import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.jpa.enums.WeekType;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidText;
 import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
@@ -10,8 +10,8 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -25,8 +25,8 @@ public class TimetableParser extends AbstractParser {
     private final List<List<String>> lists = new LinkedList<>();
 
     @Override
-    public List<List<String>> parse(File file) throws IOException, InvalidFormatException {
-        return wordFileToList(file).parallelStream()
+    public List<List<String>> parse(InputStream stream) throws IOException, InvalidFormatException {
+        return wordFileToList(stream).parallelStream()
                 .map(table -> {
                     StringBuilder sb = new StringBuilder();
                     return table.stream()
@@ -163,8 +163,8 @@ public class TimetableParser extends AbstractParser {
         return 0;
     }
 
-    private List<List<List<String>>> wordFileToList(File file) throws InvalidFormatException, IOException {
-        return Word.getTables(file).stream()
+    private List<List<List<String>>> wordFileToList(InputStream stream) throws InvalidFormatException, IOException {
+        return Word.getTables(stream).stream()
                 .map(table -> table.stream()
                         .map(row -> row.stream()
                                 .map(String::trim)
@@ -271,35 +271,35 @@ public class TimetableParser extends AbstractParser {
 
 //        this.textToList(text);
 
-        for (List<String> listCSV : lists) {
-            for (String s : listCSV) {
-                String[] strings = s.split(CSV_SPLIT, SPLIT_LIMIT);
-                if (strings.length == CSV_COLUMN_SIZE) {
-                    object = new JSONObject();
-                    String groupName = strings[0];
-                    String dayOfWeek = strings[1];
-                    String pairNumber = strings[2];
-                    String discipline = strings[3];
-                    String auditorium = strings[4];
-                    String teacherName = strings[5];
-                    String weekType = strings[6];
-
-                    int day = Integer.parseInt(dayOfWeek);
-                    int pair = Integer.parseInt(pairNumber);
-                    WeekType week = WeekType.valueOf(weekType);
-
-                    object.put("group_name", groupName);
-                    object.put("day", day);
-                    object.put("pair", pair);
-                    object.put("discipline", discipline);
-                    object.put("auditorium", auditorium);
-                    object.put("teacher_name", teacherName);
-                    object.put("week", week);
-                    array.put(object);
-                } else
-                    throw new StringReadException(s, strings.length);
-            }
-        }
+//        for (List<String> listCSV : lists) {
+//            for (String s : listCSV) {
+//                String[] strings = s.split(CSV_SPLIT, SPLIT_LIMIT);
+//                if (strings.length == CSV_COLUMN_SIZE) {
+//                    object = new JSONObject();
+//                    String groupName = strings[0];
+//                    String dayOfWeek = strings[1];
+//                    String pairNumber = strings[2];
+//                    String discipline = strings[3];
+//                    String auditorium = strings[4];
+//                    String teacherName = strings[5];
+//                    String weekType = strings[6];
+//
+//                    int day = Integer.parseInt(dayOfWeek);
+//                    int pair = Integer.parseInt(pairNumber);
+//                    WeekType week = WeekType.valueOf(weekType);
+//
+//                    object.put("group_name", groupName);
+//                    object.put("day", day);
+//                    object.put("pair", pair);
+//                    object.put("discipline", discipline);
+//                    object.put("auditorium", auditorium);
+//                    object.put("teacher_name", teacherName);
+//                    object.put("week", week);
+//                    array.put(object);
+//                } else
+//                    throw new StringReadException(s, strings.length);
+//            }
+//        }
         return array;
     }
 

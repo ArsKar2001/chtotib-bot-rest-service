@@ -1,9 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.BaseEntity;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.BaseService;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
+import com.karmanchik.chtotib_bot_rest_service.service.BaseService;
 import org.springframework.http.ResponseEntity;
 
 import javax.validation.constraints.NotNull;

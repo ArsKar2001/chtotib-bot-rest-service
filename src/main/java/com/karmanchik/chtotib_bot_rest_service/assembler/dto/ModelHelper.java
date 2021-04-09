@@ -1,9 +1,5 @@
-package com.karmanchik.chtotib_bot_rest_service.assembler.model;
+package com.karmanchik.chtotib_bot_rest_service.assembler.dto;
 
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.GroupModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.LessonModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.ReplacementModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.TeacherModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;

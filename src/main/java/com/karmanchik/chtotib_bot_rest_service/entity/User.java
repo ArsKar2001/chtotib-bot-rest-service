@@ -1,9 +1,9 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.karmanchik.chtotib_bot_rest_service.jpa.enums.BotState;
-import com.karmanchik.chtotib_bot_rest_service.jpa.enums.Role;
-import com.karmanchik.chtotib_bot_rest_service.jpa.enums.UserState;
+import com.karmanchik.chtotib_bot_rest_service.entity.enums.BotState;
+import com.karmanchik.chtotib_bot_rest_service.entity.enums.Role;
+import com.karmanchik.chtotib_bot_rest_service.entity.enums.UserState;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import org.hibernate.annotations.TypeDef;

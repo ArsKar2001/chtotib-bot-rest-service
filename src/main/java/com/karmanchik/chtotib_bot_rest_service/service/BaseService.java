@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.jpa.service;
+package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.BaseEntity;
 

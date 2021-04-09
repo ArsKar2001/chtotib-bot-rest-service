@@ -1,20 +1,11 @@
 package com.karmanchik.chtotib_bot_rest_service.parser;
 
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidDate;
-import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
-import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.io.File;
-import java.time.LocalDate;
+import java.io.InputStream;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.karmanchik.chtotib_bot_rest_service.parser.Sequence.*;
 
 @Log4j2
 public class ReplacementParser extends AbstractParser {
@@ -70,7 +61,7 @@ public class ReplacementParser extends AbstractParser {
     }
 
     @Override
-    public List<List<String>> parse(File file) {
+    public List<List<String>> parse(InputStream stream) {
         return null;
     }
 

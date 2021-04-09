@@ -1,9 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.assembler;
 
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.ModelHelper;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.TeacherModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.dto.TeacherModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
-import com.karmanchik.chtotib_bot_rest_service.rest.GroupController;
 import com.karmanchik.chtotib_bot_rest_service.rest.TeacherController;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;

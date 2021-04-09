@@ -1,7 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.assembler;
 
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.GroupModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.ModelHelper;
+import com.karmanchik.chtotib_bot_rest_service.assembler.dto.GroupModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.rest.GroupController;
 import org.springframework.hateoas.CollectionModel;

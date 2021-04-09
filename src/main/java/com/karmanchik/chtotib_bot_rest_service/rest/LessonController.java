@@ -1,21 +1,19 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.assembler.LessonModelAssembler;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.LessonModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.dto.LessonModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
-import com.karmanchik.chtotib_bot_rest_service.jpa.service.LessonService;
+import com.karmanchik.chtotib_bot_rest_service.service.LessonService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
