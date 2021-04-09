@@ -29,7 +29,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     public List<Teacher> saveAll(List<Teacher> t) {
         log.info("Save the teachers {}", t.stream()
-                .map(BaseEntity::getId)
+                .map(Teacher::getName)
                 .collect(Collectors.toList()));
         return teacherRepository.saveAll(t);
     }
