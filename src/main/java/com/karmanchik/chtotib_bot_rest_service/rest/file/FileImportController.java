@@ -109,6 +109,10 @@ public class FileImportController {
                         .build());
             }
 
+            log.info("Importing lessons...");
+            lessonService.saveAll(lessons);
+            log.info("Importing lessons... OK");
+
             log.info("Importing teachers...");
             teacherService.saveAll(allTeachers);
             log.info("Importing teachers... OK");
@@ -116,11 +120,6 @@ public class FileImportController {
             log.info("Importing groups...");
             groupService.saveAll(groups);
             log.info("Importing groups... OK");
-
-            log.info("Importing lessons...");
-            lessonService.saveAll(lessons);
-            log.info("Importing lessons... OK");
-
 
             return ResponseEntity.ok(Map.of(
                     "groups", groups.size(),

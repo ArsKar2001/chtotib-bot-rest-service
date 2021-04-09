@@ -29,7 +29,7 @@ public class GroupServiceImpl implements GroupService {
 
     public List<Group> saveAll(List<Group> t) {
         log.info("Save the groups {}", t.stream()
-                .map(BaseEntity::getId)
+                .map(Group::getName)
                 .collect(Collectors.toList()));
         return groupRepository.saveAll(t);
     }
