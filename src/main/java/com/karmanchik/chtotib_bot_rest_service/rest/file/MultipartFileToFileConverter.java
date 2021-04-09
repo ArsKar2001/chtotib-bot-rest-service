@@ -8,7 +8,7 @@ import java.io.*;
 @Log4j2
 public class MultipartFileToFileConverter {
     public static File convert(MultipartFile mFile) throws IOException {
-        File file = new File("src\\main\\resources\\files\\"+mFile.getOriginalFilename());
+        File file = new File("src\\main\\resources\\files\\"+mFile.getName());
         try (OutputStream os = new FileOutputStream(file)) {
             os.write(mFile.getBytes());
         }
