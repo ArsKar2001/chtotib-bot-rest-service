@@ -1,7 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.assembler.LessonModelAssembler;
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.LessonModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.LessonAssembler;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.LessonModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.LessonService;
@@ -23,9 +23,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/api/")
 public class LessonController extends BaseController<Lesson, LessonService> {
     private final LessonService lessonService;
-    private final LessonModelAssembler assembler;
+    private final LessonAssembler assembler;
 
-    public LessonController(LessonService lessonService, LessonModelAssembler assembler) {
+    public LessonController(LessonService lessonService, LessonAssembler assembler) {
         super(lessonService);
         this.lessonService = lessonService;
         this.assembler = assembler;

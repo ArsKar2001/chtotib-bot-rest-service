@@ -1,17 +1,16 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.assembler.LessonModelAssembler;
-import com.karmanchik.chtotib_bot_rest_service.assembler.ReplacementModelAssembler;
-import com.karmanchik.chtotib_bot_rest_service.assembler.TeacherModelAssembler;
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.LessonModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.ReplacementModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.TeacherModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.LessonAssembler;
+import com.karmanchik.chtotib_bot_rest_service.assembler.ReplacementAssembler;
+import com.karmanchik.chtotib_bot_rest_service.assembler.TeacherAssembler;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.LessonModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.ReplacementModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.TeacherModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.TeacherService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -30,19 +29,19 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/")
 public class TeacherController extends BaseController<Teacher, TeacherService> {
     private final TeacherService teacherService;
-    private final TeacherModelAssembler assembler;
-    private final LessonModelAssembler lessonModelAssembler;
-    private final ReplacementModelAssembler replacementModelAssembler;
+    private final TeacherAssembler assembler;
+    private final LessonAssembler lessonAssembler;
+    private final ReplacementAssembler replacementAssembler;
 
     public TeacherController(TeacherService teacherService,
-                             TeacherModelAssembler assembler,
-                             LessonModelAssembler lessonModelAssembler,
-                             ReplacementModelAssembler replacementModelAssembler) {
+                             TeacherAssembler assembler,
+                             LessonAssembler lessonAssembler,
+                             ReplacementAssembler replacementAssembler) {
         super(teacherService);
         this.teacherService = teacherService;
         this.assembler = assembler;
-        this.lessonModelAssembler = lessonModelAssembler;
-        this.replacementModelAssembler = replacementModelAssembler;
+        this.lessonAssembler = lessonAssembler;
+        this.replacementAssembler = replacementAssembler;
     }
 
     @Override
@@ -70,7 +69,7 @@ public class TeacherController extends BaseController<Teacher, TeacherService> {
                             .collect(Collectors.toList()));
                 });
         List<CollectionModel<LessonModel>> models = sortLessons.stream()
-                .map(lessonModelAssembler::toCollectionModel)
+                .map(lessonAssembler::toCollectionModel)
                 .collect(Collectors.toList());
         return ResponseEntity.ok()
                 .body(models);
@@ -91,7 +90,7 @@ public class TeacherController extends BaseController<Teacher, TeacherService> {
                             .collect(Collectors.toList()));
                 });
         List<CollectionModel<ReplacementModel>> models = sortReplacement.stream()
-                .map(replacementModelAssembler::toCollectionModel)
+                .map(replacementAssembler::toCollectionModel)
                 .collect(Collectors.toList());
         return ResponseEntity.ok()
                 .body(models);

@@ -1,7 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.assembler;
 
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.LessonModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.ModelHelper;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.LessonModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.ModelHelper;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.rest.LessonController;
 import org.springframework.hateoas.CollectionModel;
@@ -12,8 +12,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class LessonModelAssembler extends RepresentationModelAssemblerSupport<Lesson, LessonModel> {
-    public LessonModelAssembler() {
+public class LessonAssembler extends RepresentationModelAssemblerSupport<Lesson, LessonModel> {
+    public LessonAssembler() {
         super(LessonController.class, LessonModel.class);
     }
 

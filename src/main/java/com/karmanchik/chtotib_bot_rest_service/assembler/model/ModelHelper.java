@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.assembler.dto;
+package com.karmanchik.chtotib_bot_rest_service.assembler.model;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;

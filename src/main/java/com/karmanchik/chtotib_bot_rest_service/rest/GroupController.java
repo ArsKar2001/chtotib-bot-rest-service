@@ -1,11 +1,11 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.assembler.GroupModelAssembler;
-import com.karmanchik.chtotib_bot_rest_service.assembler.LessonModelAssembler;
-import com.karmanchik.chtotib_bot_rest_service.assembler.ReplacementModelAssembler;
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.GroupModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.LessonModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.ReplacementModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.GroupAssembler;
+import com.karmanchik.chtotib_bot_rest_service.assembler.LessonAssembler;
+import com.karmanchik.chtotib_bot_rest_service.assembler.ReplacementAssembler;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.GroupModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.LessonModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.ReplacementModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
@@ -31,20 +31,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/api/")
 public class GroupController extends BaseController<Group, GroupService> {
-    private final GroupModelAssembler assembler;
-    private final LessonModelAssembler lessonModelAssembler;
-    private final ReplacementModelAssembler replacementModelAssembler;
+    private final GroupAssembler assembler;
+    private final LessonAssembler lessonAssembler;
+    private final ReplacementAssembler replacementAssembler;
     private final GroupService groupService;
 
     public GroupController(GroupService groupService,
-                           GroupModelAssembler assembler,
-                           LessonModelAssembler lessonModelAssembler,
-                           ReplacementModelAssembler replacementModelAssembler) {
+                           GroupAssembler assembler,
+                           LessonAssembler lessonAssembler,
+                           ReplacementAssembler replacementAssembler) {
         super(groupService);
         this.groupService = groupService;
         this.assembler = assembler;
-        this.lessonModelAssembler = lessonModelAssembler;
-        this.replacementModelAssembler = replacementModelAssembler;
+        this.lessonAssembler = lessonAssembler;
+        this.replacementAssembler = replacementAssembler;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class GroupController extends BaseController<Group, GroupService> {
                         .sorted(Comparator.comparing(Lesson::getPairNumber))
                         .collect(Collectors.toList())));
         List<CollectionModel<LessonModel>> collect = sortLessons.stream()
-                .map(lessonModelAssembler::toCollectionModel)
+                .map(lessonAssembler::toCollectionModel)
                 .map(model -> model.add(linkTo(methodOn(GroupController.class)
                         .getLessons(id)).withSelfRel()))
                 .collect(Collectors.toList());
@@ -91,7 +91,7 @@ public class GroupController extends BaseController<Group, GroupService> {
                         .sorted(Comparator.comparing(Replacement::getPairNumber))
                         .collect(Collectors.toList())));
         List<CollectionModel<ReplacementModel>> collect = sortReplacements.stream()
-                .map(replacementModelAssembler::toCollectionModel)
+                .map(replacementAssembler::toCollectionModel)
                 .map(model -> model.add(linkTo(methodOn(GroupController.class)
                         .getLessons(id)).withSelfRel()))
                 .collect(Collectors.toList());

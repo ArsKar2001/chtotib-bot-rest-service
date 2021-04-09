@@ -45,6 +45,8 @@ public class FileImportController {
         try {
             if (files.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
 
+            lessonService.deleteAll();
+
             Set<String> uniqueTeacherNames = new HashSet<>();
             Set<String> uniqueGroupNames = new HashSet<>();
             List<String> csv = getCSVListByFiles(files);

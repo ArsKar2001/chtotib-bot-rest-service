@@ -1,7 +1,7 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
-import com.karmanchik.chtotib_bot_rest_service.assembler.ReplacementModelAssembler;
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.ReplacementModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.ReplacementAssembler;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.ReplacementModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.service.ReplacementService;
@@ -24,9 +24,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/api/")
 public class ReplacementController extends BaseController<Replacement, ReplacementService> {
     private final ReplacementService replacementService;
-    private final ReplacementModelAssembler assembler;
+    private final ReplacementAssembler assembler;
 
-    public ReplacementController(ReplacementService replacementService, ReplacementModelAssembler assembler) {
+    public ReplacementController(ReplacementService replacementService, ReplacementAssembler assembler) {
         super(replacementService);
         this.replacementService = replacementService;
         this.assembler = assembler;

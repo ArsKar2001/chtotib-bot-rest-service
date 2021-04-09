@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.assembler;
 
-import com.karmanchik.chtotib_bot_rest_service.assembler.dto.GroupModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.GroupModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.rest.GroupController;
 import org.springframework.hateoas.CollectionModel;
@@ -11,8 +11,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class GroupModelAssembler extends RepresentationModelAssemblerSupport<Group, GroupModel> {
-    public GroupModelAssembler() {
+public class GroupAssembler extends RepresentationModelAssemblerSupport<Group, GroupModel> {
+    public GroupAssembler() {
         super(GroupController.class, GroupModel.class);
     }
 
