@@ -62,6 +62,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public Optional<Group> getByName(String name) {
+        return groupRepository.getByName(name);
+    }
+
+    @Override
     public List<Lesson> getLessonsByGroupId(Integer groupId) {
         return groupRepository.getLessonsById(groupId);
     }

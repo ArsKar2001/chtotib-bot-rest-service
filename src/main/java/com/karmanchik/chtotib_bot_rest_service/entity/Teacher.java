@@ -28,12 +28,12 @@ public class Teacher extends BaseEntity {
     private User user;
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.TRUE)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "teacher_lesson",
             joinColumns = @JoinColumn(name = "teacher_id"),
-            inverseJoinColumns = @JoinColumn(name = "teacher_id"))
+            inverseJoinColumns = @JoinColumn(name = "lesson_id"))
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 

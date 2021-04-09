@@ -63,6 +63,11 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    public Optional<Teacher> getByName(String name) {
+        return teacherRepository.getByName(name);
+    }
+
+    @Override
     public List<Lesson> getLessonsByTeacherId(Integer teacherId) {
         return teacherRepository.getLessonsById(teacherId);
     }
