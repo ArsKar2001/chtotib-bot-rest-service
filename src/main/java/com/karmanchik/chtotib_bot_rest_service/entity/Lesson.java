@@ -41,7 +41,7 @@ public class Lesson extends BaseEntity {
     private Group group;
 
     @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "lessons")
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Teacher> teachers;
 
     @Override

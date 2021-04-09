@@ -29,13 +29,17 @@ public class Teacher extends BaseEntity {
 
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.TRUE)
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "teachers")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "teacher_lesson",
+            joinColumns = {@JoinColumn(name = "teacher_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "lesson_id", referencedColumnName = "teacher_id")})
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.TRUE)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "teacher_replacement",
             joinColumns = @JoinColumn(name = "teacher_id"),
