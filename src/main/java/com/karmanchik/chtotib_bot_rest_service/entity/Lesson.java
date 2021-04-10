@@ -41,7 +41,7 @@ public class Lesson extends BaseEntity {
     private Group group;
 
     @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Teacher> teachers;
 
     @Override

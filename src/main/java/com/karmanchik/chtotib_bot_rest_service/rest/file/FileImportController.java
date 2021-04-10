@@ -8,6 +8,7 @@ import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundExcepti
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaLessonsRepository;
+import com.karmanchik.chtotib_bot_rest_service.jpa.JpaLessonsTeachersRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
 import com.karmanchik.chtotib_bot_rest_service.model.NumberLesson;
 import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
@@ -37,6 +38,7 @@ public class FileImportController {
     private final JpaLessonsRepository lessonsRepository;
     private final JpaGroupRepository groupRepository;
     private final JpaTeacherRepository teacherRepository;
+    private final JpaLessonsTeachersRepository lessonsTeachersRepository;
 
     @PostMapping("/import/lessons")
     public ResponseEntity<?> importLessons(@RequestBody MultipartFile[] files) {
@@ -44,6 +46,8 @@ public class FileImportController {
             if (files.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
 
             deleteLessons();
+            teacherRepository.deleteAll();
+            groupRepository.deleteAll();
 
             Set<String> uniqueTeacherNames = new HashSet<>();
             Set<String> uniqueGroupNames = new HashSet<>();
@@ -61,12 +65,10 @@ public class FileImportController {
 
             List<Lesson> lessons = new ArrayList<>();
             List<Group> groups = uniqueGroupNames.stream()
-                    .map(s -> groupRepository.getByName(s)
-                            .orElseGet(() -> groupRepository.save(Group.builder(s).build())))
+                    .map(s -> Group.builder(s).build())
                     .collect(Collectors.toList());
             List<Teacher> allTeachers = uniqueTeacherNames.stream()
-                    .map(s -> teacherRepository.getByName(s)
-                            .orElseGet(() -> teacherRepository.save(Teacher.builder(s).build())))
+                    .map(s -> Teacher.builder(s).build())
                     .collect(Collectors.toList());
 
             for (String s : csv) {
@@ -122,6 +124,7 @@ public class FileImportController {
 
     private void deleteLessons() {
         log.info("Delete the lessons...");
+        lessonsTeachersRepository.deleteAll();
         lessonsRepository.deleteAll();
         log.info("Delete the lessons... OK");
     }

@@ -17,7 +17,7 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface JpaGroupRepository extends JpaRepository<Group, Integer> {
-    Optional<Group> getByName(@NotNull String groupName);
+    Optional<Group> findByName(@NotNull String groupName);
 
     @Query("SELECT g.lessons FROM Group g " +
             "WHERE g.id = :id")
