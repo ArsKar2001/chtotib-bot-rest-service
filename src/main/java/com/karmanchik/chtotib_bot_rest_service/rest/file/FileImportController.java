@@ -45,8 +45,6 @@ public class FileImportController {
             if (files.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
 
             deleteLessons();
-            teacherRepository.deleteAll();
-            groupRepository.deleteAll();
 
             Set<String> uniqueTeacherNames = new HashSet<>();
             Set<String> uniqueGroupNames = new HashSet<>();
@@ -64,10 +62,12 @@ public class FileImportController {
 
             List<Lesson> lessons = new ArrayList<>();
             List<Group> groups = uniqueGroupNames.stream()
-                    .map(s -> Group.builder(s).build())
+                    .map(s -> groupRepository.findByName(s)
+                            .orElseGet(() -> groupRepository.save(Group.builder(s).build())))
                     .collect(Collectors.toList());
             List<Teacher> allTeachers = uniqueTeacherNames.stream()
-                    .map(s -> Teacher.builder(s).build())
+                    .map(s -> teacherRepository.findByName(s)
+                            .orElseGet(() -> teacherRepository.save(Teacher.builder(s).build())))
                     .collect(Collectors.toList());
 
             for (String s : csv) {
