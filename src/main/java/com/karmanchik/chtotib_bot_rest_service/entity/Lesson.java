@@ -36,7 +36,7 @@ public class Lesson extends BaseEntity {
     private WeekType weekType;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "group_id")
     private Group group;
 
