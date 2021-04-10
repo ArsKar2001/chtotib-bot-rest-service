@@ -3,13 +3,12 @@ package com.karmanchik.chtotib_bot_rest_service.rest.file;
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
+import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
-import com.karmanchik.chtotib_bot_rest_service.service.GroupService;
-import com.karmanchik.chtotib_bot_rest_service.service.LessonService;
-import com.karmanchik.chtotib_bot_rest_service.service.TeacherService;
-import com.karmanchik.chtotib_bot_rest_service.service.UserService;
+import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
+import com.karmanchik.chtotib_bot_rest_service.jpa.JpaLessonsRepository;
+import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
 import com.karmanchik.chtotib_bot_rest_service.model.NumberLesson;
 import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
@@ -35,17 +34,16 @@ import static com.karmanchik.chtotib_bot_rest_service.parser.Sequence.*;
 @RequestMapping("/api/")
 @RequiredArgsConstructor
 public class FileImportController {
-    private final LessonService lessonService;
-    private final GroupService groupService;
-    private final TeacherService teacherService;
-    private final UserService userService;
+    private final JpaLessonsRepository lessonsRepository;
+    private final JpaGroupRepository groupRepository;
+    private final JpaTeacherRepository teacherRepository;
 
     @PostMapping("/import/lessons")
     public ResponseEntity<?> importLessons(@RequestBody MultipartFile[] files) {
         try {
             if (files.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
 
-            lessonService.deleteAll();
+            lessonsRepository.deleteAll();
 
             Set<String> uniqueTeacherNames = new HashSet<>();
             Set<String> uniqueGroupNames = new HashSet<>();
@@ -63,20 +61,18 @@ public class FileImportController {
 
             List<Lesson> lessons = new ArrayList<>();
             List<Group> groups = uniqueGroupNames.stream()
-                    .map(s -> groupService.getByName(s)
+                    .map(s -> groupRepository.getByName(s)
                             .orElse(Group.builder(s).build()))
                     .collect(Collectors.toList());
             List<Teacher> allTeachers = uniqueTeacherNames.stream()
-                    .map(s -> teacherService.getByName(s)
+                    .map(s -> teacherRepository.getByName(s)
                             .orElse(Teacher.builder(s).build()))
                     .collect(Collectors.toList());
 
             for (String s : csv) {
                 String[] ss = s.split(CSV_SPLIT);
-
                 if (ss.length > CSV_COLUMN_SIZE)
                     throw new StringReadException(s, ss.length);
-
                 String groupName = ss[0];
                 String dayStr = ss[1];
                 String pair = ss[2];
@@ -84,18 +80,15 @@ public class FileImportController {
                 String auditorium = ss[4];
                 String teachersName = ss[5];
                 String weekTypeStr = ss[6];
-
                 int day = Integer.parseInt(dayStr);
                 Integer pairNumber = NumberLesson.get(pair);
                 WeekType weekType = WeekType.valueOf(weekTypeStr);
 
                 List<String> teachersStr = teachersStrToList(teachersName, ss);
                 List<Teacher> teachersByPair = new ArrayList<>();
-                teachersStr.forEach(s1 -> {
-                    allTeachers.stream()
-                            .filter(teacher -> teacher.getName().equalsIgnoreCase(s1))
-                            .forEach(teachersByPair::add);
-                });
+                teachersStr.forEach(s1 -> allTeachers.stream()
+                        .filter(teacher -> teacher.getName().equalsIgnoreCase(s1))
+                        .forEach(teachersByPair::add));
                 Group group = groups.stream()
                         .filter(g -> g.getName().contains(groupName))
                         .findFirst()
@@ -113,15 +106,15 @@ public class FileImportController {
             }
 
             log.info("Importing teachers...");
-            teacherService.saveAll(allTeachers);
+            teacherRepository.saveAll(allTeachers);
             log.info("Importing teachers... OK");
 
             log.info("Importing groups...");
-            groupService.saveAll(groups);
+            groupRepository.saveAll(groups);
             log.info("Importing groups... OK");
 
             log.info("Importing lessons...");
-            lessonService.saveAll(lessons);
+            lessonsRepository.saveAll(lessons);
             log.info("Importing lessons... OK");
 
             return ResponseEntity.ok(Map.of(
