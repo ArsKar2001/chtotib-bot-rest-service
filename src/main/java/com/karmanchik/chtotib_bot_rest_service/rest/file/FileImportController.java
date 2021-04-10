@@ -62,11 +62,11 @@ public class FileImportController {
             List<Lesson> lessons = new ArrayList<>();
             List<Group> groups = uniqueGroupNames.stream()
                     .map(s -> groupRepository.getByName(s)
-                            .orElse(Group.builder(s).build()))
+                            .orElseGet(() -> groupRepository.save(Group.builder(s).build())))
                     .collect(Collectors.toList());
             List<Teacher> allTeachers = uniqueTeacherNames.stream()
                     .map(s -> teacherRepository.getByName(s)
-                            .orElse(Teacher.builder(s).build()))
+                            .orElseGet(() -> teacherRepository.save(Teacher.builder(s).build())))
                     .collect(Collectors.toList());
 
             for (String s : csv) {
@@ -105,14 +105,6 @@ public class FileImportController {
                         .build());
             }
 
-            log.info("Importing teachers ...");
-            teacherRepository.saveAll(allTeachers);
-            log.info("Importing teachers... OK");
-
-            log.info("Importing groups...");
-            groupRepository.saveAll(groups);
-            log.info("Importing groups... OK");
-
             log.info("Importing lessons...");
             lessonsRepository.saveAll(lessons);
             log.info("Importing lessons... OK");
@@ -130,12 +122,7 @@ public class FileImportController {
 
     private void deleteLessons() {
         log.info("Delete the lessons...");
-        lessonsRepository.findAll()
-                .forEach(lesson -> {
-                    groupRepository.delete(lesson.getGroup());
-                    teacherRepository.deleteAll(lesson.getTeachers());
-                    lessonsRepository.delete(lesson);
-                });
+        lessonsRepository.deleteAll();
         log.info("Delete the lessons... OK");
     }
 
