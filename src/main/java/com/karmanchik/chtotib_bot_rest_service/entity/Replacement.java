@@ -42,7 +42,7 @@ public class Replacement extends BaseEntity {
     private Group group;
 
     @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Teacher> teachers;
 
     @Override
