@@ -10,7 +10,8 @@ import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
-import com.karmanchik.chtotib_bot_rest_service.service.GroupService;
+import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -30,27 +31,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Log4j2
 @RestController
 @RequestMapping("/api/")
-public class GroupController extends BaseController<Group, GroupService> {
+@RequiredArgsConstructor
+public class GroupController implements Controller<Group> {
     private final GroupAssembler assembler;
     private final LessonAssembler lessonAssembler;
     private final ReplacementAssembler replacementAssembler;
-    private final GroupService groupService;
+    private final JpaGroupRepository groupRepository;
 
-    public GroupController(GroupService groupService,
-                           GroupAssembler assembler,
-                           LessonAssembler lessonAssembler,
-                           ReplacementAssembler replacementAssembler) {
-        super(groupService);
-        this.groupService = groupService;
-        this.assembler = assembler;
-        this.lessonAssembler = lessonAssembler;
-        this.replacementAssembler = replacementAssembler;
-    }
 
     @Override
     @GetMapping("/groups/{id}")
     public ResponseEntity<?> get(@PathVariable @NotNull Integer id) {
-        GroupModel model = groupService.findById(id)
+        GroupModel model = groupRepository.findById(id)
                 .map(assembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -59,8 +51,8 @@ public class GroupController extends BaseController<Group, GroupService> {
 
     @GetMapping("/groups/{id}/lessons")
     public ResponseEntity<?> getLessons(@PathVariable @NotNull Integer id) {
-        List<Lesson> lessons = groupService.getLessonsByGroupId(id);
         List<List<Lesson>> sortLessons = new ArrayList<>();
+        List<Lesson> lessons = groupRepository.getLessonsById(id);
         lessons.stream()
                 .map(Lesson::getDay)
                 .sorted()
@@ -83,8 +75,8 @@ public class GroupController extends BaseController<Group, GroupService> {
 
     @GetMapping("/groups/{id}/replacements")
     public ResponseEntity<?> getReplacements(@PathVariable @NotNull Integer id) {
-        List<Replacement> replacements = groupService.getReplacementsByGroupId(id);
         List<List<Replacement>> sortReplacements = new ArrayList<>();
+        List<Replacement> replacements = groupRepository.getReplacementsById(id);
         replacements.stream()
                 .map(Replacement::getDate)
                 .sorted()
@@ -108,7 +100,7 @@ public class GroupController extends BaseController<Group, GroupService> {
     @Override
     @GetMapping("/groups/")
     public ResponseEntity<?> getAll() {
-        List<Group> groups = groupService.findAll();
+        List<Group> groups = groupRepository.findAll();
         CollectionModel<GroupModel> models = assembler.toCollectionModel(groups);
         return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(models);
@@ -117,7 +109,7 @@ public class GroupController extends BaseController<Group, GroupService> {
     @Override
     @PostMapping("/groups")
     public ResponseEntity<?> post(@RequestBody @Valid Group group) {
-        GroupModel model = assembler.toModel(groupService.save(group));
+        GroupModel model = assembler.toModel(groupRepository.save(group));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
     }
@@ -126,12 +118,12 @@ public class GroupController extends BaseController<Group, GroupService> {
     @PutMapping("/groups/{id}")
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
                                  @RequestBody @Valid Group group) {
-        GroupModel model = groupService.findById(id)
+        GroupModel model = groupRepository.findById(id)
                 .map(g -> {
                     g.setName(group.getName());
                     g.setLessons(group.getLessons());
                     g.setReplacements(group.getReplacements());
-                    return groupService.save(g);
+                    return groupRepository.save(g);
                 }).map(assembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -141,19 +133,19 @@ public class GroupController extends BaseController<Group, GroupService> {
     @Override
     @DeleteMapping("/groups/{id}")
     public ResponseEntity<?> delete(@PathVariable @NotNull Integer id) {
-        groupService.deleteById(id);
+        groupRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<?> deleteAll(List<Integer> values) {
-        values.forEach(groupService::deleteById);
+        values.forEach(groupRepository::deleteById);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<?> deleteAll() {
-        groupService.deleteAll();
+        groupRepository.deleteAll();
         return ResponseEntity.noContent().build();
     }
 }

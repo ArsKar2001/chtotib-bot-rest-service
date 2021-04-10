@@ -1,13 +1,12 @@
 package com.karmanchik.chtotib_bot_rest_service.rest;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.BaseEntity;
-import com.karmanchik.chtotib_bot_rest_service.service.BaseService;
 import org.springframework.http.ResponseEntity;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public interface Controller<T extends BaseEntity, S extends BaseService<T>> {
+public interface Controller<T extends BaseEntity> {
     /**
      * Возвращает один элемент из таблицы БД
      *

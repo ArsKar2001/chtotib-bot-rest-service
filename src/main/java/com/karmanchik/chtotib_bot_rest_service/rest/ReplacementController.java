@@ -4,7 +4,8 @@ import com.karmanchik.chtotib_bot_rest_service.assembler.ReplacementAssembler;
 import com.karmanchik.chtotib_bot_rest_service.assembler.model.ReplacementModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
-import com.karmanchik.chtotib_bot_rest_service.service.ReplacementService;
+import com.karmanchik.chtotib_bot_rest_service.jpa.JpaReplacementRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -22,20 +23,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Log4j2
 @RestController
 @RequestMapping("/api/")
-public class ReplacementController extends BaseController<Replacement, ReplacementService> {
-    private final ReplacementService replacementService;
+@RequiredArgsConstructor
+public class ReplacementController implements Controller<Replacement> {
+    private final JpaReplacementRepository replacementRepository;
     private final ReplacementAssembler assembler;
 
-    public ReplacementController(ReplacementService replacementService, ReplacementAssembler assembler) {
-        super(replacementService);
-        this.replacementService = replacementService;
-        this.assembler = assembler;
-    }
 
     @Override
     @GetMapping("/replacements/{id}")
     public ResponseEntity<?> get(@PathVariable @NotNull Integer id) {
-        ReplacementModel model = replacementService.findById(id)
+        ReplacementModel model = replacementRepository.findById(id)
                 .map(assembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Replacement.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -44,7 +41,7 @@ public class ReplacementController extends BaseController<Replacement, Replaceme
 
     @GetMapping("/replacements")
     public ResponseEntity<?> getAllByDay(@RequestParam @NotNull LocalDate date) {
-        List<Replacement> lessons = replacementService.findAllByDate(date);
+        List<Replacement> lessons = replacementRepository.findAllByDateOrderByPairNumber(date);
         CollectionModel<ReplacementModel> models = assembler.toCollectionModel(lessons)
                 .add(linkTo(methodOn(ReplacementController.class).getAllByDay(date)).withRel("day_" + date));
         return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -54,7 +51,7 @@ public class ReplacementController extends BaseController<Replacement, Replaceme
     @Override
     @GetMapping("/replacements/")
     public ResponseEntity<?> getAll() {
-        List<Replacement> replacements = replacementService.findAll();
+        List<Replacement> replacements = replacementRepository.findAll();
         CollectionModel<ReplacementModel> models = assembler.toCollectionModel(replacements);
         return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(models);
@@ -63,7 +60,7 @@ public class ReplacementController extends BaseController<Replacement, Replaceme
     @Override
     @PostMapping("/replacements")
     public ResponseEntity<?> post(@RequestBody @Valid Replacement replacement) {
-        ReplacementModel model = assembler.toModel(replacementService.save(replacement));
+        ReplacementModel model = assembler.toModel(replacementRepository.save(replacement));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
     }
@@ -72,7 +69,7 @@ public class ReplacementController extends BaseController<Replacement, Replaceme
     @PutMapping("/replacements/{id}")
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
                                  @RequestBody @Valid Replacement replacement) {
-        ReplacementModel model = replacementService.findById(id)
+        ReplacementModel model = replacementRepository.findById(id)
                 .map(r -> {
                     r.setDate(replacement.getDate());
                     r.setGroup(replacement.getGroup());
@@ -80,7 +77,7 @@ public class ReplacementController extends BaseController<Replacement, Replaceme
                     r.setDiscipline(replacement.getDiscipline());
                     r.setPairNumber(replacement.getPairNumber());
                     r.setAuditorium(replacement.getAuditorium());
-                    return replacementService.save(r);
+                    return replacementRepository.save(r);
                 }).map(assembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Replacement.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -90,21 +87,21 @@ public class ReplacementController extends BaseController<Replacement, Replaceme
     @Override
     @DeleteMapping("/replacements/{id}")
     public ResponseEntity<?> delete(@PathVariable @NotNull Integer id) {
-        replacementService.deleteById(id);
+        replacementRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     @DeleteMapping("/replacements")
     public ResponseEntity<?> deleteAll(@RequestParam List<Integer> values) {
-        values.forEach(replacementService::deleteById);
+        values.forEach(replacementRepository::deleteById);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     @DeleteMapping("/replacements/")
     public ResponseEntity<?> deleteAll() {
-        replacementService.deleteAll();
+        replacementRepository.deleteAll();
         return ResponseEntity.noContent().build();
     }
 }
