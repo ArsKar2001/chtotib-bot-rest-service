@@ -19,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Teacher extends BaseEntity {
+
     @Column(name = "name")
     @NotNull
     private String name;
@@ -31,6 +32,7 @@ public class Teacher extends BaseEntity {
     @LazyCollection(LazyCollectionOption.TRUE)
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "teachers")
     @OrderBy("day, pairNumber ASC")
+    @MapsId("teachersId")
     private List<Lesson> lessons;
 
     @JsonIgnore

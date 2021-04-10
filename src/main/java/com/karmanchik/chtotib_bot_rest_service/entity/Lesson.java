@@ -37,7 +37,7 @@ public class Lesson extends BaseEntity {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id")
     private Group group;
 
     @JsonBackReference
