@@ -38,7 +38,6 @@ public class FileImportController {
     private final JpaLessonsRepository lessonsRepository;
     private final JpaGroupRepository groupRepository;
     private final JpaTeacherRepository teacherRepository;
-    private final JpaLessonsTeachersRepository lessonsTeachersRepository;
 
     @PostMapping("/import/lessons")
     public ResponseEntity<?> importLessons(@RequestBody MultipartFile[] files) {
@@ -124,7 +123,6 @@ public class FileImportController {
 
     private void deleteLessons() {
         log.info("Delete the lessons...");
-        lessonsTeachersRepository.deleteAll();
         lessonsRepository.deleteAll();
         log.info("Delete the lessons... OK");
     }
