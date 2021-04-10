@@ -43,7 +43,7 @@ public class FileImportController {
         try {
             if (files.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
 
-            lessonsRepository.deleteAll();
+            deleteLessons();
 
             Set<String> uniqueTeacherNames = new HashSet<>();
             Set<String> uniqueGroupNames = new HashSet<>();
@@ -105,7 +105,7 @@ public class FileImportController {
                         .build());
             }
 
-            log.info("Importing teachers...");
+            log.info("Importing teachers ...");
             teacherRepository.saveAll(allTeachers);
             log.info("Importing teachers... OK");
 
@@ -126,6 +126,17 @@ public class FileImportController {
             log.error(e.getMessage(), e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    private void deleteLessons() {
+        log.info("Delete the lessons...");
+        lessonsRepository.findAll()
+                .forEach(lesson -> {
+                    groupRepository.delete(lesson.getGroup());
+                    teacherRepository.deleteAll(lesson.getTeachers());
+                    lessonsRepository.delete(lesson);
+                });
+        log.info("Delete the lessons... OK");
     }
 
     private List<String> teachersStrToList(String teacherNames, String[] ss) throws StringReadException {
