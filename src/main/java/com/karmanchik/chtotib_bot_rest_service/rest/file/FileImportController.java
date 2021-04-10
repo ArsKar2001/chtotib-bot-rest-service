@@ -89,12 +89,13 @@ public class FileImportController {
                 Integer pairNumber = NumberLesson.get(pair);
                 WeekType weekType = WeekType.valueOf(weekTypeStr);
 
+                List<String> teachersStr = teachersStrToList(teachersName, ss);
                 List<Teacher> teachersByPair = new ArrayList<>();
-
-                teachersByPair.add(allTeachers.stream()
-                        .filter(teacher -> teachersName.contains(teacher.getName()))
-                        .findAny()
-                        .orElseThrow(() -> new ResourceNotFoundException(groupName, Teacher.class)));
+                teachersStr.forEach(s1 -> {
+                    allTeachers.stream()
+                            .filter(teacher -> teacher.getName().equalsIgnoreCase(s1))
+                            .forEach(teachersByPair::add);
+                });
                 Group group = groups.stream()
                         .filter(g -> g.getName().contains(groupName))
                         .findFirst()
@@ -111,10 +112,6 @@ public class FileImportController {
                         .build());
             }
 
-            log.info("Importing lessons...");
-            lessonService.saveAll(lessons);
-            log.info("Importing lessons... OK");
-
             log.info("Importing teachers...");
             teacherService.saveAll(allTeachers);
             log.info("Importing teachers... OK");
@@ -122,6 +119,10 @@ public class FileImportController {
             log.info("Importing groups...");
             groupService.saveAll(groups);
             log.info("Importing groups... OK");
+
+            log.info("Importing lessons...");
+            lessonService.saveAll(lessons);
+            log.info("Importing lessons... OK");
 
             return ResponseEntity.ok(Map.of(
                     "groups", groups.size(),
