@@ -52,8 +52,6 @@ public class Replacement extends BaseEntity {
                 ", discipline='" + discipline + '\'' +
                 ", auditorium='" + auditorium + '\'' +
                 ", date=" + date +
-                ", group=" + group +
-                ", teachers=" + teachers +
                 ", id=" + id +
                 '}';
     }

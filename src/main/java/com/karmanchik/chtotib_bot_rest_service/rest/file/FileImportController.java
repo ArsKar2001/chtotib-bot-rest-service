@@ -8,7 +8,6 @@ import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundExcepti
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaLessonsRepository;
-import com.karmanchik.chtotib_bot_rest_service.jpa.JpaLessonsTeachersRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
 import com.karmanchik.chtotib_bot_rest_service.model.NumberLesson;
 import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
@@ -91,7 +90,7 @@ public class FileImportController {
                         .filter(teacher -> teacher.getName().equalsIgnoreCase(s1))
                         .forEach(teachersByPair::add));
                 Group group = groups.stream()
-                        .filter(g -> g.getName().contains(groupName))
+                        .filter(g -> g.getName().equalsIgnoreCase(groupName))
                         .findFirst()
                         .orElseThrow(() -> new ResourceNotFoundException(groupName, Group.class));
 

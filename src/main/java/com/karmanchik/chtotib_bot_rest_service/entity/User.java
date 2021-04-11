@@ -54,5 +54,19 @@ public class User extends BaseEntity {
     @Column(name = "bot_state_id")
     @NotNull
     private BotState botState;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "chatId=" + chatId +
+                ", userName='" + userName + '\'' +
+                ", teacher=" + teacher +
+                ", group=" + group +
+                ", role=" + role +
+                ", userState=" + userState +
+                ", botState=" + botState +
+                ", id=" + id +
+                '}';
+    }
 }
 
