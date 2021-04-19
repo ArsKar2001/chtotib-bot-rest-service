@@ -2,15 +2,19 @@ package com.karmanchik.chtotib_bot_rest_service.rest.file;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
+import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaLessonsRepository;
+import com.karmanchik.chtotib_bot_rest_service.jpa.JpaReplacementRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
-import com.karmanchik.chtotib_bot_rest_service.model.NumberLesson;
+import com.karmanchik.chtotib_bot_rest_service.helper.LatinNumberHelper;
+import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
 import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
+import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,7 +26,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -37,23 +45,98 @@ public class FileImportController {
     private final JpaLessonsRepository lessonsRepository;
     private final JpaGroupRepository groupRepository;
     private final JpaTeacherRepository teacherRepository;
+    private final JpaReplacementRepository replacementRepository;
+
+    @PostMapping("/import/replacements")
+    public ResponseEntity<?> importReplacements(@RequestBody MultipartFile multipartFile) {
+        List<Replacement> replacements = new ArrayList<>();
+
+        log.info("Find all groups...");
+        List<Group> groups = Optional.of(groupRepository.findAll())
+                .orElseThrow(() -> new ResourceNotFoundException("Не возможно импортировать замену, т.к. не найдено ни одной группы."));
+        log.info("Find all groups: {}. OK", groups.size());
+        log.info("Find all teachers...");
+        List<Teacher> teachers = Optional.of(teacherRepository.findAll())
+                .orElseThrow(() -> new ResourceNotFoundException("Не возможно импортировать замену, т.к. не найдено ни одного педагога."));
+        log.info("Find all teachers: {}. OK", teachers.size());
+
+        try {
+            this.multipartFileToFile(multipartFile, Paths.get("src/main/resources/files/"));
+            File file = new File("src/main/resources/files/" + multipartFile.getOriginalFilename());
+            ReplacementParser parser = new ReplacementParser();
+            LocalDate date = parser.getDateFromFileName(file.getName());
+
+            if (date.equals(LocalDate.MIN))
+                return ResponseEntity.badRequest()
+                        .body("Ошибка файла: " + file.getName() + "; " +
+                                "иназвание файла не соответствует формату: \"З А М Е Н А  на день_недели номер_дня навание_месяца неделя нижняя/верхняя.\";\n" +
+                                "Пример: \"З А М Е Н А  на среду 7 апреля неделя нижняя.\"");
+
+            for (var list : parser.parseToListMap(file)) {
+                for (var map : list) {
+
+                    String groupName = (String) map.get("group_name");
+                    String pair = (String) map.get("pair");
+                    String discipline = (String) map.get("discipline");
+                    String auditorium = (String) map.get("auditorium");
+                    List<String> teacherNameList = ((List<String>) map.get("teachers"));
+
+                    String validGroupName = ValidGroupName.getValidGroupName(groupName);
+
+                    Group group = groups.stream()
+                            .filter(g -> g.getName().equalsIgnoreCase(validGroupName))
+                            .findFirst()
+                            .orElseThrow(() -> new ResourceNotFoundException(groupName, Group.class));
+
+                    List<Teacher> teachersByRepl = new ArrayList<>();
+                    for (String s : teacherNameList) {
+                        if (!s.trim().isBlank()) {
+                            if (ValidTeacherName.isTeacher(s)) {
+                                teachersByRepl.add(teachers.stream()
+                                        .filter(teacher -> teacher.getName().equalsIgnoreCase(s))
+                                        .findFirst()
+                                        .orElseThrow(() -> new ResourceNotFoundException(s, Teacher.class)));
+                            } else {
+                                throw new StringReadException(s, "Иванов А.А.");
+                            }
+                        }
+                    }
+
+                    replacements.add(Replacement.builder()
+                            .date(date)
+                            .discipline(discipline)
+                            .auditorium(auditorium)
+                            .group(group)
+                            .teachers(teachersByRepl)
+                            .pairNumber(pair)
+                            .build());
+                }
+            }
+            replacementRepository.deleteAll();
+            return ResponseEntity.ok()
+                    .body(replacementRepository.saveAll(replacements));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @PostMapping("/import/lessons")
-    public ResponseEntity<?> importLessons(@RequestBody MultipartFile[] files) {
+    public ResponseEntity<?> importLessons(@RequestBody MultipartFile[] multipartFiles) {
         try {
-            if (files.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
+            if (multipartFiles.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
 
             deleteLessons();
 
             Set<String> uniqueTeacherNames = new HashSet<>();
             Set<String> uniqueGroupNames = new HashSet<>();
-            List<String> csv = getCSVListByFiles(files);
+            List<String> csv = getCSVListOfFile(multipartFiles);
             for (String s : csv) {
                 String[] ss = s.split(CSV_SPLIT);
                 String groupName = ss[0];
                 String teacherNames = ss[5];
 
-                List<String> teachersByStr = teachersStrToList(teacherNames, ss);
+                List<String> teachersByStr = teachersStrToList(teacherNames);
 
                 uniqueGroupNames.add(groupName);
                 uniqueTeacherNames.addAll(teachersByStr);
@@ -81,10 +164,10 @@ public class FileImportController {
                 String teachersName = ss[5];
                 String weekTypeStr = ss[6];
                 int day = Integer.parseInt(dayStr);
-                Integer pairNumber = NumberLesson.get(pair);
+                Integer pairNumber = LatinNumberHelper.get(pair);
                 WeekType weekType = WeekType.valueOf(weekTypeStr);
 
-                List<String> teachersStr = teachersStrToList(teachersName, ss);
+                List<String> teachersStr = teachersStrToList(teachersName);
                 List<Teacher> teachersByPair = new ArrayList<>();
                 teachersStr.forEach(s1 -> allTeachers.stream()
                         .filter(teacher -> teacher.getName().equalsIgnoreCase(s1))
@@ -120,13 +203,26 @@ public class FileImportController {
         }
     }
 
+    public void multipartFileToFile(MultipartFile multipart,
+                                    Path dir) throws IOException {
+        Path filepath = Paths.get(dir.toString(), multipart.getOriginalFilename());
+        multipart.transferTo(filepath);
+    }
+
+    private List<Map<String, Object>> toListMap(File file) throws IOException, InvalidFormatException {
+        ReplacementParser parser = new ReplacementParser();
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        parser.parseToListMap(file).forEach(mapList::addAll);
+        return mapList;
+    }
+
     private void deleteLessons() {
         log.info("Delete the lessons...");
         lessonsRepository.deleteAll();
         log.info("Delete the lessons... OK");
     }
 
-    private List<String> teachersStrToList(String teacherNames, String[] ss) throws StringReadException {
+    private List<String> teachersStrToList(String teacherNames) throws StringReadException {
         List<String> teacherList = new ArrayList<>();
         for (String s : teacherNames.split(DEFAULT_SPLIT)) {
             String s1 = s.trim();
@@ -134,17 +230,20 @@ public class FileImportController {
             if (matcher.matches()) {
                 teacherList.add(ValidTeacherName.getValidTeacherName(s1, matcher));
             } else
-                throw new StringReadException(ss, s, "Иванов А.А.");
+                throw new StringReadException(s, "Иванов А.А.");
         }
         return teacherList;
     }
 
-    private List<String> getCSVListByFiles(MultipartFile[] files) throws IOException, InvalidFormatException {
+    private List<String> getCSVListOfFile(MultipartFile[] files) throws IOException, InvalidFormatException {
         TimetableParser parser = new TimetableParser();
         List<String> csvList = new ArrayList<>();
-        for (MultipartFile file : files)
-            parser.parse(file.getInputStream())
+        for (MultipartFile multipartFile : files) {
+            this.multipartFileToFile(multipartFile, Paths.get("src/main/resources/files/"));
+            File file = new File("src/main/resources/files/" + multipartFile.getOriginalFilename());
+            parser.parse(file)
                     .forEach(csvList::addAll);
+        }
         return csvList;
     }
 }

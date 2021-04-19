@@ -1,17 +1,15 @@
 package com.karmanchik.chtotib_bot_rest_service.parser;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
-import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidText;
 import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -20,10 +18,10 @@ import java.util.stream.Collectors;
 import static com.karmanchik.chtotib_bot_rest_service.parser.Sequence.*;
 
 @Log4j2
-public class TimetableParser extends AbstractParser {
+public class TimetableParser extends BaseParser {
     @Override
-    public List<List<String>> parse(InputStream stream) throws IOException, InvalidFormatException {
-        return wordFileToList(stream).parallelStream()
+    public List<List<String>> parse(File file) throws IOException, InvalidFormatException {
+        return wordFileToList(file).parallelStream()
                 .map(table -> {
                     StringBuilder sb = new StringBuilder();
                     return table.stream()
@@ -52,6 +50,11 @@ public class TimetableParser extends AbstractParser {
 
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<List<Map<String, Object>>> parseToListMap(File file) throws IOException, InvalidFormatException {
+        return null;
     }
 
     private boolean isNotNonRow(List<String> list) {
@@ -160,8 +163,8 @@ public class TimetableParser extends AbstractParser {
         return 0;
     }
 
-    private List<List<List<String>>> wordFileToList(InputStream stream) throws InvalidFormatException, IOException {
-        return Word.getTables(stream).stream()
+    private List<List<List<String>>> wordFileToList(File file) throws InvalidFormatException, IOException {
+        return Word.getTables(file).stream()
                 .map(table -> table.stream()
                         .map(row -> row.stream()
                                 .map(String::trim)

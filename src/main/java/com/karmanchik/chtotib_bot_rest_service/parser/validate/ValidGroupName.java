@@ -1,7 +1,5 @@
 package com.karmanchik.chtotib_bot_rest_service.parser.validate;
 
-import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
-
 import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
 import java.util.List;

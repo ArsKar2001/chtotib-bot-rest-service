@@ -1,11 +1,11 @@
-package com.karmanchik.chtotib_bot_rest_service.model;
+package com.karmanchik.chtotib_bot_rest_service.helper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class NumberLesson {
-    private static final Map<String, Integer> COURSES = Map.of(
+public class LatinNumberHelper {
+    private static final Map<String, Integer> NUMBER = Map.of(
             "I", 1,
             "II", 2,
             "III", 3,
@@ -17,30 +17,30 @@ public class NumberLesson {
 
     );
 
-    private NumberLesson() {
+    private LatinNumberHelper() {
     }
 
     public static Map<String, Integer> getAll() {
-        return COURSES;
+        return NUMBER;
     }
 
     public static boolean containsKey(String s) {
-        return COURSES.containsKey(s);
+        return NUMBER.containsKey(s);
     }
 
     public static boolean containsValue(Integer integer) {
-        return COURSES.containsValue(integer);
+        return NUMBER.containsValue(integer);
     }
 
     public static Integer get(String s) {
-        return COURSES.get(s);
+        return NUMBER.get(s);
     }
 
     public static List<String> getKeys() {
-        return new ArrayList<>(COURSES.keySet());
+        return new ArrayList<>(NUMBER.keySet());
     }
 
     public static List<Integer> getValues() {
-        return new ArrayList<>(COURSES.values());
+        return new ArrayList<>(NUMBER.values());
     }
 }
