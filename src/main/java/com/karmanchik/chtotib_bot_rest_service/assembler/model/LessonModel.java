@@ -9,6 +9,9 @@ import org.springframework.hateoas.server.core.Relation;
 
 import java.util.List;
 
+/**
+ * Представляет web-модель сущности - Lesson
+ */
 @Data
 @Builder
 @NoArgsConstructor

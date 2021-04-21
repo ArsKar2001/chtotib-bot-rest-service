@@ -14,6 +14,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ *
+ */
 @Log4j2
 public class Word {
     private Word() {
@@ -30,7 +33,6 @@ public class Word {
     }
 
     public static List<List<List<String>>> getTables(File file) throws InvalidFormatException, IOException {
-        readDocument(file).getHeaderList();
         return readDocument(file).getTables().stream()
                 .map(table -> table.getRows().stream()
                         .map(row -> row.getTableCells().stream()

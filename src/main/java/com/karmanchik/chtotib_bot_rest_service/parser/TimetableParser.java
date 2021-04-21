@@ -6,7 +6,6 @@ import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidText;
 import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +14,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-import static com.karmanchik.chtotib_bot_rest_service.parser.Sequence.*;
+import static com.karmanchik.chtotib_bot_rest_service.parser.sequence.Sequence.*;
 
 @Log4j2
 public class TimetableParser extends BaseParser {

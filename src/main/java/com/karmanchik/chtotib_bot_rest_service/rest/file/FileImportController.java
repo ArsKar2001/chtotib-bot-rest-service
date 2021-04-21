@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-import static com.karmanchik.chtotib_bot_rest_service.parser.Sequence.*;
+import static com.karmanchik.chtotib_bot_rest_service.parser.sequence.Sequence.*;
 
 @Log4j2
 @RestController
@@ -48,7 +48,7 @@ public class FileImportController {
     private final JpaReplacementRepository replacementRepository;
 
     @PostMapping("/import/replacements")
-    public ResponseEntity<?> importReplacements(@RequestBody MultipartFile multipartFile) {
+    public ResponseEntity<?> importReplacements(@RequestBody MultipartFile mFile) {
         List<Replacement> replacements = new ArrayList<>();
 
         log.info("Find all groups...");
@@ -61,12 +61,12 @@ public class FileImportController {
         log.info("Find all teachers: {}. OK", teachers.size());
 
         try {
-            this.multipartFileToFile(multipartFile, Paths.get("src/main/resources/files/"));
-            File file = new File("src/main/resources/files/" + multipartFile.getOriginalFilename());
+            this.multipartFileToFile(mFile, Paths.get("src/main/resources/files/"));
+            File file = new File("src/main/resources/files/" + mFile.getOriginalFilename());
             ReplacementParser parser = new ReplacementParser();
             LocalDate date = parser.getDateFromFileName(file.getName());
 
-            if (date.equals(LocalDate.MIN))
+            if (date == null)
                 return ResponseEntity.badRequest()
                         .body("Ошибка файла: " + file.getName() + "; " +
                                 "иназвание файла не соответствует формату: \"З А М Е Н А  на день_недели номер_дня навание_месяца неделя нижняя/верхняя.\";\n" +
@@ -113,6 +113,7 @@ public class FileImportController {
                 }
             }
             replacementRepository.deleteAll();
+            log.info("Save replacements [{}]...", replacements.size());
             return ResponseEntity.ok()
                     .body(replacementRepository.saveAll(replacements));
         } catch (Exception e) {
@@ -122,15 +123,15 @@ public class FileImportController {
     }
 
     @PostMapping("/import/lessons")
-    public ResponseEntity<?> importLessons(@RequestBody MultipartFile[] multipartFiles) {
+    public ResponseEntity<?> importLessons(@RequestBody MultipartFile[] mFiles) {
         try {
-            if (multipartFiles.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
+            if (mFiles.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
 
             deleteLessons();
 
             Set<String> uniqueTeacherNames = new HashSet<>();
             Set<String> uniqueGroupNames = new HashSet<>();
-            List<String> csv = getCSVListOfFile(multipartFiles);
+            List<String> csv = getCSVListOfFile(mFiles);
             for (String s : csv) {
                 String[] ss = s.split(CSV_SPLIT);
                 String groupName = ss[0];

@@ -13,8 +13,9 @@ public class LatinNumberHelper {
             "V", 5,
             "VI", 6,
             "VII", 7,
-            "VIII", 8
-
+            "VIII", 8,
+            "IX", 9,
+            "X", 10
     );
 
     private LatinNumberHelper() {

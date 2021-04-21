@@ -1,4 +1,4 @@
-package com.karmanchik.chtotib_bot_rest_service.parser;
+package com.karmanchik.chtotib_bot_rest_service.parser.sequence;
 
 public class Sequence {
     public static final int CSV_COLUMN_SIZE = 7;

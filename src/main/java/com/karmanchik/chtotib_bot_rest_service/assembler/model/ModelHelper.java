@@ -16,47 +16,18 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/**
+ * Класс - помощник. Реальзует статические методы для преобразования сущностей в RepresentationModel
+ */
 public class ModelHelper {
     private ModelHelper() {
     }
 
-    public static List<ReplacementModel> toReplacementsModel(List<Replacement> replacements) {
-        if (replacements.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return replacements.stream()
-                .map(replacement -> ReplacementModel.builder()
-                        .id(replacement.getId())
-                        .date(replacement.getDate())
-                        .discipline(replacement.getDiscipline())
-                        .auditorium(replacement.getAuditorium())
-                        .pairNumber(replacement.getPairNumber())
-                        .build()
-                        .add(linkTo(methodOn(ReplacementController.class)
-                                .get(replacement.getId()))
-                                .withSelfRel()))
-                .collect(Collectors.toList());
-    }
-
-    public static List<LessonModel> toLessonsModel(List<Lesson> lessons) {
-        if (lessons.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return lessons.stream()
-                .map(lesson -> LessonModel.builder()
-                        .id(lesson.getId())
-                        .day(lesson.getDay())
-                        .discipline(lesson.getDiscipline())
-                        .auditorium(lesson.getAuditorium())
-                        .pairNumber(lesson.getPairNumber())
-                        .weekType(lesson.getWeekType())
-                        .build()
-                        .add(linkTo(methodOn(LessonController.class)
-                                .get(lesson.getId()))
-                                .withSelfRel()))
-                .collect(Collectors.toList());
-    }
-
+    /**
+     * Статический метод-фабрика для преобразования коллекции сущностей-Teachers в коллекцию RepresentationModel
+     * @param teachers Коллекция @see Teachers
+     * @return
+     */
     public static List<TeacherModel> toTeachersModel(List<Teacher> teachers) {
         if (teachers.isEmpty()) {
             return Collections.emptyList();

@@ -7,6 +7,9 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
+/**
+ * Представляет web-модель сущности - Group
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -1,6 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.parser;
 
-import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
+import com.karmanchik.chtotib_bot_rest_service.parser.sequence.Sequence;
 import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -68,6 +68,6 @@ public class ReplacementParser extends BaseParser {
             String dateStr = (s + Year.now()).trim();
             return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("ru")));
         }
-        return LocalDate.MIN;
+        return null;
     }
 }
