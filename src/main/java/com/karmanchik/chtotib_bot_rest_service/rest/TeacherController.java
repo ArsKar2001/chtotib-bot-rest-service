@@ -102,7 +102,7 @@ public class TeacherController implements Controller<Teacher> {
     }
 
     @Override
-    @PostMapping("/teachers")
+    @PostMapping(value = "/teachers", produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> post(@RequestBody @Valid Teacher teacher) {
         TeacherModel model = assembler.toModel(teacherRepository.save(teacher));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -110,7 +110,7 @@ public class TeacherController implements Controller<Teacher> {
     }
 
     @Override
-    @PutMapping("/teachers/{id}")
+    @PutMapping(value = "/teachers/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
                                  @RequestBody @Valid Teacher teacher) {
         TeacherModel model = teacherRepository.findById(id)

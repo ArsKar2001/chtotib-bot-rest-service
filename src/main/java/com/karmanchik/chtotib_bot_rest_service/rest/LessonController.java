@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,7 +58,7 @@ public class LessonController implements Controller<Lesson> {
     }
 
     @Override
-    @PostMapping("/lessons")
+    @PostMapping(value = "/lessons", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> post(@RequestBody @Valid Lesson lesson) {
         LessonModel model = assembler.toModel(lessonsRepository.save(lesson));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -65,7 +66,7 @@ public class LessonController implements Controller<Lesson> {
     }
 
     @Override
-    @PutMapping
+    @PutMapping(value = "/lessons/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
                                  @RequestBody @Valid Lesson lesson) {
         LessonModel model = lessonsRepository.findById(id)
