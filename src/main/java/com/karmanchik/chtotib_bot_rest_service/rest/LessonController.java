@@ -58,7 +58,7 @@ public class LessonController implements Controller<Lesson> {
     }
 
     @Override
-    @PostMapping(value = "/lessons", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/lessons")
     public ResponseEntity<?> post(@RequestBody @Valid Lesson lesson) {
         LessonModel model = assembler.toModel(lessonsRepository.save(lesson));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -66,7 +66,7 @@ public class LessonController implements Controller<Lesson> {
     }
 
     @Override
-    @PutMapping(value = "/lessons/{id}", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "/lessons/{id}")
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
                                  @RequestBody @Valid Lesson lesson) {
         LessonModel model = lessonsRepository.findById(id)

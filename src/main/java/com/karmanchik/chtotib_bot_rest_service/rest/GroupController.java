@@ -30,7 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/")
+@RequestMapping(value = "/api/")
 @RequiredArgsConstructor
 public class GroupController implements Controller<Group> {
     private final GroupAssembler assembler;
@@ -107,7 +107,7 @@ public class GroupController implements Controller<Group> {
     }
 
     @Override
-    @PostMapping(value = "/groups", produces = "application/json", consumes = "application/json")
+    @PostMapping(value = "/groups")
     public ResponseEntity<?> post(@RequestBody @Valid Group group) {
         GroupModel model = assembler.toModel(groupRepository.save(group));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -115,7 +115,7 @@ public class GroupController implements Controller<Group> {
     }
 
     @Override
-    @PutMapping(value = "/groups/{id}", produces = "application/json", consumes = "application/json")
+    @PutMapping(value = "/groups/{id}")
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
                                  @RequestBody @Valid Group group) {
         GroupModel model = groupRepository.findById(id)
