@@ -59,7 +59,7 @@ public class ReplacementController implements Controller<Replacement> {
 
     @Override
     @PostMapping("/replacements")
-    public ResponseEntity<?> post(@Valid Replacement replacement) {
+    public ResponseEntity<?> post(@RequestBody @Valid Replacement replacement) {
         ReplacementModel model = assembler.toModel(replacementRepository.save(replacement));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
@@ -68,7 +68,7 @@ public class ReplacementController implements Controller<Replacement> {
     @Override
     @PutMapping("/replacements/{id}")
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
-                                 @Valid Replacement replacement) {
+                                 @RequestBody @Valid Replacement replacement) {
         ReplacementModel model = replacementRepository.findById(id)
                 .map(r -> {
                     r.setDate(replacement.getDate());

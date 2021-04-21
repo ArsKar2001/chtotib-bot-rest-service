@@ -107,17 +107,17 @@ public class GroupController implements Controller<Group> {
     }
 
     @Override
-    @PostMapping(value = "/groups", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<?> post(@Valid Group group) {
+    @PostMapping(value = "/groups")
+    public ResponseEntity<?> post(@RequestBody @Valid Group group) {
         GroupModel model = assembler.toModel(groupRepository.save(group));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
     }
 
     @Override
-    @PutMapping(value = "/groups/{id}", produces = "application/json", consumes = "application/json")
+    @PutMapping(value = "/groups/{id}")
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
-                                 @Valid Group group) {
+                                 @RequestBody @Valid Group group) {
         GroupModel model = groupRepository.findById(id)
                 .map(g -> {
                     g.setName(group.getName());
