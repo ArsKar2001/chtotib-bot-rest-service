@@ -20,7 +20,7 @@ public class ReplacementParser extends BaseParser {
 
     @Override
     public List<List<String>> parse(File file) throws IOException, InvalidFormatException {
-        return Word.getTables(file).stream()
+        return Word.toTablesRowsLists(file).stream()
                 .map(table -> table.stream()
                         .map(row -> Arrays.toString(row.toArray()))
                         .collect(Collectors.toList()))
@@ -29,7 +29,7 @@ public class ReplacementParser extends BaseParser {
 
     @Override
     public List<List<Map<String, Object>>> parseToListMap(File file) throws IOException, InvalidFormatException {
-        return Word.getTables(file).stream()
+        return Word.toTablesRowsLists(file).stream()
                 .map(table -> table.stream()
                         .skip(1)
                         .filter(row -> row.size() >= Sequence.MAX_COLUMN_SIZE)

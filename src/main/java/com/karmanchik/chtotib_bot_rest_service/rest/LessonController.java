@@ -9,13 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -58,11 +59,18 @@ public class LessonController implements Controller<Lesson> {
     }
 
     @Override
-    @PostMapping(value = "/lessons")
+    @PostMapping(value = "/lesson")
     public ResponseEntity<?> post(@RequestBody @Valid Lesson lesson) {
         LessonModel model = assembler.toModel(lessonsRepository.save(lesson));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
+    }
+
+    @PostMapping(value = "/lessons")
+    public ResponseEntity<?> postArray(@RequestBody @Valid List<Lesson> lessons) {
+        CollectionModel<LessonModel> models = assembler.toCollectionModel(lessonsRepository.saveAll(lessons));
+        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(models);
     }
 
     @Override
@@ -70,24 +78,27 @@ public class LessonController implements Controller<Lesson> {
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
                                  @RequestBody @Valid Lesson lesson) {
         LessonModel model = lessonsRepository.findById(id)
-                .map(l -> {
-                    l.setDay(lesson.getDay());
-                    l.setGroup(lesson.getGroup());
-                    l.setTeachers(lesson.getTeachers());
-                    l.setDiscipline(lesson.getDiscipline());
-                    l.setPairNumber(lesson.getPairNumber());
-                    l.setWeekType(lesson.getWeekType());
-                    l.setAuditorium(lesson.getAuditorium());
-                    return lessonsRepository.save(l);
-                }).map(assembler::toModel)
+                .map(l -> changeLesson(lesson, l)).map(assembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Lesson.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
     }
 
+    @PutMapping("/lessons")
+    public ResponseEntity<?> putArray(@RequestBody @Valid List<Lesson> lessons) {
+        List<Lesson> lessonList = lessons.stream()
+                .map(lesson -> lessonsRepository.findById(lesson.getId())
+                        .map(l -> changeLesson(lesson, l))
+                        .orElseThrow(() -> new ResourceNotFoundException(lesson.getId(), Lesson.class)))
+                .collect(Collectors.toList());
+        CollectionModel<LessonModel> models = assembler.toCollectionModel(lessonList);
+        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(models);
+    }
+
     @Override
-    @DeleteMapping("/lessons/{id}")
-    public ResponseEntity<?> delete(@PathVariable @NotNull Integer id) {
+    @DeleteMapping("/lesson")
+    public ResponseEntity<?> delete(@RequestParam("id") @NotNull Integer id) {
         lessonsRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
@@ -95,7 +106,10 @@ public class LessonController implements Controller<Lesson> {
     @Override
     @DeleteMapping("/lessons")
     public ResponseEntity<?> deleteAll(@RequestParam List<Integer> values) {
-        values.forEach(lessonsRepository::deleteById);
+        values.forEach(id -> {
+            lessonsRepository.deleteById(id);
+            log.info("Deleted lesson by id = {}", id);
+        });
         return ResponseEntity.noContent().build();
     }
 
@@ -104,5 +118,16 @@ public class LessonController implements Controller<Lesson> {
     public ResponseEntity<?> deleteAll() {
         lessonsRepository.deleteAll();
         return ResponseEntity.noContent().build();
+    }
+
+    private Lesson changeLesson(@RequestBody @Valid Lesson oldLesson, Lesson newLesson) {
+        newLesson.setDay(oldLesson.getDay());
+        newLesson.setGroup(oldLesson.getGroup());
+        newLesson.setTeachers(oldLesson.getTeachers());
+        newLesson.setDiscipline(oldLesson.getDiscipline());
+        newLesson.setPairNumber(oldLesson.getPairNumber());
+        newLesson.setWeekType(oldLesson.getWeekType());
+        newLesson.setAuditorium(oldLesson.getAuditorium());
+        return lessonsRepository.save(newLesson);
     }
 }

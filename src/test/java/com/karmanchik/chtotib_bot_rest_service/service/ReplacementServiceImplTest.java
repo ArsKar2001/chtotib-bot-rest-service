@@ -1,12 +1,14 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
 import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
+import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 class ReplacementServiceImplTest {
 
@@ -30,5 +32,18 @@ class ReplacementServiceImplTest {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Test
+    void name() {
+        Arrays.asList(files)
+                .forEach(file -> {
+                    try {
+                        Word.toTablesRowsMaps(file)
+                                .forEach(System.out::println);
+                    } catch (IOException | InvalidFormatException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 }

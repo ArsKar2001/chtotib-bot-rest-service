@@ -5,11 +5,14 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
+import org.springframework.stereotype.Component;
+
+import java.io.Serializable;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonRootName("teacher")
 @Relation("teachers")

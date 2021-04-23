@@ -163,7 +163,7 @@ public class TimetableParser extends BaseParser {
     }
 
     private List<List<List<String>>> wordFileToList(File file) throws InvalidFormatException, IOException {
-        return Word.getTables(file).stream()
+        return Word.toTablesRowsLists(file).stream()
                 .map(table -> table.stream()
                         .map(row -> row.stream()
                                 .map(String::trim)

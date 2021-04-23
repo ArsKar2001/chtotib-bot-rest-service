@@ -1,12 +1,8 @@
 package com.karmanchik.chtotib_bot_rest_service.assembler.model;
 
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
-import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
-import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.rest.GroupController;
-import com.karmanchik.chtotib_bot_rest_service.rest.LessonController;
-import com.karmanchik.chtotib_bot_rest_service.rest.ReplacementController;
 import com.karmanchik.chtotib_bot_rest_service.rest.TeacherController;
 
 import java.util.Collections;
@@ -20,11 +16,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * Класс - помощник. Реальзует статические методы для преобразования сущностей в RepresentationModel
  */
 public class ModelHelper {
-    private ModelHelper() {
-    }
+    private ModelHelper() { }
 
     /**
      * Статический метод-фабрика для преобразования коллекции сущностей-Teachers в коллекцию RepresentationModel
+     *
      * @param teachers Коллекция @see Teachers
      * @return
      */

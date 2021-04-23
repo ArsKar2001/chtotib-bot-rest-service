@@ -6,6 +6,7 @@ import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -14,11 +15,11 @@ import java.util.List;
  */
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@JsonRootName("lesson")
+@NoArgsConstructor
 @Relation("lessons")
+@JsonRootName("lesson")
+@EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LessonModel extends RepresentationModel<LessonModel> {
     private Integer id;

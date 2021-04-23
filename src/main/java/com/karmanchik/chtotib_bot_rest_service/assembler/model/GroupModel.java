@@ -6,18 +6,19 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
+import org.springframework.stereotype.Component;
 
 /**
  * Представляет web-модель сущности - Group
  */
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 @JsonRootName("group")
 @Relation("groups")
 @JsonInclude(Include.NON_NULL)
+@EqualsAndHashCode(callSuper = true)
 public class GroupModel extends RepresentationModel<GroupModel> {
     private Integer id;
     private String name;
