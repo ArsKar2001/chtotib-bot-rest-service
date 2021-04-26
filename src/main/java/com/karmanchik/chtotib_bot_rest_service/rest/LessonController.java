@@ -67,7 +67,8 @@ public class LessonController implements Controller<Lesson> {
     }
 
     @PostMapping(value = "/lessons")
-    public ResponseEntity<?> postArray(@RequestBody @Valid List<Lesson> lessons) {
+    public ResponseEntity<?> postArray(@RequestBody @Valid Map<String, List<Lesson>> listMap) {
+        List<Lesson> lessons = listMap.get("lessons");
         CollectionModel<LessonModel> models = assembler.toCollectionModel(lessonsRepository.saveAll(lessons));
         return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(models);

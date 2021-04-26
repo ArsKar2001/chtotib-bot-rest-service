@@ -42,9 +42,11 @@ public class GroupController implements Controller<Group> {
     @Override
     @GetMapping("/groups/{id}")
     public ResponseEntity<?> get(@PathVariable @NotNull Integer id) {
+        log.info("Поиск группы по id {}...", id);
         GroupModel model = groupRepository.findById(id)
                 .map(assembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
+        log.info("Построили модель: {}", model);
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
     }
@@ -53,6 +55,7 @@ public class GroupController implements Controller<Group> {
     public ResponseEntity<?> getLessons(@PathVariable @NotNull Integer id) {
         List<List<Lesson>> sortLessons = new ArrayList<>();
         List<Lesson> lessons = groupRepository.getLessonsById(id);
+        log.info("Получили пары для группы {id={}}: {}", id, lessons);
         lessons.stream()
                 .map(Lesson::getDay)
                 .sorted()
@@ -69,6 +72,7 @@ public class GroupController implements Controller<Group> {
         CollectionModel<CollectionModel<LessonModel>> models = CollectionModel.of(collect,
                 linkTo(methodOn(LessonController.class).getAll()).withRel("lessons"),
                 linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
+        log.info("Построили модель: {}", models);
         return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(models);
     }
@@ -77,6 +81,7 @@ public class GroupController implements Controller<Group> {
     public ResponseEntity<?> getReplacements(@PathVariable @NotNull Integer id) {
         List<List<Replacement>> sortReplacements = new ArrayList<>();
         List<Replacement> replacements = groupRepository.getReplacementsById(id);
+        log.info("Получили замену для группы {id={}}: {}", id, replacements);
         replacements.stream()
                 .map(Replacement::getDate)
                 .sorted()
@@ -93,6 +98,7 @@ public class GroupController implements Controller<Group> {
         CollectionModel<CollectionModel<ReplacementModel>> models = CollectionModel.of(collect,
                 linkTo(methodOn(ReplacementController.class).getAll()).withRel("replacements"),
                 linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
+        log.info("Построили модель: {}", models);
         return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(models);
     }
