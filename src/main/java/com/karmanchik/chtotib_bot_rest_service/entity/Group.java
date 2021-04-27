@@ -11,6 +11,7 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,19 +31,14 @@ public class Group extends BaseEntity {
     @NotNull
     private String name;
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "group")
+    @OneToOne(mappedBy = "group", fetch = FetchType.LAZY)
     private User user;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.TRUE)
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.TRUE)
     @OrderBy(value = "date, pairNumber ASC")
     private List<Replacement> replacements;
 

@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -53,6 +51,7 @@ public class GroupController implements Controller<Group> {
 
     @GetMapping("/groups/{id}/lessons")
     public ResponseEntity<?> getLessons(@PathVariable @NotNull Integer id) {
+        List<Map<String, Object>> mapList = new ArrayList<>();
         List<List<Lesson>> sortLessons = new ArrayList<>();
         List<Lesson> lessons = groupRepository.getLessonsById(id);
         log.info("Получили пары для группы {id={}}: {}", id, lessons);
@@ -64,12 +63,20 @@ public class GroupController implements Controller<Group> {
                         .filter(lesson -> lesson.getDay().equals(day))
                         .sorted(Comparator.comparing(Lesson::getPairNumber))
                         .collect(Collectors.toList())));
-        List<CollectionModel<LessonModel>> collect = sortLessons.stream()
-                .map(lessonAssembler::toCollectionModel)
-                .map(model -> model.add(linkTo(methodOn(GroupController.class)
-                        .getLessons(id)).withSelfRel()))
+
+        List<List<LessonModel>> collect = sortLessons.stream()
+                .map(ll -> ll.stream()
+                        .map(lessonAssembler::toModel)
+                        .collect(Collectors.toList()))
                 .collect(Collectors.toList());
-        CollectionModel<CollectionModel<LessonModel>> models = CollectionModel.of(collect,
+
+        collect.forEach(lm -> mapList.add(
+                Map.of(
+                        "group_id", id,
+                        "lessons", lm
+                )));
+
+        CollectionModel<Map<String, Object>> models = CollectionModel.of(mapList,
                 linkTo(methodOn(LessonController.class).getAll()).withRel("lessons"),
                 linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
         log.info("Построили модель: {}", models);

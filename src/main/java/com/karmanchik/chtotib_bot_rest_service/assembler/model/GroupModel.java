@@ -3,10 +3,13 @@ package com.karmanchik.chtotib_bot_rest_service.assembler.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Представляет web-модель сущности - Group
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Component;
 public class GroupModel extends RepresentationModel<GroupModel> {
     private Integer id;
     private String name;
+    private List<LessonModel> lessons;
 }
 
 
