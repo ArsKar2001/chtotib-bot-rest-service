@@ -76,52 +76,60 @@ public class GroupController implements Controller<Group> {
                         "lessons", lm
                 )));
 
-        CollectionModel<Map<String, Object>> models = CollectionModel.of(mapList,
-                linkTo(methodOn(LessonController.class).getAll()).withRel("lessons"),
-                linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
-        log.info("Построили модель: {}", models);
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(models);
+        log.info("Построили модель: {}", mapList);
+        return ResponseEntity.ok()
+                .body(mapList);
     }
 
     @GetMapping("/groups/{id}/replacements")
     public ResponseEntity<?> getReplacements(@PathVariable @NotNull Integer id) {
-        List<List<Replacement>> sortReplacements = new ArrayList<>();
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        List<List<Replacement>> sortLessons = new ArrayList<>();
         List<Replacement> replacements = groupRepository.getReplacementsById(id);
         log.info("Получили замену для группы {id={}}: {}", id, replacements);
         replacements.stream()
                 .map(Replacement::getDate)
                 .sorted()
                 .distinct()
-                .forEach(date -> sortReplacements.add(replacements.stream()
+                .forEach(date -> sortLessons.add(replacements.stream()
                         .filter(replacement -> replacement.getDate().equals(date))
                         .sorted(Comparator.comparing(Replacement::getPairNumber))
                         .collect(Collectors.toList())));
-        List<CollectionModel<ReplacementModel>> collect = sortReplacements.stream()
-                .map(replacementAssembler::toCollectionModel)
-                .map(model -> model.add(linkTo(methodOn(GroupController.class)
-                        .getLessons(id)).withSelfRel()))
+
+        List<List<ReplacementModel>> collect = sortLessons.stream()
+                .map(ll -> ll.stream()
+                        .map(replacementAssembler::toModel)
+                        .collect(Collectors.toList()))
                 .collect(Collectors.toList());
-        CollectionModel<CollectionModel<ReplacementModel>> models = CollectionModel.of(collect,
-                linkTo(methodOn(ReplacementController.class).getAll()).withRel("replacements"),
-                linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
-        log.info("Построили модель: {}", models);
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(models);
+
+        collect.forEach(lm -> mapList.add(
+                Map.of(
+                        "group_id", id,
+                        "replacements", lm
+                )));
+
+        log.info("Построили модель: {}", mapList);
+        return ResponseEntity.ok()
+                .body(mapList);
     }
 
     @Override
     @GetMapping("/groups/")
     public ResponseEntity<?> getAll() {
         List<Group> groups = groupRepository.findAll();
-        CollectionModel<GroupModel> models = assembler.toCollectionModel(groups);
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+        List<GroupModel> models = groups.stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
                 .body(models);
     }
 
     @Override
     @PostMapping(value = "/groups")
     public ResponseEntity<?> post(@RequestBody @Valid Group group) {
+        if (groupRepository.existsByName(group.getName())) {
+            return ResponseEntity.badRequest().body("Группа с таким названием уже существует.");
+        }
         GroupModel model = assembler.toModel(groupRepository.save(group));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
@@ -131,34 +139,34 @@ public class GroupController implements Controller<Group> {
     @PutMapping(value = "/groups/{id}")
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
                                  @RequestBody @Valid Group group) {
+        if (groupRepository.existsByName(group.getName())) {
+            return ResponseEntity.badRequest().body("Группа с таким названием уже существует.");
+        }
         GroupModel model = groupRepository.findById(id)
                 .map(g -> {
                     g.setName(group.getName());
-                    g.setLessons(group.getLessons());
-                    g.setReplacements(group.getReplacements());
-                    return groupRepository.save(g);
-                }).map(assembler::toModel)
-                .orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
+                    return assembler.toModel(groupRepository.save(g));
+                }).orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
+                .body("OK");
     }
 
     @Override
     @DeleteMapping("/groups/{id}")
     public ResponseEntity<?> delete(@PathVariable @NotNull Integer id) {
         groupRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("OK");
     }
 
     @Override
-    public ResponseEntity<?> deleteAll(List<Integer> values) {
-        values.forEach(groupRepository::deleteById);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteAll(@RequestParam List<Integer> ids) {
+        ids.forEach(groupRepository::deleteById);
+        return ResponseEntity.ok("OK");
     }
 
     @Override
     public ResponseEntity<?> deleteAll() {
         groupRepository.deleteAll();
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("OK");
     }
 }

@@ -23,6 +23,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -50,8 +51,10 @@ public class TeacherController implements Controller<Teacher> {
 
     @GetMapping("/teachers/{id}/lessons")
     public ResponseEntity<?> getLessons(@PathVariable @NotNull Integer id) {
-        List<Lesson> lessons = teacherRepository.getLessonsById(id);
+        List<Map<String, Object>> mapList = new ArrayList<>();
         List<List<Lesson>> sortLessons = new ArrayList<>();
+        List<Lesson> lessons = teacherRepository.getLessonsById(id);
+        log.info("Получили пары для педагога {id={}}: {}", id, lessons);
         lessons.stream()
                 .map(Lesson::getDay)
                 .sorted()
@@ -60,50 +63,73 @@ public class TeacherController implements Controller<Teacher> {
                         .filter(lesson -> lesson.getDay().equals(day))
                         .sorted(Comparator.comparing(Lesson::getPairNumber))
                         .collect(Collectors.toList())));
-        List<CollectionModel<LessonModel>> collect = sortLessons.stream()
-                .map(lessonAssembler::toCollectionModel)
+
+        List<List<LessonModel>> collect = sortLessons.stream()
+                .map(ll -> ll.stream()
+                        .map(lessonAssembler::toModel)
+                        .collect(Collectors.toList()))
                 .collect(Collectors.toList());
-        CollectionModel<CollectionModel<LessonModel>> models = CollectionModel.of(collect,
-                linkTo(methodOn(LessonController.class).getAll()).withRel("lessons"),
-                linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(models);
+
+        collect.forEach(lm -> mapList.add(
+                Map.of(
+                        "teacher_id", id,
+                        "lessons", lm
+                )));
+
+        log.info("Построили модель: {}", mapList);
+        return ResponseEntity.ok()
+                .body(mapList);
     }
 
     @GetMapping("/teachers/{id}/replacements")
     public ResponseEntity<?> getReplacements(@PathVariable @NotNull Integer id) {
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        List<List<Replacement>> sortReplacements = new ArrayList<>();
         List<Replacement> replacements = teacherRepository.getReplacementsById(id);
-        List<List<Replacement>> sortReplacement = new ArrayList<>();
+        log.info("Получили замену для педагога {id={}}: {}", id, replacements);
         replacements.stream()
                 .map(Replacement::getDate)
                 .sorted()
                 .distinct()
-                .forEach(day -> sortReplacement.add(replacements.stream()
-                        .filter(replacement -> replacement.getDate().equals(day))
+                .forEach(date -> sortReplacements.add(replacements.stream()
+                        .filter(replacement -> replacement.getDate().equals(date))
                         .sorted(Comparator.comparing(Replacement::getPairNumber))
                         .collect(Collectors.toList())));
-        List<CollectionModel<ReplacementModel>> collect = sortReplacement.stream()
-                .map(replacementAssembler::toCollectionModel)
+
+        List<List<ReplacementModel>> collect = sortReplacements.stream()
+                .map(ll -> ll.stream()
+                        .map(replacementAssembler::toModel)
+                        .collect(Collectors.toList()))
                 .collect(Collectors.toList());
-        CollectionModel<CollectionModel<ReplacementModel>> models = CollectionModel.of(collect,
-                linkTo(methodOn(ReplacementController.class).getAll()).withRel("replacements"),
-                linkTo(methodOn(GroupController.class).get(id)).withSelfRel());
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(models);
+
+        collect.forEach(lm -> mapList.add(
+                Map.of(
+                        "teacher_id", id,
+                        "lessons", lm
+                )));
+
+        log.info("Построили модель: {}", mapList);
+        return ResponseEntity.ok()
+                .body(mapList);
     }
 
     @Override
     @GetMapping("/teachers/")
     public ResponseEntity<?> getAll() {
-        List<Teacher> teachers = teacherRepository.findAll();
-        CollectionModel<TeacherModel> models = assembler.toCollectionModel(teachers);
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+        List<TeacherModel> models = teacherRepository.findAll().stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
                 .body(models);
     }
 
     @Override
     @PostMapping(value = "/teachers")
     public ResponseEntity<?> post(@RequestBody @Valid Teacher teacher) {
+        if (teacherRepository.existsByName(teacher.getName())) {
+            return ResponseEntity.badRequest().body("Педагог с таким именем уже существует.");
+        }
+
         TeacherModel model = assembler.toModel(teacherRepository.save(teacher));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
@@ -113,6 +139,10 @@ public class TeacherController implements Controller<Teacher> {
     @PutMapping(value = "/teachers/{id}")
     public ResponseEntity<?> put(@PathVariable @NotNull Integer id,
                                  @RequestBody @Valid Teacher teacher) {
+        if (teacherRepository.existsByName(teacher.getName())) {
+            return ResponseEntity.badRequest().body("Педагог с таким именем уже существует.");
+        }
+
         TeacherModel model = teacherRepository.findById(id)
                 .map(t -> {
                     t.setName(teacher.getName());
@@ -129,20 +159,20 @@ public class TeacherController implements Controller<Teacher> {
     @DeleteMapping("/teachers/{id}")
     public ResponseEntity<?> delete(@PathVariable @NotNull Integer id) {
         teacherRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("OK");
     }
 
     @Override
     @DeleteMapping("/teachers")
     public ResponseEntity<?> deleteAll(@RequestParam List<Integer> values) {
         values.forEach(teacherRepository::deleteById);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("OK");
     }
 
     @Override
     @DeleteMapping("/teachers/")
     public ResponseEntity<?> deleteAll() {
         teacherRepository.deleteAll();
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("OK");
     }
 }

@@ -31,6 +31,7 @@ public class Group extends BaseEntity {
     @NotNull
     private String name;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "group", fetch = FetchType.LAZY)
     private User user;
 

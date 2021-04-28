@@ -25,18 +25,13 @@ public class Teacher extends BaseEntity {
     private String name;
 
     @JsonBackReference
-    @OneToOne(mappedBy = "teacher")
+    @OneToOne(mappedBy = "teacher", fetch = FetchType.LAZY)
     private User user;
 
-    @JsonIgnore
-    @LazyCollection(LazyCollectionOption.TRUE)
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "teachers")
     @OrderBy("day, pairNumber ASC")
-    @MapsId("teachersId")
     private List<Lesson> lessons;
 
-    @JsonIgnore
-    @LazyCollection(LazyCollectionOption.TRUE)
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "teachers")
     @OrderBy("date, pairNumber ASC")
     private List<Replacement> replacements;

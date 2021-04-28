@@ -18,6 +18,8 @@ import java.util.Optional;
 public interface JpaTeacherRepository extends JpaRepository<Teacher, Integer> {
     Optional<Teacher> findByName(@NotNull String name);
 
+    boolean existsByName(@NotNull String name);
+
     @Query("SELECT g.name FROM Group g")
     Optional<List<String>> getAllNames();
 

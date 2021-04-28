@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -42,19 +41,20 @@ public class LessonController implements Controller<Lesson> {
 
     @GetMapping("/lessons")
     public ResponseEntity<?> getAllByDay(@RequestParam @NotNull Integer day) {
-        List<Lesson> lessons = lessonsRepository.findAllByDayOrderByPairNumber(day);
-        CollectionModel<LessonModel> models = assembler.toCollectionModel(lessons)
-                .add(linkTo(methodOn(LessonController.class).getAllByDay(day)).withRel("day_" + day));
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+        List<LessonModel> models = lessonsRepository.findAllByDayOrderByPairNumber(day).stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
                 .body(models);
     }
 
     @Override
     @GetMapping("/lessons/")
     public ResponseEntity<?> getAll() {
-        List<Lesson> lessons = lessonsRepository.findAll();
-        CollectionModel<LessonModel> models = assembler.toCollectionModel(lessons);
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+        List<LessonModel> models = lessonsRepository.findAll().stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
                 .body(models);
     }
 
@@ -67,10 +67,11 @@ public class LessonController implements Controller<Lesson> {
     }
 
     @PostMapping(value = "/lessons")
-    public ResponseEntity<?> postArray(@RequestBody @Valid Map<String, List<Lesson>> listMap) {
-        List<Lesson> lessons = listMap.get("lessons");
-        CollectionModel<LessonModel> models = assembler.toCollectionModel(lessonsRepository.saveAll(lessons));
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+    public ResponseEntity<?> postArray(@RequestBody @Valid List<Lesson> lessons) {
+        List<LessonModel> models = lessonsRepository.saveAll(lessons).stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
                 .body(models);
     }
 
@@ -87,13 +88,13 @@ public class LessonController implements Controller<Lesson> {
 
     @PutMapping("/lessons")
     public ResponseEntity<?> putArray(@RequestBody @Valid List<Lesson> lessons) {
-        List<Lesson> lessonList = lessons.stream()
+        List<LessonModel> models = lessons.stream()
                 .map(lesson -> lessonsRepository.findById(lesson.getId())
                         .map(l -> changeLesson(lesson, l))
                         .orElseThrow(() -> new ResourceNotFoundException(lesson.getId(), Lesson.class)))
+                .map(assembler::toModel)
                 .collect(Collectors.toList());
-        CollectionModel<LessonModel> models = assembler.toCollectionModel(lessonList);
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+        return ResponseEntity.ok()
                 .body(models);
     }
 
@@ -111,14 +112,14 @@ public class LessonController implements Controller<Lesson> {
             lessonsRepository.deleteById(id);
             log.info("Deleted lesson by id = {}", id);
         });
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("OK");
     }
 
     @Override
     @DeleteMapping("/lessons/")
     public ResponseEntity<?> deleteAll() {
         lessonsRepository.deleteAll();
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("OK");
     }
 
     private Lesson changeLesson(@RequestBody @Valid Lesson oldLesson, Lesson newLesson) {
@@ -130,5 +131,15 @@ public class LessonController implements Controller<Lesson> {
         newLesson.setWeekType(oldLesson.getWeekType());
         newLesson.setAuditorium(oldLesson.getAuditorium());
         return lessonsRepository.save(newLesson);
+    }
+
+    public static List<?> convertObjectToList(Object obj) {
+        List<?> list = new ArrayList<>();
+        if (obj.getClass().isArray()) {
+            list = Arrays.asList((Object[])obj);
+        } else if (obj instanceof Collection) {
+            list = new ArrayList<>((Collection<?>)obj);
+        }
+        return list;
     }
 }

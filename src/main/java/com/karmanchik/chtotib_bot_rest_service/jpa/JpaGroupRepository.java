@@ -26,4 +26,6 @@ public interface JpaGroupRepository extends JpaRepository<Group, Integer> {
     @Query("SELECT g.replacements FROM Group g " +
             "WHERE g.id = :id")
     List<Replacement> getReplacementsById(@Param("id") @NotNull Integer id);
+
+    Boolean existsByName(@NotNull String name);
 }

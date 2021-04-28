@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -41,19 +42,20 @@ public class ReplacementController implements Controller<Replacement> {
 
     @GetMapping("/replacements")
     public ResponseEntity<?> getAllByDay(@RequestParam @NotNull LocalDate date) {
-        List<Replacement> lessons = replacementRepository.findAllByDateOrderByPairNumber(date);
-        CollectionModel<ReplacementModel> models = assembler.toCollectionModel(lessons)
-                .add(linkTo(methodOn(ReplacementController.class).getAllByDay(date)).withRel("day_" + date));
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+        List<ReplacementModel> models = replacementRepository.findAllByDateOrderByPairNumber(date).stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
                 .body(models);
     }
 
     @Override
     @GetMapping("/replacements/")
     public ResponseEntity<?> getAll() {
-        List<Replacement> replacements = replacementRepository.findAll();
-        CollectionModel<ReplacementModel> models = assembler.toCollectionModel(replacements);
-        return ResponseEntity.created(models.getRequiredLink(IanaLinkRelations.SELF).toUri())
+        List<ReplacementModel> models = replacementRepository.findAll().stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
                 .body(models);
     }
 
