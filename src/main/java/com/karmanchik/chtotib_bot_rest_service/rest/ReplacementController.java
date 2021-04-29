@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -64,7 +65,10 @@ public class ReplacementController implements Controller<Replacement> {
     public ResponseEntity<?> post(@RequestBody @Valid Replacement replacement) {
         ReplacementModel model = assembler.toModel(replacementRepository.save(replacement));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
+                .body(Map.of(
+                        "status", "OK",
+                        "objects", model
+                ));
     }
 
     @Override
@@ -83,27 +87,30 @@ public class ReplacementController implements Controller<Replacement> {
                 }).map(assembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Replacement.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
+                .body(Map.of(
+                        "status", "OK",
+                        "objects", model
+                ));
     }
 
     @Override
     @DeleteMapping("/replacements/{id}")
     public ResponseEntity<?> delete(@PathVariable @NotNull Integer id) {
         replacementRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("OK");
     }
 
     @Override
     @DeleteMapping("/replacements")
     public ResponseEntity<?> deleteAll(@RequestParam List<Integer> values) {
         values.forEach(replacementRepository::deleteById);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("OK");
     }
 
     @Override
     @DeleteMapping("/replacements/")
     public ResponseEntity<?> deleteAll() {
         replacementRepository.deleteAll();
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("OK");
     }
 }

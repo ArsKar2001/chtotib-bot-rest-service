@@ -63,7 +63,10 @@ public class LessonController implements Controller<Lesson> {
     public ResponseEntity<?> post(@RequestBody @Valid Lesson lesson) {
         LessonModel model = assembler.toModel(lessonsRepository.save(lesson));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
+                .body(Map.of(
+                        "status", "OK",
+                        "objects", model
+                ));
     }
 
     @PostMapping(value = "/lessons")
@@ -72,7 +75,10 @@ public class LessonController implements Controller<Lesson> {
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         return ResponseEntity.ok()
-                .body(models);
+                .body(Map.of(
+                        "status", "OK",
+                        "objects", models
+                ));
     }
 
     @Override
@@ -83,7 +89,10 @@ public class LessonController implements Controller<Lesson> {
                 .map(l -> changeLesson(lesson, l)).map(assembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Lesson.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
+                .body(Map.of(
+                        "status", "OK",
+                        "objects", model
+                ));
     }
 
     @PutMapping("/lessons")
@@ -95,7 +104,10 @@ public class LessonController implements Controller<Lesson> {
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         return ResponseEntity.ok()
-                .body(models);
+                .body(Map.of(
+                        "status", "OK",
+                        "objects", models
+                ));
     }
 
     @Override
@@ -131,15 +143,5 @@ public class LessonController implements Controller<Lesson> {
         newLesson.setWeekType(oldLesson.getWeekType());
         newLesson.setAuditorium(oldLesson.getAuditorium());
         return lessonsRepository.save(newLesson);
-    }
-
-    public static List<?> convertObjectToList(Object obj) {
-        List<?> list = new ArrayList<>();
-        if (obj.getClass().isArray()) {
-            list = Arrays.asList((Object[])obj);
-        } else if (obj instanceof Collection) {
-            list = new ArrayList<>((Collection<?>)obj);
-        }
-        return list;
     }
 }

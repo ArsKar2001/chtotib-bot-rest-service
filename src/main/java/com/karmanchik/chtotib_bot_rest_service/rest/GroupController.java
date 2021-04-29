@@ -132,7 +132,10 @@ public class GroupController implements Controller<Group> {
         }
         GroupModel model = assembler.toModel(groupRepository.save(group));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
+                .body(Map.of(
+                        "status", "OK",
+                        "objects", model
+                ));
     }
 
     @Override
@@ -148,7 +151,10 @@ public class GroupController implements Controller<Group> {
                     return assembler.toModel(groupRepository.save(g));
                 }).orElseThrow(() -> new ResourceNotFoundException(id, Group.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body("OK");
+                .body(Map.of(
+                        "status", "OK",
+                        "objects", model
+                ));
     }
 
     @Override

@@ -132,7 +132,10 @@ public class TeacherController implements Controller<Teacher> {
 
         TeacherModel model = assembler.toModel(teacherRepository.save(teacher));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
+                .body(Map.of(
+                        "status", "OK",
+                        "objects", model
+                ));
     }
 
     @Override
@@ -152,7 +155,10 @@ public class TeacherController implements Controller<Teacher> {
                 }).map(assembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(model);
+                .body(Map.of(
+                        "status", "OK",
+                        "objects", model
+                ));
     }
 
     @Override
