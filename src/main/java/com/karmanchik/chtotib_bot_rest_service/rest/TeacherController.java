@@ -116,9 +116,7 @@ public class TeacherController implements Controller<Teacher> {
     @Override
     @GetMapping("/teachers/")
     public ResponseEntity<?> getAll() {
-        List<TeacherModel> models = teacherRepository.findAll().stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
+        CollectionModel<TeacherModel> models = assembler.toCollectionModel(teacherRepository.findAll());
         return ResponseEntity.ok()
                 .body(models);
     }
