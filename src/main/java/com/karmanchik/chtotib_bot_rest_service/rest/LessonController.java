@@ -70,8 +70,8 @@ public class LessonController implements Controller<Lesson> {
     }
 
     @PostMapping(value = "/lessons")
-    public ResponseEntity<?> postArray(@RequestBody @Valid List<Lesson> lessons) {
-        List<LessonModel> models = lessonsRepository.saveAll(lessons).stream()
+    public ResponseEntity<?> postArray(@RequestBody @Valid Map<String, List<Lesson>> lessons) {
+        List<LessonModel> models = lessonsRepository.saveAll(lessons.get("lessons")).stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         return ResponseEntity.ok()
