@@ -117,9 +117,7 @@ public class GroupController implements Controller<Group> {
     @GetMapping("/groups/")
     public ResponseEntity<?> getAll() {
         List<Group> groups = groupRepository.findAll();
-        List<GroupModel> models = groups.stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
+        CollectionModel<GroupModel> models = assembler.toCollectionModel(groups);
         return ResponseEntity.ok()
                 .body(models);
     }
