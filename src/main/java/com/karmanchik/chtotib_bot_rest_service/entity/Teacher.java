@@ -28,7 +28,7 @@ public class Teacher extends BaseEntity {
     @OneToOne(mappedBy = "teacher", fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "teachers")
+    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "teachers")
     @OrderBy("day, pairNumber ASC")
     private List<Lesson> lessons;
 
