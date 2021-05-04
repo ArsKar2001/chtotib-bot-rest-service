@@ -11,7 +11,7 @@ import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaLessonsRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaReplacementRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
-import com.karmanchik.chtotib_bot_rest_service.helper.LatinNumberHelper;
+import com.karmanchik.chtotib_bot_rest_service.helper.LatinNumber;
 import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
 import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
@@ -39,7 +39,7 @@ import static com.karmanchik.chtotib_bot_rest_service.parser.sequence.Sequence.*
 
 @Log4j2
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class FileImportController {
     private final JpaLessonsRepository lessonsRepository;
@@ -165,7 +165,7 @@ public class FileImportController {
                 String teachersName = ss[5];
                 String weekTypeStr = ss[6];
                 int day = Integer.parseInt(dayStr);
-                Integer pairNumber = LatinNumberHelper.get(pair);
+                Integer pairNumber = LatinNumber.get(pair);
                 WeekType weekType = WeekType.valueOf(weekTypeStr);
 
                 List<String> teachersStr = teachersStrToList(teachersName);

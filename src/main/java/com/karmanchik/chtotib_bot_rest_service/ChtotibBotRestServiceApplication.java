@@ -14,8 +14,4 @@ public class ChtotibBotRestServiceApplication {
         SpringApplication.run(ChtotibBotRestServiceApplication.class, args);
     }
 
-    @PostConstruct
-    public void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Irkutsk"));
-    }
 }

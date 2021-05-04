@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @Configuration
 @EnableAsync
 @EnableTransactionManagement
@@ -27,5 +30,10 @@ public class MyConfiguration {
                         .allowCredentials(false).maxAge(3600);
             }
         };
+    }
+
+    @PostConstruct
+    public void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Irkutsk"));
     }
 }

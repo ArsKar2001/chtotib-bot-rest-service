@@ -28,7 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Log4j2
 @RestController
-@RequestMapping(value = "/api/")
+@RequestMapping(value = "api")
 @RequiredArgsConstructor
 public class GroupController implements Controller<Group> {
     private final GroupAssembler assembler;
@@ -64,7 +64,7 @@ public class GroupController implements Controller<Group> {
                         .sorted(Comparator.comparing(Lesson::getPairNumber))
                         .collect(Collectors.toList())));
 
-        List<List<LessonModel>> collect = sortLessons.stream()
+        var collect = sortLessons.stream()
                 .map(ll -> ll.stream()
                         .map(lessonAssembler::toModel)
                         .collect(Collectors.toList()))
@@ -73,26 +73,25 @@ public class GroupController implements Controller<Group> {
         collect.forEach(lms -> mapList.add(
                 Map.of(
                         "group_id", id,
-                        "lessons", lms.stream()
-                                .map(lm -> {
-                                    var ref = new Object() {
-                                        int num = 0;
-                                    };
-                                    return Map.of(
-                                            "pairNumber", lm.getPairNumber(),
-                                            "day", lm.getDay(),
-                                            "discipline", lm.getDiscipline(),
-                                            "auditorium", lm.getAuditorium(),
-                                            "weekType", lm.getWeekType(),
-                                            "group", lm.getGroup(),
-                                            "teachers", lm.getTeachers().stream()
-                                                    .map(tm -> Map.of(
-                                                            "id", tm.getId(),
-                                                            "name", tm.getName(),
-                                                            "num", ++ref.num
-                                                    )).collect(Collectors.toList())
-                                    );
-                                }).collect(Collectors.toList())
+                        "lessons", lms.stream().map(lm -> {
+                            var ref = new Object() {
+                                int num = 0;
+                            };
+                            return Map.of(
+                                    "pairNumber", lm.getPairNumber(),
+                                    "day", lm.getDay(),
+                                    "discipline", lm.getDiscipline(),
+                                    "auditorium", lm.getAuditorium(),
+                                    "weekType", lm.getWeekType(),
+                                    "group", lm.getGroup(),
+                                    "teachers", lm.getTeachers().stream()
+                                            .map(tm -> Map.of(
+                                                    "id", tm.getId(),
+                                                    "name", tm.getName(),
+                                                    "num", ++ref.num
+                                            )).collect(Collectors.toList())
+                            );
+                        }).collect(Collectors.toList())
                 )));
 
         log.info("Построили модель: {}", mapList);
@@ -115,7 +114,7 @@ public class GroupController implements Controller<Group> {
                         .sorted(Comparator.comparing(Replacement::getPairNumber))
                         .collect(Collectors.toList())));
 
-        List<List<ReplacementModel>> collect = sortLessons.stream()
+        var collect = sortLessons.stream()
                 .map(ll -> ll.stream()
                         .map(replacementAssembler::toModel)
                         .collect(Collectors.toList()))
@@ -136,7 +135,7 @@ public class GroupController implements Controller<Group> {
     @GetMapping("/groups/")
     public ResponseEntity<?> getAll() {
         List<Group> groups = groupRepository.findAll();
-        CollectionModel<GroupModel> models = assembler.toCollectionModel(groups);
+        var models = assembler.toCollectionModel(groups);
         return ResponseEntity.ok()
                 .body(models);
     }

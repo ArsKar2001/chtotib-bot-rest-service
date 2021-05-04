@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class LatinNumberHelper {
+public class LatinNumber {
     private static final Map<String, Integer> NUMBER = Map.of(
             "I", 1,
             "II", 2,
@@ -18,7 +18,7 @@ public class LatinNumberHelper {
             "X", 10
     );
 
-    private LatinNumberHelper() {
+    private LatinNumber() {
     }
 
     public static Map<String, Integer> getAll() {

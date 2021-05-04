@@ -45,6 +45,6 @@ public class Word {
         XWPFDocument document = readDocument(file);
         return document.getParagraphs().stream()
                 .map(XWPFParagraph::getText)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList( ));
     }
 }

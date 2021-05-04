@@ -22,7 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class LessonController implements Controller<Lesson> {
     private final JpaLessonsRepository lessonsRepository;

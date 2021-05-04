@@ -24,7 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class ReplacementController implements Controller<Replacement> {
     private final JpaReplacementRepository replacementRepository;

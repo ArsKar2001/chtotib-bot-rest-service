@@ -13,7 +13,6 @@ import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundExcepti
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,15 +26,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Log4j2
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class TeacherController implements Controller<Teacher> {
     private final JpaTeacherRepository teacherRepository;
-    private final TeacherAssembler assembler;
+    private final TeacherAssembler teacherAssembler;
     private final LessonAssembler lessonAssembler;
     private final ReplacementAssembler replacementAssembler;
 
@@ -43,7 +41,7 @@ public class TeacherController implements Controller<Teacher> {
     @GetMapping("/teachers/{id}")
     public ResponseEntity<?> get(@PathVariable @NotNull Integer id) {
         TeacherModel model = teacherRepository.findById(id)
-                .map(assembler::toModel)
+                .map(teacherAssembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(model);
@@ -64,7 +62,7 @@ public class TeacherController implements Controller<Teacher> {
                         .sorted(Comparator.comparing(Lesson::getPairNumber))
                         .collect(Collectors.toList())));
 
-        List<List<LessonModel>> collect = sortLessons.stream()
+        var collect = sortLessons.stream()
                 .map(ll -> ll.stream()
                         .map(lessonAssembler::toModel)
                         .collect(Collectors.toList()))
@@ -96,7 +94,7 @@ public class TeacherController implements Controller<Teacher> {
                         .sorted(Comparator.comparing(Replacement::getPairNumber))
                         .collect(Collectors.toList())));
 
-        List<List<ReplacementModel>> collect = sortReplacements.stream()
+        var collect = sortReplacements.stream()
                 .map(ll -> ll.stream()
                         .map(replacementAssembler::toModel)
                         .collect(Collectors.toList()))
@@ -116,7 +114,7 @@ public class TeacherController implements Controller<Teacher> {
     @Override
     @GetMapping("/teachers/")
     public ResponseEntity<?> getAll() {
-        CollectionModel<TeacherModel> models = assembler.toCollectionModel(teacherRepository.findAll());
+        var models = teacherAssembler.toCollectionModel(teacherRepository.findAll());
         return ResponseEntity.ok()
                 .body(models);
     }
@@ -128,7 +126,7 @@ public class TeacherController implements Controller<Teacher> {
             return ResponseEntity.badRequest().body("Педагог с таким именем уже существует.");
         }
 
-        TeacherModel model = assembler.toModel(teacherRepository.save(teacher));
+        TeacherModel model = teacherAssembler.toModel(teacherRepository.save(teacher));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(Map.of(
                         "status", "OK",
@@ -150,7 +148,7 @@ public class TeacherController implements Controller<Teacher> {
                     t.setLessons(teacher.getLessons());
                     t.setReplacements(teacher.getReplacements());
                     return teacherRepository.save(t);
-                }).map(assembler::toModel)
+                }).map(teacherAssembler::toModel)
                 .orElseThrow(() -> new ResourceNotFoundException(id, Teacher.class));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(Map.of(
