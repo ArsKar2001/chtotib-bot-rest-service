@@ -78,6 +78,7 @@ public class GroupController implements Controller<Group> {
                                 int num = 0;
                             };
                             return Map.of(
+                                    "id", lm.getId(),
                                     "pairNumber", lm.getPairNumber(),
                                     "day", lm.getDay(),
                                     "discipline", lm.getDiscipline(),
