@@ -11,6 +11,7 @@ import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
+import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
@@ -147,6 +148,9 @@ public class GroupController implements Controller<Group> {
         if (groupRepository.existsByName(group.getName())) {
             return ResponseEntity.badRequest().body("Группа с таким названием уже существует.");
         }
+        if (!ValidGroupName.isGroupName(group.getName())) {
+            return ResponseEntity.badRequest().body("Название группы не соответсвует шаблону, например: \"ИСиП-17-1\"");
+        }
         GroupModel model = assembler.toModel(groupRepository.save(group));
         return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(Map.of(
@@ -161,6 +165,9 @@ public class GroupController implements Controller<Group> {
                                  @RequestBody @Valid Group group) {
         if (groupRepository.existsByName(group.getName())) {
             return ResponseEntity.badRequest().body("Группа с таким названием уже существует.");
+        }
+        if (!ValidGroupName.isGroupName(group.getName())) {
+            return ResponseEntity.badRequest().body("Название группы не соответсвует шаблону, например: \"ИСиП-17-1\"");
         }
         GroupModel model = groupRepository.findById(id)
                 .map(g -> {
