@@ -71,46 +71,41 @@ public class FileImportController {
                                 "иназвание файла не соответствует формату: \"З А М Е Н А  на день_недели номер_дня навание_месяца неделя нижняя/верхняя.\";\n" +
                                 "Пример: \"З А М Е Н А  на среду 7 апреля неделя нижняя.\"");
 
-            for (var list : parser.parseToListMap(mFile.getBytes())) {
-                for (var map : list) {
-
-                    String groupName = (String) map.get("group_name");
-                    String pair = (String) map.get("pair");
-                    String discipline = (String) map.get("discipline");
-                    String auditorium = (String) map.get("auditorium");
-                    List<String> teacherNameList = ((List<String>) map.get("teachers"));
-
-                    String validGroupName = ValidGroupName.getValidGroupName(groupName);
-
-                    Group group = groups.stream()
-                            .filter(g -> g.getName().equalsIgnoreCase(validGroupName))
-                            .findFirst()
-                            .orElseThrow(() -> new ResourceNotFoundException(groupName, Group.class));
-
-                    List<Teacher> teachersByRepl = new ArrayList<>();
-                    for (String s : teacherNameList) {
-                        if (!s.trim().isBlank()) {
-                            if (ValidTeacherName.isTeacher(s)) {
-                                teachersByRepl.add(teachers.stream()
-                                        .filter(teacher -> teacher.getName().equalsIgnoreCase(s))
-                                        .findFirst()
-                                        .orElseThrow(() -> new ResourceNotFoundException(s, Teacher.class)));
-                            } else {
-                                throw new StringReadException(s, "Иванов А.А.");
+            parser.parseToListMap(mFile.getBytes()).stream()
+                    .flatMap(Collection::stream)
+                    .forEach(map -> {
+                        String groupName = (String) map.get("group_name");
+                        String pair = (String) map.get("pair");
+                        String discipline = (String) map.get("discipline");
+                        String auditorium = (String) map.get("auditorium");
+                        List<String> teacherNameList = ((List<String>) map.get("teachers"));
+                        String validGroupName = ValidGroupName.getValidGroupName(groupName);
+                        Group group = groups.stream()
+                                .filter(g -> g.getName().equalsIgnoreCase(validGroupName))
+                                .findFirst()
+                                .orElseThrow(() -> new ResourceNotFoundException(groupName, Group.class));
+                        List<Teacher> teachersByRepl = new ArrayList<>();
+                        for (String s : teacherNameList) {
+                            if (!s.trim().isBlank()) {
+                                if (ValidTeacherName.isTeacher(s)) {
+                                    teachersByRepl.add(teachers.stream()
+                                            .filter(teacher -> teacher.getName().equalsIgnoreCase(s))
+                                            .findFirst()
+                                            .orElseThrow(() -> new ResourceNotFoundException(s, Teacher.class)));
+                                } else {
+                                    throw new StringReadException(s, "Иванов А.А.");
+                                }
                             }
                         }
-                    }
-
-                    replacements.add(Replacement.builder()
-                            .date(date)
-                            .discipline(discipline)
-                            .auditorium(auditorium)
-                            .group(group)
-                            .teachers(teachersByRepl)
-                            .pairNumber(pair)
-                            .build());
-                }
-            }
+                        replacements.add(Replacement.builder()
+                                .date(date)
+                                .discipline(discipline)
+                                .auditorium(auditorium)
+                                .group(group)
+                                .teachers(teachersByRepl)
+                                .pairNumber(pair)
+                                .build());
+                    });
             replacementRepository.deleteAll();
             log.info("Save replacements [{}]...", replacements.size());
             return ResponseEntity.ok()

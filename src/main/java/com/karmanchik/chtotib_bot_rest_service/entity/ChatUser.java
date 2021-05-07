@@ -18,7 +18,10 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "chat_users")
+@Table(name = "chat_users", uniqueConstraints = {
+        @UniqueConstraint(name = "chat_id_unique", columnNames = "chat_id"),
+        @UniqueConstraint(name = "user_name_unique", columnNames = "user_name")
+})
 @EqualsAndHashCode(callSuper = true)
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class ChatUser extends BaseEntity {

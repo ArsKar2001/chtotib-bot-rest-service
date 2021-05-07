@@ -11,7 +11,9 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "groups")
+@Table(name = "groups", uniqueConstraints = {
+        @UniqueConstraint(name = "name_unique", columnNames = "name")
+})
 @EqualsAndHashCode(callSuper = true)
 @Builder(builderMethodName = "hiddenBuilder")
 public class Group extends BaseEntity {

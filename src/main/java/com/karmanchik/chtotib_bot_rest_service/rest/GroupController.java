@@ -52,7 +52,7 @@ public class GroupController implements Controller<Group> {
 
     @GetMapping("/groups/{id}/lessons")
     public ResponseEntity<?> getLessons(@PathVariable @NotNull Integer id) {
-        List<Map<String, Object>> mapList = new ArrayList<>();
+        List<Map<String, Object>> mapList;
         List<List<Lesson>> sortLessons = new ArrayList<>();
         List<Lesson> lessons = groupRepository.getLessonsById(id);
         log.info("Получили пары для группы {id={}}: {}", id, lessons);
@@ -65,36 +65,35 @@ public class GroupController implements Controller<Group> {
                         .sorted(Comparator.comparing(Lesson::getPairNumber))
                         .collect(Collectors.toList())));
 
-        var collect = sortLessons.stream()
+        List<List<LessonModel>> collect = sortLessons.stream()
                 .map(ll -> ll.stream()
                         .map(lessonAssembler::toModel)
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
 
-        collect.forEach(lms -> mapList.add(
-                Map.of(
-                        "group_id", id,
-                        "lessons", lms.stream().map(lm -> {
-                            var ref = new Object() {
-                                int num = 0;
-                            };
-                            return Map.of(
-                                    "id", lm.getId(),
-                                    "pairNumber", lm.getPairNumber(),
-                                    "day", lm.getDay(),
-                                    "discipline", lm.getDiscipline(),
-                                    "auditorium", lm.getAuditorium(),
-                                    "weekType", lm.getWeekType(),
-                                    "group", lm.getGroup(),
-                                    "teachers", lm.getTeachers().stream()
-                                            .map(tm -> Map.of(
-                                                    "id", tm.getId(),
-                                                    "name", tm.getName(),
-                                                    "num", ++ref.num
-                                            )).collect(Collectors.toList())
-                            );
-                        }).collect(Collectors.toList())
-                )));
+        mapList = collect.stream().map(lms -> Map.of(
+                "group_id", id,
+                "lessons", lms.stream().map(lm -> {
+                    var ref = new Object() {
+                        int num = 0;
+                    };
+                    return Map.of(
+                            "id", lm.getId(),
+                            "pairNumber", lm.getPairNumber(),
+                            "day", lm.getDay(),
+                            "discipline", lm.getDiscipline(),
+                            "auditorium", lm.getAuditorium(),
+                            "weekType", lm.getWeekType(),
+                            "group", lm.getGroup(),
+                            "teachers", lm.getTeachers().stream()
+                                    .map(tm -> Map.of(
+                                            "id", tm.getId(),
+                                            "name", tm.getName(),
+                                            "num", ++ref.num
+                                    )).collect(Collectors.toList())
+                    );
+                }).collect(Collectors.toList())
+        )).collect(Collectors.toList());
 
         log.info("Построили модель: {}", mapList);
         return ResponseEntity.ok()
@@ -137,7 +136,7 @@ public class GroupController implements Controller<Group> {
     @GetMapping("/groups/")
     public ResponseEntity<?> getAll() {
         List<Group> groups = groupRepository.findAll();
-        var models = assembler.toCollectionModel(groups);
+        CollectionModel<GroupModel> models = assembler.toCollectionModel(groups);
         return ResponseEntity.ok()
                 .body(models);
     }
