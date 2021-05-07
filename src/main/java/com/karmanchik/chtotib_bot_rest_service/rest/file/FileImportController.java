@@ -39,7 +39,7 @@ import static com.karmanchik.chtotib_bot_rest_service.parser.sequence.Sequence.*
 @RequestMapping("api")
 @RequiredArgsConstructor
 public class FileImportController {
-    public static final Set<Exception> EXCEPTION_LIST = new HashSet<>();
+    public static final Set<String> EXCEPTION_LIST = new HashSet<>();
 
     private final JpaLessonsRepository lessonsRepository;
     private final JpaGroupRepository groupRepository;
@@ -152,7 +152,7 @@ public class FileImportController {
             for (String s : csv) {
                 String[] ss = s.split(CSV_SPLIT);
                 if (ss.length > CSV_COLUMN_SIZE)
-                    throw new StringReadException(s, ss.length);
+                    EXCEPTION_LIST.add(new StringReadException(s, ss.length).getMessage());
                 String groupName = ss[0];
                 String dayStr = ss[1];
                 String pair = ss[2];
@@ -223,7 +223,7 @@ public class FileImportController {
             if (matcher.matches()) {
                 teacherList.add(ValidTeacherName.getValidTeacherName(s1, matcher));
             } else
-                EXCEPTION_LIST.add(new StringReadException(s, "Иванов А.А."));
+                EXCEPTION_LIST.add(new StringReadException(s, "Иванов А.А.").getMessage());
         }
         return teacherList;
     }
