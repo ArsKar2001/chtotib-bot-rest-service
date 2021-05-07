@@ -1,6 +1,5 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
 import lombok.*;
 
@@ -8,13 +7,13 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Data
 @Entity
-@Table(name = "lessons")
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "lessons")
+@EqualsAndHashCode(callSuper = true)
 public class Lesson extends BaseEntity {
 
     @Column(name = "pair_number")

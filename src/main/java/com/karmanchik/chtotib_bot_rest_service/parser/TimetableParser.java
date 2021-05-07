@@ -7,7 +7,6 @@ import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -19,8 +18,8 @@ import static com.karmanchik.chtotib_bot_rest_service.parser.sequence.Sequence.*
 @Log4j2
 public class TimetableParser extends BaseParser {
     @Override
-    public List<List<String>> parse(File file) throws IOException, InvalidFormatException {
-        return wordFileToList(file).parallelStream()
+    public List<List<String>> parse(byte[] bytes) throws IOException, InvalidFormatException {
+        return wordFileToList(bytes).parallelStream()
                 .map(table -> {
                     StringBuilder sb = new StringBuilder();
                     return table.stream()
@@ -52,7 +51,7 @@ public class TimetableParser extends BaseParser {
     }
 
     @Override
-    public List<List<Map<String, Object>>> parseToListMap(File file) throws IOException, InvalidFormatException {
+    public List<List<Map<String, Object>>> parseToListMap(byte[] bytes) throws IOException, InvalidFormatException {
         return null;
     }
 
@@ -162,8 +161,8 @@ public class TimetableParser extends BaseParser {
         return 0;
     }
 
-    private List<List<List<String>>> wordFileToList(File file) throws InvalidFormatException, IOException {
-        return Word.toTablesRowsLists(file).stream()
+    private List<List<List<String>>> wordFileToList(byte[] bytes) throws InvalidFormatException, IOException {
+        return Word.toTablesRowsLists(bytes).stream()
                 .map(table -> table.stream()
                         .map(row -> row.stream()
                                 .map(String::trim)

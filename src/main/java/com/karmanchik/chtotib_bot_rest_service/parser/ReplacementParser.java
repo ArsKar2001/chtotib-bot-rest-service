@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 public class ReplacementParser extends BaseParser {
 
     @Override
-    public List<List<String>> parse(File file) throws IOException, InvalidFormatException {
-        return Word.toTablesRowsLists(file).stream()
+    public List<List<String>> parse(byte[] bytes) throws IOException, InvalidFormatException {
+        return Word.toTablesRowsLists(bytes).stream()
                 .map(table -> table.stream()
                         .map(row -> Arrays.toString(row.toArray()))
                         .collect(Collectors.toList()))
@@ -28,8 +28,8 @@ public class ReplacementParser extends BaseParser {
     }
 
     @Override
-    public List<List<Map<String, Object>>> parseToListMap(File file) throws IOException, InvalidFormatException {
-        return Word.toTablesRowsLists(file).stream()
+    public List<List<Map<String, Object>>> parseToListMap(byte[] bytes) throws IOException, InvalidFormatException {
+        return Word.toTablesRowsLists(bytes).stream()
                 .map(table -> table.stream()
                         .skip(1)
                         .filter(row -> row.size() >= Sequence.MAX_COLUMN_SIZE)

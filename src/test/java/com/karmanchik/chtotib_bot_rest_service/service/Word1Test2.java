@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Base64;
 
 @Log4j2
 class Word1Test2 {
@@ -17,7 +18,11 @@ class Word1Test2 {
 
     @Test
     void name() {
+        byte[] encode = Base64.getEncoder().encode("admin".getBytes());
+        byte[] decode = Base64.getDecoder().decode(encode);
 
+        System.out.println(new String(encode));
+        System.out.println(new String(decode));
     }
 
 

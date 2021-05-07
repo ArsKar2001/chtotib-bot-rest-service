@@ -1,23 +1,19 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Data
 @Entity
-@Table(name = "teacher")
-@Getter
-@Setter
-@Builder(builderMethodName = "hiddenBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "teacher")
+@EqualsAndHashCode(callSuper = true)
+@Builder(builderMethodName = "hiddenBuilder")
 public class Teacher extends BaseEntity {
 
     @Column(name = "name")
@@ -26,7 +22,7 @@ public class Teacher extends BaseEntity {
 
     @JsonBackReference
     @OneToOne(mappedBy = "teacher", fetch = FetchType.LAZY)
-    private User user;
+    private ChatUser chatUser;
 
     @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "teachers")
     @OrderBy("day, pairNumber ASC")

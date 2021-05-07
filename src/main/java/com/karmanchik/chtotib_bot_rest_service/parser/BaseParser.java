@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BaseParser {
-    public abstract List<List<String>> parse(File file) throws IOException, InvalidFormatException;
+    public abstract List<List<String>> parse(byte[] file) throws IOException, InvalidFormatException;
 
-    public abstract List<List<Map<String, Object>>> parseToListMap(File file) throws IOException, InvalidFormatException;
+    public abstract List<List<Map<String, Object>>> parseToListMap(byte[] file) throws IOException, InvalidFormatException;
 }

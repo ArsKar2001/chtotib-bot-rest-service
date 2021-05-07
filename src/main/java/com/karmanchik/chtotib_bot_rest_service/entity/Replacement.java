@@ -1,6 +1,5 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import org.hibernate.annotations.TypeDef;
@@ -10,14 +9,14 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
+@Data
 @Entity
-@Table(name = "replacement")
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Builder
-@Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "replacement")
+@EqualsAndHashCode(callSuper = true)
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Replacement extends BaseEntity {
 
     @Column(name = "pair_number")

@@ -1,31 +1,19 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Entity
-@Table(
-        name = "groups",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        columnNames = "name",
-                        name = "schedule_group_name_uindex")})
-@Getter
-@Setter
-@Builder(builderMethodName = "hiddenBuilder")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "groups")
+@EqualsAndHashCode(callSuper = true)
+@Builder(builderMethodName = "hiddenBuilder")
 public class Group extends BaseEntity {
     @Column(name = "name", unique = true)
     @NotNull
@@ -33,7 +21,7 @@ public class Group extends BaseEntity {
 
     @JsonBackReference
     @OneToOne(mappedBy = "group", fetch = FetchType.LAZY)
-    private User user;
+    private ChatUser chatUser;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     @OrderBy("day, pairNumber ASC")

@@ -7,11 +7,11 @@ import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
 import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.exception.StringReadException;
+import com.karmanchik.chtotib_bot_rest_service.helper.LatinNumber;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaGroupRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaLessonsRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaReplacementRepository;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
-import com.karmanchik.chtotib_bot_rest_service.helper.LatinNumber;
 import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
 import com.karmanchik.chtotib_bot_rest_service.parser.TimetableParser;
 import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidGroupName;
@@ -26,10 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -61,18 +58,17 @@ public class FileImportController {
         log.info("Find all teachers: {}. OK", teachers.size());
 
         try {
-            this.multipartFileToFile(mFile, Paths.get("src/main/resources/files/"));
-            File file = new File("src/main/resources/files/" + mFile.getOriginalFilename());
             ReplacementParser parser = new ReplacementParser();
-            LocalDate date = parser.getDateFromFileName(file.getName());
+            String filename = mFile.getOriginalFilename();
+            LocalDate date = parser.getDateFromFileName(filename);
 
             if (date == null)
                 return ResponseEntity.badRequest()
-                        .body("Ошибка файла: " + file.getName() + "; " +
+                        .body("Ошибка файла: " + filename + "; " +
                                 "иназвание файла не соответствует формату: \"З А М Е Н А  на день_недели номер_дня навание_месяца неделя нижняя/верхняя.\";\n" +
                                 "Пример: \"З А М Е Н А  на среду 7 апреля неделя нижняя.\"");
 
-            for (var list : parser.parseToListMap(file)) {
+            for (var list : parser.parseToListMap(mFile.getBytes())) {
                 for (var map : list) {
 
                     String groupName = (String) map.get("group_name");
@@ -204,19 +200,6 @@ public class FileImportController {
         }
     }
 
-    public void multipartFileToFile(MultipartFile multipart,
-                                    Path dir) throws IOException {
-        Path filepath = Paths.get(dir.toString(), multipart.getOriginalFilename());
-        multipart.transferTo(filepath);
-    }
-
-    private List<Map<String, Object>> toListMap(File file) throws IOException, InvalidFormatException {
-        ReplacementParser parser = new ReplacementParser();
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        parser.parseToListMap(file).forEach(mapList::addAll);
-        return mapList;
-    }
-
     private void deleteLessons() {
         log.info("Delete the lessons...");
         lessonsRepository.deleteAll();
@@ -240,9 +223,7 @@ public class FileImportController {
         TimetableParser parser = new TimetableParser();
         List<String> csvList = new ArrayList<>();
         for (MultipartFile multipartFile : files) {
-            this.multipartFileToFile(multipartFile, Paths.get("src/main/resources/files/"));
-            File file = new File("src/main/resources/files/" + multipartFile.getOriginalFilename());
-            parser.parse(file)
+            parser.parse(multipartFile.getBytes())
                     .forEach(csvList::addAll);
         }
         return csvList;
