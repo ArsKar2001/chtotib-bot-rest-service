@@ -4,7 +4,7 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Base64;
 
-@Converter(autoApply = true)
+@Converter
 public class PasswordDecodeEncodeConverter implements AttributeConverter<String, String> {
     @Override
     public String convertToDatabaseColumn(String s) {
