@@ -1,14 +1,6 @@
 package com.karmanchik.chtotib_bot_rest_service.service;
 
-import com.karmanchik.chtotib_bot_rest_service.parser.ReplacementParser;
-import com.karmanchik.chtotib_bot_rest_service.parser.word.Word;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Arrays;
 
 class ReplacementServiceImplTest {
 
@@ -19,31 +11,4 @@ class ReplacementServiceImplTest {
             new File("src\\main\\resources\\files\\З А М Е Н А  на среду 7 апреля неделя нижняя. doc.docx")
     };
 
-
-    @Test
-    void testFiles() {
-        ReplacementParser parser = new ReplacementParser();
-        for (File file : files) {
-            try {
-                System.out.println(parser.getDateFromFileName(file.getName()));
-                parser.parseToListMap(file).forEach(table ->
-                        table.forEach(System.out::println));
-            } catch (IOException | InvalidFormatException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Test
-    void name() {
-        Arrays.asList(files)
-                .forEach(file -> {
-                    try {
-                        Word.toTablesRowsMaps(file)
-                                .forEach(System.out::println);
-                    } catch (IOException | InvalidFormatException e) {
-                        e.printStackTrace();
-                    }
-                });
-    }
 }
