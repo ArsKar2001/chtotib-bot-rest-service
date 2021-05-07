@@ -17,6 +17,8 @@ import static com.karmanchik.chtotib_bot_rest_service.parser.sequence.Sequence.*
 
 @Log4j2
 public class TimetableParser extends BaseParser {
+    public static final List<String> ERROR_LIST = new ArrayList<>();
+
     @Override
     public List<List<String>> parse(byte[] bytes) throws IOException, InvalidFormatException {
         return wordFileToList(bytes).parallelStream()

@@ -39,6 +39,8 @@ import static com.karmanchik.chtotib_bot_rest_service.parser.sequence.Sequence.*
 @RequestMapping("api")
 @RequiredArgsConstructor
 public class FileImportController {
+    public static final Set<Exception> EXCEPTION_LIST = new HashSet<>();
+
     private final JpaLessonsRepository lessonsRepository;
     private final JpaGroupRepository groupRepository;
     private final JpaTeacherRepository teacherRepository;
@@ -123,8 +125,6 @@ public class FileImportController {
         try {
             if (mFiles.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
 
-            deleteLessons();
-
             Set<String> uniqueTeacherNames = new HashSet<>();
             Set<String> uniqueGroupNames = new HashSet<>();
             List<String> csv = getCSVListOfFile(mFiles);
@@ -185,10 +185,19 @@ public class FileImportController {
                         .build());
             }
 
-            log.info("Importing lessons...");
-            lessonsRepository.saveAll(lessons);
-            log.info("Importing lessons... OK");
+            if (EXCEPTION_LIST.isEmpty()) {
+                deleteLessons();
 
+                log.info("Importing lessons...");
+                lessonsRepository.saveAll(lessons);
+                log.info("Importing lessons... OK");
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "status", "fail",
+                                "trace", EXCEPTION_LIST
+                        ));
+            }
             return ResponseEntity.ok(Map.of(
                     "groups", groups.size(),
                     "teachers", allTeachers.size(),
@@ -214,7 +223,7 @@ public class FileImportController {
             if (matcher.matches()) {
                 teacherList.add(ValidTeacherName.getValidTeacherName(s1, matcher));
             } else
-                throw new StringReadException(s, "Иванов А.А.");
+                EXCEPTION_LIST.add(new StringReadException(s, "Иванов А.А."));
         }
         return teacherList;
     }
