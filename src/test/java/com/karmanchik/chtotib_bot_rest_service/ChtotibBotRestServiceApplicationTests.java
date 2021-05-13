@@ -5,7 +5,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Base64;
 
-@SpringBootTest
 class ChtotibBotRestServiceApplicationTests {
 
     @Test
