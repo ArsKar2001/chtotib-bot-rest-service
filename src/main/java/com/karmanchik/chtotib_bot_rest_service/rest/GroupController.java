@@ -55,51 +55,61 @@ public class GroupController implements Controller<Group> {
         List<Map<String, Object>> mapList;
         List<List<Lesson>> sortLessons = new ArrayList<>();
         List<Lesson> lessons = groupRepository.getLessonsById(id);
-        log.info("Получили пары для группы {id={}}: {}", id, lessons);
-        lessons.stream()
-                .map(Lesson::getDay)
-                .sorted()
-                .distinct()
-                .forEach(day -> sortLessons.add(lessons.stream()
-                        .filter(lesson -> lesson.getDay().equals(day))
-                        .sorted(Comparator.comparing(Lesson::getPairNumber))
-                        .collect(Collectors.toList())));
 
-        List<List<LessonModel>> collect = sortLessons.stream()
-                .map(ll -> ll.stream()
-                        .map(lessonAssembler::toModel)
-                        .collect(Collectors.toList()))
-                .collect(Collectors.toList());
+        if (!lessons.isEmpty()) {
+            log.info("Получили пары для группы {id={}}: {}", id, lessons);
+            lessons.stream()
+                    .map(Lesson::getDay)
+                    .sorted()
+                    .distinct()
+                    .forEach(day -> sortLessons.add(lessons.stream()
+                            .filter(lesson -> lesson.getDay().equals(day))
+                            .sorted(Comparator.comparing(Lesson::getPairNumber))
+                            .collect(Collectors.toList())));
 
-        mapList = collect.stream()
-                .map(lms -> Map.of(
-                        "group_id", id,
-                        "lessons", collect.stream()
-                                .map(lmss -> lmss.stream().map(lm -> {
-                                    var ref = new Object() {
-                                        int num = 0;
-                                    };
-                                    return Map.of(
-                                            "id", lm.getId(),
-                                            "pairNumber", lm.getPairNumber(),
-                                            "day", lm.getDay(),
-                                            "discipline", lm.getDiscipline(),
-                                            "auditorium", lm.getAuditorium(),
-                                            "weekType", lm.getWeekType(),
-                                            "group", lm.getGroup(),
-                                            "teachers", lm.getTeachers().stream()
-                                                    .map(tm -> Map.of(
-                                                            "id", tm.getId(),
-                                                            "name", tm.getName(),
-                                                            "num", ++ref.num
-                                                    )).collect(Collectors.toList()));
-                                }).collect(Collectors.toList()))
-                                .collect(Collectors.toList())
-                )).collect(Collectors.toList());
+            List<List<LessonModel>> collect = sortLessons.stream()
+                    .map(ll -> ll.stream()
+                            .map(lessonAssembler::toModel)
+                            .collect(Collectors.toList()))
+                    .collect(Collectors.toList());
 
-        log.info("Построили модель: {}", mapList);
-        return ResponseEntity.ok()
-                .body(mapList);
+            mapList = collect.stream()
+                    .map(lms -> Map.of(
+                            "group_id", id,
+                            "lessons", collect.stream()
+                                    .map(lmss -> lmss.stream().map(lm -> {
+                                        var ref = new Object() {
+                                            int num = 0;
+                                        };
+                                        return Map.of(
+                                                "id", lm.getId(),
+                                                "pairNumber", lm.getPairNumber(),
+                                                "day", lm.getDay(),
+                                                "discipline", lm.getDiscipline(),
+                                                "auditorium", lm.getAuditorium(),
+                                                "weekType", lm.getWeekType(),
+                                                "group", lm.getGroup(),
+                                                "teachers", lm.getTeachers().stream()
+                                                        .map(tm -> Map.of(
+                                                                "id", tm.getId(),
+                                                                "name", tm.getName(),
+                                                                "num", ++ref.num
+                                                        )).collect(Collectors.toList()));
+                                    }).collect(Collectors.toList()))
+                                    .collect(Collectors.toList())
+                    )).collect(Collectors.toList());
+
+            log.info("Построили модель: {}", mapList);
+            return ResponseEntity.ok()
+                    .body(mapList);
+        } else {
+            return ResponseEntity.ok()
+                    .body(List.of(
+                            Map.of(
+                                    "group_id", id,
+                                    "lessons", Collections.EMPTY_LIST))
+                    );
+        }
     }
 
     @GetMapping("/groups/{id}/replacements")
