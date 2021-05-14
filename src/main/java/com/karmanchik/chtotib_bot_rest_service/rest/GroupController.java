@@ -4,8 +4,6 @@ import com.karmanchik.chtotib_bot_rest_service.assembler.GroupAssembler;
 import com.karmanchik.chtotib_bot_rest_service.assembler.LessonAssembler;
 import com.karmanchik.chtotib_bot_rest_service.assembler.ReplacementAssembler;
 import com.karmanchik.chtotib_bot_rest_service.assembler.model.GroupModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.LessonModel;
-import com.karmanchik.chtotib_bot_rest_service.assembler.model.ReplacementModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
@@ -23,9 +21,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Log4j2
 @RestController
@@ -52,8 +47,7 @@ public class GroupController implements Controller<Group> {
 
     @GetMapping("/groups/{id}/lessons")
     public ResponseEntity<?> getLessons(@PathVariable @NotNull Integer id) {
-        List<Map<String, Object>> mapList;
-        List<List<Lesson>> sortLessons = new ArrayList<>();
+        List<Map<String, Object>> outList = new ArrayList<>();
         List<Lesson> lessons = groupRepository.getLessonsById(id);
 
         if (!lessons.isEmpty()) {
@@ -62,22 +56,13 @@ public class GroupController implements Controller<Group> {
                     .map(Lesson::getDay)
                     .sorted()
                     .distinct()
-                    .forEach(day -> sortLessons.add(lessons.stream()
-                            .filter(lesson -> lesson.getDay().equals(day))
-                            .sorted(Comparator.comparing(Lesson::getPairNumber))
-                            .collect(Collectors.toList())));
-
-            List<List<LessonModel>> collect = sortLessons.stream()
-                    .map(ll -> ll.stream()
-                            .map(lessonAssembler::toModel)
-                            .collect(Collectors.toList()))
-                    .collect(Collectors.toList());
-
-            mapList = collect.stream()
-                    .map(lms -> Map.of(
+                    .forEach(day -> outList.add(Map.of(
                             "group_id", id,
-                            "lessons", collect.stream()
-                                    .map(lmss -> lmss.stream().map(lm -> {
+                            "lessons", lessons.stream()
+                                    .filter(lesson -> lesson.getDay().equals(day))
+                                    .sorted(Comparator.comparing(Lesson::getPairNumber))
+                                    .map(lessonAssembler::toModel)
+                                    .map(lm -> {
                                         var ref = new Object() {
                                             int num = 0;
                                         };
@@ -95,13 +80,11 @@ public class GroupController implements Controller<Group> {
                                                                 "name", tm.getName(),
                                                                 "num", ++ref.num
                                                         )).collect(Collectors.toList()));
-                                    }).collect(Collectors.toList()))
-                                    .collect(Collectors.toList())
-                    )).collect(Collectors.toList());
-
-            log.info("Построили модель: {}", mapList);
+                                    }).collect(Collectors.toList())
+                    )));
+            log.info("Построили модель: {}", outList);
             return ResponseEntity.ok()
-                    .body(mapList);
+                    .body(outList);
         } else {
             return ResponseEntity.ok()
                     .body(List.of(
