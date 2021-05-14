@@ -58,6 +58,7 @@ public class GroupController implements Controller<Group> {
                     .distinct()
                     .forEach(day -> outList.add(Map.of(
                             "group_id", id,
+                            "day", day,
                             "lessons", lessons.stream()
                                     .filter(lesson -> lesson.getDay().equals(day))
                                     .sorted(Comparator.comparing(Lesson::getPairNumber))
