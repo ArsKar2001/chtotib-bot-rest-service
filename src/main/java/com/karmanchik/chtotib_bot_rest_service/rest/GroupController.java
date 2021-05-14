@@ -97,7 +97,10 @@ public class GroupController implements Controller<Group> {
 
         log.info("Построили модель: {}", mapList);
         return ResponseEntity.ok()
-                .body(mapList);
+                .body(Map.of(
+                        "group_id", id,
+                        "lessons", mapList
+                ));
     }
 
     @GetMapping("/groups/{id}/replacements")
