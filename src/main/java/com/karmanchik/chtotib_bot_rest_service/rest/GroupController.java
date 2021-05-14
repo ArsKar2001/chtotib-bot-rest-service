@@ -51,51 +51,39 @@ public class GroupController implements Controller<Group> {
         List<Map<String, Object>> outList = new ArrayList<>();
         List<Lesson> lessons = groupRepository.getLessonsById(id);
 
-
-
-        if (!lessons.isEmpty()) {
-            log.info("Получили пары для группы {id={}}: {}", id, lessons);
-
-            Arrays.stream(DayOfWeek.values())
-                    .map(DayOfWeek::getValue)
-                    .sorted()
-                    .forEach(day -> outList.add(Map.of(
-                            "group_id", id,
-                            "day", day,
-                            "lessons", lessons.stream()
-                                    .filter(lesson -> lesson.getDay().equals(day))
-                                    .sorted(Comparator.comparing(Lesson::getPairNumber))
-                                    .map(lessonAssembler::toModel)
-                                    .map(lm -> {
-                                        var ref = new Object() {
-                                            int num = 0;
-                                        };
-                                        return Map.of(
-                                                "id", lm.getId(),
-                                                "pairNumber", lm.getPairNumber(),
-                                                "day", lm.getDay(),
-                                                "discipline", lm.getDiscipline(),
-                                                "auditorium", lm.getAuditorium(),
-                                                "weekType", lm.getWeekType(),
-                                                "group", lm.getGroup(),
-                                                "teachers", lm.getTeachers().stream()
-                                                        .map(tm -> Map.of(
-                                                                "id", tm.getId(),
-                                                                "name", tm.getName(),
-                                                                "num", ++ref.num
-                                                        )).collect(Collectors.toList()));
-                                    }).collect(Collectors.toList()))));
-            log.info("Построили модель: {}", outList);
-            return ResponseEntity.ok()
-                    .body(outList);
-        } else {
-            return ResponseEntity.ok()
-                    .body(List.of(
-                            Map.of(
-                                    "group_id", id,
-                                    "lessons", Collections.EMPTY_LIST))
-                    );
-        }
+        log.info("Получили пары для группы {id={}}: {}", id, lessons);
+        Arrays.stream(DayOfWeek.values())
+                .map(DayOfWeek::getValue)
+                .sorted()
+                .forEach(day -> outList.add(Map.of(
+                        "group_id", id,
+                        "day", day,
+                        "lessons", lessons.stream()
+                                .filter(lesson -> lesson.getDay().equals(day))
+                                .sorted(Comparator.comparing(Lesson::getPairNumber))
+                                .map(lessonAssembler::toModel)
+                                .map(lm -> {
+                                    var ref = new Object() {
+                                        int num = 0;
+                                    };
+                                    return Map.of(
+                                            "id", lm.getId(),
+                                            "pairNumber", lm.getPairNumber(),
+                                            "day", lm.getDay(),
+                                            "discipline", lm.getDiscipline(),
+                                            "auditorium", lm.getAuditorium(),
+                                            "weekType", lm.getWeekType(),
+                                            "group", lm.getGroup(),
+                                            "teachers", lm.getTeachers().stream()
+                                                    .map(tm -> Map.of(
+                                                            "id", tm.getId(),
+                                                            "name", tm.getName(),
+                                                            "num", ++ref.num
+                                                    )).collect(Collectors.toList()));
+                                }).collect(Collectors.toList()))));
+        log.info("Построили модель: {}", outList);
+        return ResponseEntity.ok()
+                .body(outList);
     }
 
     @GetMapping("/groups/{id}/replacements")
