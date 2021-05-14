@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.DayOfWeek;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,12 +51,14 @@ public class GroupController implements Controller<Group> {
         List<Map<String, Object>> outList = new ArrayList<>();
         List<Lesson> lessons = groupRepository.getLessonsById(id);
 
+
+
         if (!lessons.isEmpty()) {
             log.info("Получили пары для группы {id={}}: {}", id, lessons);
-            lessons.stream()
-                    .map(Lesson::getDay)
+
+            Arrays.stream(DayOfWeek.values())
+                    .map(DayOfWeek::getValue)
                     .sorted()
-                    .distinct()
                     .forEach(day -> outList.add(Map.of(
                             "group_id", id,
                             "day", day,
@@ -81,8 +84,7 @@ public class GroupController implements Controller<Group> {
                                                                 "name", tm.getName(),
                                                                 "num", ++ref.num
                                                         )).collect(Collectors.toList()));
-                                    }).collect(Collectors.toList())
-                    )));
+                                    }).collect(Collectors.toList()))));
             log.info("Построили модель: {}", outList);
             return ResponseEntity.ok()
                     .body(outList);
