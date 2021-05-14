@@ -168,6 +168,7 @@
                         <phase>compile</phase>
                         <configuration>
                             <arguments>build</arguments>
+                            <workingDirectory>${basedir}/frontend</workingDirectory>
                         </configuration>
                     </execution>
                 </executions>
