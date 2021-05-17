@@ -9,10 +9,12 @@ import com.karmanchik.chtotib_bot_rest_service.assembler.model.TeacherModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
 import com.karmanchik.chtotib_bot_rest_service.entity.Teacher;
+import com.karmanchik.chtotib_bot_rest_service.entity.enums.WeekType;
 import com.karmanchik.chtotib_bot_rest_service.exception.ResourceNotFoundException;
 import com.karmanchik.chtotib_bot_rest_service.jpa.JpaTeacherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -114,7 +116,7 @@ public class TeacherController implements Controller<Teacher> {
     @Override
     @GetMapping("/teachers/")
     public ResponseEntity<?> getAll() {
-        var models = teacherAssembler.toCollectionModel(teacherRepository.findAll());
+        var models = teacherAssembler.toCollectionModel(teacherRepository.findAll(Sort.by("name")));
         return ResponseEntity.ok()
                 .body(models);
     }
