@@ -17,7 +17,6 @@ import java.util.Objects;
 @Entity
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "chat_users", uniqueConstraints = {
         @UniqueConstraint(name = "chat_id_unique", columnNames = "chat_id"),
         @UniqueConstraint(name = "user_name_unique", columnNames = "user_name")
@@ -25,51 +24,44 @@ import java.util.Objects;
 @EqualsAndHashCode(callSuper = true)
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class ChatUser extends BaseEntity {
-    @Column(name = "chat_id", unique = true)
-    @NotNull
-    private Integer chatId;
+    @Column(name = "chat_id")
+    private Long chatId;
 
-    @Column(name = "user_name", unique = true)
-    @NotNull
+    @Column(name = "user_name")
     private String userName;
 
-    @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_teacher",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "teacher_id", referencedColumnName = "id", nullable = false)})
-    private Teacher teacher;
+    @Column(name = "bot_state_id")
+    private BotState botState;
 
-    @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL)
+    @Column(name = "user_state_id")
+    private UserState userState;
+
+    @Column(name = "role_id")
+    private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "user_group",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id", nullable = false)})
     private Group group;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_teacher",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "teacher_id", referencedColumnName = "id", nullable = false)})
+    private Teacher teacher;
 
-    @Column(name = "role_id")
-    private Role role;
-
-    @Column(name = "user_state_id")
-    @NotNull
-    private UserState userState;
-
-    @Column(name = "bot_state_id")
-    @NotNull
-    private BotState botState;
+    public ChatUser() {}
 
     @Override
     public String toString() {
-        return "User{" +
-                "chatId=" + chatId +
+        return "ChatUser{" +
+                "id=" + id +
+                ", chatId=" + chatId +
                 ", userName='" + userName + '\'' +
-                ", teacher=" + teacher +
-                ", group=" + group +
-                ", role=" + role +
-                ", userState=" + userState +
                 ", botState=" + botState +
-                ", id=" + id +
+                ", userState=" + userState +
+                ", role=" + role +
                 '}';
     }
 }

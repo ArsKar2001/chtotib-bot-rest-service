@@ -9,7 +9,6 @@ import java.util.List;
 
 @Data
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "teacher")
 @EqualsAndHashCode(callSuper = true)
@@ -17,30 +16,26 @@ import java.util.List;
 public class Teacher extends BaseEntity {
 
     @Column(name = "name")
-    @NotNull
     private String name;
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "teacher", fetch = FetchType.LAZY)
-    private ChatUser chatUser;
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    private List<ChatUser> chatUsers;
 
-    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "teachers")
-    @OrderBy("day, pairNumber ASC")
+    @ManyToMany(mappedBy = "teachers", cascade = CascadeType.ALL)
     private List<Lesson> lessons;
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "teachers")
-    @OrderBy("date, pairNumber ASC")
     private List<Replacement> replacements;
 
-    public static TeacherBuilder builder(String name) {
-        return hiddenBuilder().name(name);
+    public Teacher() {
+
     }
 
     @Override
     public String toString() {
         return "Teacher{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

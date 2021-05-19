@@ -1,47 +1,36 @@
 package com.karmanchik.chtotib_bot_rest_service.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "groups", uniqueConstraints = {
-        @UniqueConstraint(name = "name_unique", columnNames = "name")
-})
+@Table(name = "groups")
 @EqualsAndHashCode(callSuper = true)
 @Builder(builderMethodName = "hiddenBuilder")
 public class Group extends BaseEntity {
-    @Column(name = "name", unique = true)
-    @NotNull
+    @Column(name = "name")
     private String name;
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "group", fetch = FetchType.LAZY)
-    private ChatUser chatUser;
+    @OneToMany(mappedBy = "group")
+    private List<ChatUser> chatUsers;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    @OrderBy("day, pairNumber ASC")
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Lesson> lessons;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    @OrderBy(value = "date, pairNumber ASC")
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Replacement> replacements;
 
-    public static GroupBuilder builder(String name) {
-        return hiddenBuilder().name(name);
-    }
+    public Group() { }
 
     @Override
     public String toString() {
         return "Group{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 }
