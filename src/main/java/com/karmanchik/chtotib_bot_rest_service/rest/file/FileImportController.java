@@ -113,7 +113,10 @@ public class FileImportController {
                         .body(replacementRepository.saveAll(replacements));
             } else {
                 return ResponseEntity.badRequest()
-                        .body(EXCEPTION_LIST);
+                        .body(Map.of(
+                                "status", "fail",
+                                "trace", EXCEPTION_LIST
+                        ));
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
