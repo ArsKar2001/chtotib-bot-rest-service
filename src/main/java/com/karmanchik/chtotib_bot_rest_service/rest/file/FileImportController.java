@@ -93,7 +93,7 @@ public class FileImportController {
                                             .findFirst()
                                             .orElseThrow(() -> new ResourceNotFoundException(s, Teacher.class)));
                                 } else {
-                                    throw new StringReadException(s, "Иванов А.А.");
+                                    EXCEPTION_LIST.add(new StringReadException(s, "Иванов А.А.").getMessage());
                                 }
                             }
                         }
@@ -106,10 +106,15 @@ public class FileImportController {
                                 .pairNumber(pair)
                                 .build());
                     });
-            replacementRepository.deleteAll();
-            log.info("Save replacements [{}]...", replacements.size());
-            return ResponseEntity.ok()
-                    .body(replacementRepository.saveAll(replacements));
+            if (!EXCEPTION_LIST.isEmpty()) {
+                replacementRepository.deleteAll();
+                log.info("Save replacements [{}]...", replacements.size());
+                return ResponseEntity.ok()
+                        .body(replacementRepository.saveAll(replacements));
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(EXCEPTION_LIST);
+            }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.badRequest().body(e.getMessage());
