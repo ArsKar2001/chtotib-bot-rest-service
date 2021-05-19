@@ -106,13 +106,13 @@ public class FileImportController {
                                 .pairNumber(pair)
                                 .build());
                     });
-            if (!EXCEPTION_LIST.isEmpty()) {
+            if (EXCEPTION_LIST.isEmpty()) {
                 replacementRepository.deleteAll();
                 log.info("Save replacements [{}]...", replacements.size());
                 return ResponseEntity.ok()
                         .body(replacementRepository.saveAll(replacements));
             } else {
-                return ResponseEntity.badRequest()
+                return ResponseEntity.ok()
                         .body(Map.of(
                                 "status", "fail",
                                 "trace", EXCEPTION_LIST
@@ -120,7 +120,7 @@ public class FileImportController {
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok().body(e.getMessage());
         }
     }
 
@@ -197,7 +197,7 @@ public class FileImportController {
                 lessonsRepository.saveAll(lessons);
                 log.info("Importing lessons... OK");
             } else {
-                return ResponseEntity.badRequest()
+                return ResponseEntity.ok()
                         .body(Map.of(
                                 "status", "fail",
                                 "trace", EXCEPTION_LIST
@@ -210,7 +210,7 @@ public class FileImportController {
             ));
         } catch (RuntimeException | IOException | InvalidFormatException e) {
             log.error(e.getMessage(), e);
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok().body(e.getMessage());
         }
     }
 
