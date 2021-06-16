@@ -198,12 +198,12 @@ public class FileImportController {
                 deleteLessons();
 
                 log.info("Importing lessons...");
-                lessonsRepository.saveAll(lessons);
+                List<Lesson> saveLessons = lessonsRepository.saveAll(lessons);
                 log.info("Importing lessons... OK");
 
                 return ResponseEntity.ok(Map.of(
                         "status", "OK",
-                        "body", lessons
+                        "body", saveLessons
                 ));
             } else {
                 return ResponseEntity.ok()
