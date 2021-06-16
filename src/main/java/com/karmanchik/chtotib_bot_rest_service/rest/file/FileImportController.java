@@ -63,7 +63,7 @@ public class FileImportController {
         try {
             ReplacementParser parser = new ReplacementParser();
             String filename = mFile.getOriginalFilename();
-            LocalDate date = parser.getDateFromFileName(filename);
+            LocalDate date = parser.getDateFromFileName(Objects.requireNonNull(filename));
 
             if (date == null)
                 return ResponseEntity.badRequest()
@@ -220,6 +220,8 @@ public class FileImportController {
 
     private void deleteLessons() {
         log.info("Delete the lessons...");
+        teacherRepository.deleteAll();
+        groupRepository.deleteAll();
         lessonsRepository.deleteAll();
         log.info("Delete the lessons... OK");
     }
