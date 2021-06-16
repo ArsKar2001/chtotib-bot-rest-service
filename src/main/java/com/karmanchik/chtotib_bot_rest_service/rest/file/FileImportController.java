@@ -108,7 +108,7 @@ public class FileImportController {
                     });
             if (EXCEPTION_LIST.isEmpty()) {
                 replacementRepository.deleteAll();
-                log.info("Save replacements [{}]...", replacements.size());
+                log.info("Save replacements {}: {}", replacements.size(), replacements);
                 replacementRepository.saveAll(replacements);
                 return ResponseEntity.ok()
                         .body(Map.of(
