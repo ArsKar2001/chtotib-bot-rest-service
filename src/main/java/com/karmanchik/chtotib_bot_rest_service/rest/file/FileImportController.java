@@ -220,8 +220,6 @@ public class FileImportController {
 
     private void deleteLessons() {
         log.info("Delete the lessons...");
-        teacherRepository.deleteAll();
-        groupRepository.deleteAll();
         lessonsRepository.deleteAll();
         log.info("Delete the lessons... OK");
     }
