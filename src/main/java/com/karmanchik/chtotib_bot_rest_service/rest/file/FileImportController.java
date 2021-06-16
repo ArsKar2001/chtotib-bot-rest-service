@@ -147,11 +147,11 @@ public class FileImportController {
             List<Lesson> lessons = new ArrayList<>();
             List<Group> groups = uniqueGroupNames.stream()
                     .map(s -> groupRepository.findByName(s)
-                            .orElseGet(() -> groupRepository.save(Group.builder(s).build())))
+                            .orElseGet(() -> groupRepository.save(Group.hiddenBuilder().name(s).build())))
                     .collect(Collectors.toList());
             List<Teacher> allTeachers = uniqueTeacherNames.stream()
                     .map(s -> teacherRepository.findByName(s)
-                            .orElseGet(() -> teacherRepository.save(Teacher.builder(s).build())))
+                            .orElseGet(() -> teacherRepository.save(Teacher.hiddenBuilder().name(s).build())))
                     .collect(Collectors.toList());
 
             for (String s : csv) {
