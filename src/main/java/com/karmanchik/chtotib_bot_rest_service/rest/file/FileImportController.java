@@ -83,7 +83,11 @@ public class FileImportController {
                         Group group = groups.stream()
                                 .filter(g -> g.getName().equalsIgnoreCase(validGroupName))
                                 .findFirst()
-                                .orElseThrow(() -> new ResourceNotFoundException(groupName, Group.class));
+                                .orElseGet(() -> {
+                                    EXCEPTION_LIST.add(new ResourceNotFoundException(groupName, Group.class)
+                                            .getMessage());
+                                    return new Group();
+                                });
                         List<Teacher> teachersByRepl = new ArrayList<>();
                         for (String s : teacherNameList) {
                             if (!s.trim().isBlank()) {
