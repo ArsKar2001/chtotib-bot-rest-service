@@ -109,13 +109,17 @@ public class FileImportController {
             if (EXCEPTION_LIST.isEmpty()) {
                 replacementRepository.deleteAll();
                 log.info("Save replacements [{}]...", replacements.size());
+                replacementRepository.saveAll(replacements);
                 return ResponseEntity.ok()
-                        .body(replacementRepository.saveAll(replacements));
+                        .body(Map.of(
+                                "status", "OK",
+                                "body", replacements
+                        ));
             } else {
                 return ResponseEntity.ok()
                         .body(Map.of(
-                                "status", "fail",
-                                "trace", EXCEPTION_LIST
+                                "status", "FAIL",
+                                "body", EXCEPTION_LIST
                         ));
             }
         } catch (Exception e) {
@@ -196,18 +200,18 @@ public class FileImportController {
                 log.info("Importing lessons...");
                 lessonsRepository.saveAll(lessons);
                 log.info("Importing lessons... OK");
+
+                return ResponseEntity.ok(Map.of(
+                        "status", "OK",
+                        "body", lessons
+                ));
             } else {
                 return ResponseEntity.ok()
                         .body(Map.of(
-                                "status", "fail",
-                                "trace", EXCEPTION_LIST
+                                "status", "FAIL",
+                                "body", EXCEPTION_LIST
                         ));
             }
-            return ResponseEntity.ok(Map.of(
-                    "groups", groups.size(),
-                    "teachers", allTeachers.size(),
-                    "lessons", lessons.size()
-            ));
         } catch (RuntimeException | IOException | InvalidFormatException e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.ok().body(e.getMessage());
