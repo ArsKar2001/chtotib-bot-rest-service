@@ -1,5 +1,9 @@
 package com.karmanchik.chtotib_bot_rest_service.rest.file;
 
+import com.karmanchik.chtotib_bot_rest_service.assembler.LessonAssembler;
+import com.karmanchik.chtotib_bot_rest_service.assembler.ReplacementAssembler;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.LessonModel;
+import com.karmanchik.chtotib_bot_rest_service.assembler.model.ReplacementModel;
 import com.karmanchik.chtotib_bot_rest_service.entity.Group;
 import com.karmanchik.chtotib_bot_rest_service.entity.Lesson;
 import com.karmanchik.chtotib_bot_rest_service.entity.Replacement;
@@ -45,6 +49,9 @@ public class FileImportController {
     private final JpaGroupRepository groupRepository;
     private final JpaTeacherRepository teacherRepository;
     private final JpaReplacementRepository replacementRepository;
+
+    private final LessonAssembler lessonAssembler;
+    private final ReplacementAssembler replacementAssembler;
 
     @PostMapping("/import/replacements")
     public ResponseEntity<?> importReplacements(@RequestBody MultipartFile mFile) {
@@ -114,11 +121,13 @@ public class FileImportController {
             if (EXCEPTION_LIST.isEmpty()) {
                 replacementRepository.deleteAll();
                 log.info("Save replacements {}: {}", replacements.size(), replacements);
-                replacementRepository.saveAll(replacements);
+                List<ReplacementModel> replacementModels = replacementRepository.saveAll(replacements).stream()
+                        .map(replacementAssembler::toModel)
+                        .collect(Collectors.toList());
                 return ResponseEntity.ok()
                         .body(Map.of(
                                 "status", "OK",
-                                "body", replacements
+                                "body", replacementModels
                         ));
             } else {
                 return ResponseEntity.ok()
@@ -204,12 +213,14 @@ public class FileImportController {
                 deleteLessons();
 
                 log.info("Importing lessons...");
-                List<Lesson> sl = lessonsRepository.saveAll(lessons);
+                List<LessonModel> lessonModels = lessonsRepository.saveAll(lessons).stream()
+                        .map(lessonAssembler::toModel)
+                        .collect(Collectors.toList());
                 log.info("Importing lessons... OK");
 
                 return ResponseEntity.ok(Map.of(
                         "status", "OK",
-                        "body", sl
+                        "body", lessonModels
                 ));
             } else {
                 return ResponseEntity.ok()
