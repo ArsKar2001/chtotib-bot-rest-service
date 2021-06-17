@@ -121,13 +121,11 @@ public class FileImportController {
             if (EXCEPTION_LIST.isEmpty()) {
                 replacementRepository.deleteAll();
                 log.info("Save replacements {}: {}", replacements.size(), replacements);
-                List<ReplacementModel> replacementModels = replacementRepository.saveAll(replacements).stream()
-                        .map(replacementAssembler::toModel)
-                        .collect(Collectors.toList());
+                replacementRepository.saveAll(replacements);
                 return ResponseEntity.ok()
                         .body(Map.of(
                                 "status", "OK",
-                                "body", replacementModels
+                                "body", replacements
                         ));
             } else {
                 return ResponseEntity.ok()
@@ -213,14 +211,12 @@ public class FileImportController {
                 deleteLessons();
 
                 log.info("Importing lessons...");
-                List<LessonModel> lessonModels = lessonsRepository.saveAll(lessons).stream()
-                        .map(lessonAssembler::toModel)
-                        .collect(Collectors.toList());
+                lessonsRepository.saveAll(lessons);
                 log.info("Importing lessons... OK");
 
                 return ResponseEntity.ok(Map.of(
                         "status", "OK",
-                        "body", lessonModels
+                        "body", lessons
                 ));
             } else {
                 return ResponseEntity.ok()
