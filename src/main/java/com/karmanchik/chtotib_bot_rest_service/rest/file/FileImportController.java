@@ -23,6 +23,7 @@ import com.karmanchik.chtotib_bot_rest_service.parser.validate.ValidTeacherName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -121,11 +122,30 @@ public class FileImportController {
             if (EXCEPTION_LIST.isEmpty()) {
                 replacementRepository.deleteAll();
                 log.info("Save replacements {}: {}", replacements.size(), replacements);
-                replacementRepository.saveAll(replacements);
+                var models = replacementRepository.saveAll(replacements).stream()
+                        .map(replacementAssembler::toModel)
+                        .map(lm -> {
+                            var ref = new Object() {
+                                int num = 0;
+                            };
+                            return Map.of(
+                                    "id", lm.getId(),
+                                    "pairNumber", lm.getPairNumber(),
+                                    "date", lm.getDate(),
+                                    "discipline", lm.getDiscipline(),
+                                    "auditorium", lm.getAuditorium(),
+                                    "group", lm.getGroup(),
+                                    "teachers", lm.getTeachers().stream()
+                                            .map(tm -> Map.of(
+                                                    "id", tm.getId(),
+                                                    "name", tm.getName(),
+                                                    "num", ++ref.num
+                                            )).collect(Collectors.toList()));
+                        }).collect(Collectors.toList());
                 return ResponseEntity.ok()
                         .body(Map.of(
                                 "status", "OK",
-                                "body", replacements
+                                "body", models
                         ));
             } else {
                 return ResponseEntity.ok()
@@ -143,7 +163,6 @@ public class FileImportController {
     @PostMapping("/import/lessons")
     public ResponseEntity<?> importLessons(@RequestBody MultipartFile[] mFiles) {
         EXCEPTION_LIST.clear();
-        log.info("Importing files: {}", mFiles);
         try {
             if (mFiles.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
 
@@ -211,12 +230,32 @@ public class FileImportController {
                 deleteLessons();
 
                 log.info("Importing lessons...");
-                lessonsRepository.saveAll(lessons);
+                var models = lessonsRepository.saveAll(lessons).stream()
+                        .map(lessonAssembler::toModel)
+                        .map(lm -> {
+                            var ref = new Object() {
+                                int num = 0;
+                            };
+                            return Map.of(
+                                    "id", lm.getId(),
+                                    "pairNumber", lm.getPairNumber(),
+                                    "day", lm.getDay(),
+                                    "discipline", lm.getDiscipline(),
+                                    "auditorium", lm.getAuditorium(),
+                                    "weekType", lm.getWeekType(),
+                                    "group", lm.getGroup(),
+                                    "teachers", lm.getTeachers().stream()
+                                            .map(tm -> Map.of(
+                                                    "id", tm.getId(),
+                                                    "name", tm.getName(),
+                                                    "num", ++ref.num
+                                            )).collect(Collectors.toList()));
+                        }).collect(Collectors.toList());
                 log.info("Importing lessons... OK");
 
                 return ResponseEntity.ok(Map.of(
                         "status", "OK",
-                        "body", lessons
+                        "body", models
                 ));
             } else {
                 return ResponseEntity.ok()
