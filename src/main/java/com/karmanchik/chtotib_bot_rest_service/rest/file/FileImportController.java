@@ -48,6 +48,7 @@ public class FileImportController {
 
     @PostMapping("/import/replacements")
     public ResponseEntity<?> importReplacements(@RequestBody MultipartFile mFile) {
+        log.info("Importing files: {}", mFile);
         EXCEPTION_LIST.clear();
         List<Replacement> replacements = new ArrayList<>();
 
@@ -135,6 +136,7 @@ public class FileImportController {
     @PostMapping("/import/lessons")
     public ResponseEntity<?> importLessons(@RequestBody MultipartFile[] mFiles) {
         EXCEPTION_LIST.clear();
+        log.info("Importing files: {}", mFiles);
         try {
             if (mFiles.length > 2) return ResponseEntity.badRequest().body("Файлов должно быть не больше 2.");
 
