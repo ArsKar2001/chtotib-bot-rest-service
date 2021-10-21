@@ -1,5 +1,5 @@
 # chtotib-telegram-bot-rest-service
-Rest API для панели администратора чат-бота, с использованием фреймворка Spring Boot.
+Rest API для панели администратора чат-бота.
 
 ## Использование Rest API
 
